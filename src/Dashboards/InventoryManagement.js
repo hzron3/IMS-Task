@@ -1,29 +1,4 @@
 import React, { useState } from "react";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper,
-  Button,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-  Typography,
-  Box
-} from "@mui/material";
-import { 
-  Add as AddIcon, 
-  Edit as EditIcon, 
-  Delete as DeleteIcon,
-  Search as SearchIcon,
-  Warning as WarningIcon
-} from "@mui/icons-material";
 import "./InventoryManagement.css";
 
 const InventoryManagement = () => {
@@ -248,7 +223,6 @@ const InventoryManagement = () => {
 
   const handleCategorySubmit = () => {
     if (editingCategory) {
-      // Update existing category
       setCategories(categories.map(cat => 
         cat.id === editingCategory.id 
           ? {
@@ -259,7 +233,6 @@ const InventoryManagement = () => {
           : cat
       ));
     } else {
-      // Add new category
       const newCategory = {
         id: Math.max(...categories.map(cat => cat.id)) + 1,
         ...categoryFormData,
@@ -305,10 +278,11 @@ const InventoryManagement = () => {
 
   return (
     <div className="inventory-container">
+      {/* Header */}
       <div className="inventory-header">
-        <div className="inventory-header-title-tabs">
+        <div className="inventory-header-content">
           <h2>
-            <i className="bi bi-box-seam me-2"></i>
+            <i className="fas fa-boxes me-2"></i>
             Inventory Management
           </h2>
           <div className="inventory-tabs">
@@ -327,364 +301,399 @@ const InventoryManagement = () => {
           </div>
         </div>
       </div>
+
+      {/* Search and Add Row */}
       <div className="inventory-search-row">
-        <div className="input-group">
-          <span className="input-group-text">
-            <SearchIcon />
-          </span>
-          <input
-            type="text"
-            className="search-input"
-            placeholder={`Search ${activeTab}...`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="search-container">
+          <div className="input-group">
+            <span className="input-group-text">
+              <i className="fas fa-search"></i>
+            </span>
+            <input
+              type="text"
+              className="form-control search-input"
+              placeholder={`Search ${activeTab}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
-        <Button
-          variant="contained"
-          style={{ borderRadius: '26px' }}
-          startIcon={<AddIcon />}
+        <button
+          className="btn btn-primary add-button"
           onClick={() => activeTab === 'items' ? handleOpenDialog() : handleOpenCategoryDialog()}
-          className="add-item-button"
         >
+          <i className="fas fa-plus me-2"></i>
           Add {activeTab === 'items' ? 'Item' : 'Category'}
-        </Button>
+        </button>
       </div>
 
       {/* Items Table */}
       {activeTab === 'items' && (
-        <div className="inventory-table">
-          <TableContainer component={Paper} elevation={0}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>SKU</strong></TableCell>
-                  <TableCell><strong>Item Name</strong></TableCell>
-                  <TableCell><strong>Category</strong></TableCell>
-                  <TableCell align="right"><strong>Quantity</strong></TableCell>
-                  <TableCell align="right"><strong>Min Stock</strong></TableCell>
-                  <TableCell align="right"><strong>Price ($)</strong></TableCell>
-                  <TableCell><strong>Supplier</strong></TableCell>
-                  <TableCell><strong>Status</strong></TableCell>
-                  <TableCell><strong>Last Updated</strong></TableCell>
-                  <TableCell align="center"><strong>Actions</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+        <div className="table-container">
+          <div className="table-responsive">
+            <table className="table table-hover">
+              <thead className="table-header">
+                <tr>
+                  <th>SKU</th>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th className="text-end">Quantity</th>
+                  <th className="text-end">Min Stock</th>
+                  <th className="text-end">Price ($)</th>
+                  <th>Supplier</th>
+                  <th>Status</th>
+                  <th>Last Updated</th>
+                  <th className="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredInventory.map((item) => (
-                  <TableRow key={item.id} hover>
-                    <TableCell>{item.sku}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>
+                  <tr key={item.id}>
+                    <td>{item.sku}</td>
+                    <td>{item.name}</td>
+                    <td>
                       <span className={`category-badge ${item.category.toLowerCase()}`}>
                         {item.category}
                       </span>
-                    </TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td className="text-end">
                       <span className={`quantity-badge ${item.quantity < 10 ? 'low' : item.quantity < 20 ? 'medium' : 'high'}`}>
                         {item.quantity}
                       </span>
-                    </TableCell>
-                    <TableCell align="right">{item.minStock}</TableCell>
-                    <TableCell align="right">${item.price.toFixed(2)}</TableCell>
-                    <TableCell>{item.supplier}</TableCell>
-                    <TableCell>
+                    </td>
+                    <td className="text-end">{item.minStock}</td>
+                    <td className="text-end">${item.price.toFixed(2)}</td>
+                    <td>{item.supplier}</td>
+                    <td>
                       <span className={`stock-status-badge ${getStockStatus(item.quantity, item.minStock).replace(/\s/g, '').toLowerCase()}`}>
                         {getStockStatus(item.quantity, item.minStock)}
                       </span>
-                    </TableCell>
-                    <TableCell>{item.lastUpdated}</TableCell>
-                    <TableCell align="center">
+                    </td>
+                    <td>{item.lastUpdated}</td>
+                    <td className="text-center">
                       <div className="action-buttons">
-                        <IconButton
-                          size="small"
+                        <button
+                          className="btn btn-sm btn-outline-primary"
                           onClick={() => handleOpenDialog(item)}
                         >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          size="small"
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDelete(item.id)}
-                          color="error"
                         >
-                          <DeleteIcon />
-                        </IconButton>
+                          <i className="fas fa-trash"></i>
+                        </button>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
       {/* Categories Table */}
       {activeTab === 'categories' && (
-        <div className="inventory-table">
-          <TableContainer component={Paper} elevation={0}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>Category Name</strong></TableCell>
-                  <TableCell><strong>Description</strong></TableCell>
-                  <TableCell align="right"><strong>Item Count</strong></TableCell>
-                  <TableCell align="right"><strong>Total Value ($)</strong></TableCell>
-                  <TableCell><strong>Last Updated</strong></TableCell>
-                  <TableCell align="center"><strong>Actions</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+        <div className="table-container">
+          <div className="table-responsive">
+            <table className="table table-hover">
+              <thead className="table-header">
+                <tr>
+                  <th>Category Name</th>
+                  <th>Description</th>
+                  <th className="text-end">Item Count</th>
+                  <th className="text-end">Total Value ($)</th>
+                  <th>Last Updated</th>
+                  <th className="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredCategories.map((category) => (
-                  <TableRow key={category.id} hover>
-                    <TableCell>
+                  <tr key={category.id}>
+                    <td>
                       <span className="category-name">{category.name}</span>
-                    </TableCell>
-                    <TableCell>{category.description}</TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td>{category.description}</td>
+                    <td className="text-end">
                       <span className="item-count">{category.itemCount}</span>
-                    </TableCell>
-                    <TableCell align="right">${category.totalValue.toFixed(2)}</TableCell>
-                    <TableCell>{category.lastUpdated}</TableCell>
-                    <TableCell align="center">
+                    </td>
+                    <td className="text-end">${category.totalValue.toFixed(2)}</td>
+                    <td>{category.lastUpdated}</td>
+                    <td className="text-center">
                       <div className="action-buttons">
-                        <IconButton
-                          size="small"
+                        <button
+                          className="btn btn-sm btn-outline-primary"
                           onClick={() => handleOpenCategoryDialog(category)}
                         >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          size="small"
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteCategory(category.id)}
-                          color="error"
                         >
-                          <DeleteIcon />
-                        </IconButton>
+                          <i className="fas fa-trash"></i>
+                        </button>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Summary Cards */}
+      {/* Summary Cards for Categories */}
       {activeTab === 'categories' && (
-        <div className="inventory-stats">
-          <div className="stat-card">
-            <h3>{categories.length}</h3>
-            <p>Total Categories</p>
-          </div>
-          <div className="stat-card">
-            <h3>{categories.reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
-            <p>Total Items</p>
-          </div>
-          <div className="stat-card">
-            <h3>{categories.filter(cat => cat.itemCount === 0).length}</h3>
-            <p>Empty Categories</p>
+        <div className="stats-container">
+          <div className="row">
+            <div className="col-md-4">
+              <div className="stat-card">
+                <h3>{categories.length}</h3>
+                <p>Total Categories</p>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="stat-card">
+                <h3>{categories.reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
+                <p>Total Items</p>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="stat-card">
+                <h3>{categories.filter(cat => cat.itemCount === 0).length}</h3>
+                <p>Empty Categories</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Add/Edit Dialog */}
-      <Dialog 
-        open={openDialog} 
-        onClose={handleCloseDialog} 
-        maxWidth="md" 
-        fullWidth 
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            overflow: 'hidden'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(120deg, #2C3E50 0%, #1ABC9C 100%)',
-          color: '#ECF0F1',
-          fontWeight: 700,
-          fontSize: '1.25rem',
-          pb: 3,
-          margin: '0 !important',
-          padding: '24px 32px 24px 32px !important'
-        }}>
-          {editingItem ? "Edit Inventory Item" : "Add New Inventory Item"}
-        </DialogTitle>
-        <DialogContent sx={{ 
-          p: 4, 
-          pt: 6, 
-          overflow: 'visible',
-          padding: '32px !important',
-          paddingTop: '48px !important'
-        }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="SKU"
-                name="sku"
-                value={formData.sku}
-                onChange={handleInputChange}
-                required
-              />
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="Item Name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="Category"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              />
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="Supplier"
-                name="supplier"
-                value={formData.supplier}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="Quantity"
-                name="quantity"
-                type="number"
-                value={formData.quantity}
-                onChange={handleInputChange}
-                required
-              />
-              <TextField
-                sx={{ flex: 1, minWidth: 200 }}
-                label="Min Stock"
-                name="minStock"
-                type="number"
-                value={formData.minStock}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <TextField
-              fullWidth
-              label="Price ($)"
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleInputChange}
-              required
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">
-            {editingItem ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Add/Edit Item Modal */}
+      {openDialog && (
+        <div className="modal-overlay" onClick={handleCloseDialog}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                {editingItem ? "Edit Inventory Item" : "Add New Inventory Item"}
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCloseDialog}></button>
+            </div>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">SKU</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="sku"
+                      value={formData.sku}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Item Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Category</label>
+                  <select
+                    className="form-select"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Supplier</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="supplier"
+                    value={formData.supplier}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Quantity</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Min Stock</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="minStock"
+                      value={formData.minStock}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Price ($)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-control"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseDialog}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                {editingItem ? "Update" : "Add"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Add/Edit Category Dialog */}
-      <Dialog 
-        open={openCategoryDialog} 
-        onClose={handleCloseCategoryDialog} 
-        maxWidth="sm" 
-        fullWidth 
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            overflow: 'hidden'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(120deg, #2C3E50 0%, #1ABC9C 100%)',
-          color: '#ECF0F1',
-          fontWeight: 700,
-          fontSize: '1.25rem',
-          pb: 3,
-          margin: '0 !important',
-          padding: '24px 32px 24px 32px !important'
-        }}>
-          {editingCategory ? "Edit Category" : "Add New Category"}
-        </DialogTitle>
-        <DialogContent sx={{ 
-          p: 4, 
-          pt: 6, 
-          overflow: 'visible',
-          padding: '32px !important',
-          paddingTop: '48px !important'
-        }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <TextField
-              fullWidth
-              label="Category Name"
-              name="name"
-              value={categoryFormData.name}
-              onChange={handleCategoryInputChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Description"
-              name="description"
-              value={categoryFormData.description}
-              onChange={handleCategoryInputChange}
-              multiline
-              rows={3}
-              required
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCategoryDialog}>Cancel</Button>
-          <Button onClick={handleCategorySubmit} variant="contained">
-            {editingCategory ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Add/Edit Category Modal */}
+      {openCategoryDialog && (
+        <div className="modal-overlay" onClick={handleCloseCategoryDialog}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                {editingCategory ? "Edit Category" : "Add New Category"}
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCloseCategoryDialog}></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Category Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  value={categoryFormData.name}
+                  onChange={handleCategoryInputChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-control"
+                  name="description"
+                  value={categoryFormData.description}
+                  onChange={handleCategoryInputChange}
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseCategoryDialog}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleCategorySubmit}>
+                {editingCategory ? "Update" : "Add"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Item Confirmation Modal */}
-      <Dialog open={openDeleteItemConfirm} onClose={() => setOpenDeleteItemConfirm(false)}>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <WarningIcon sx={{ color: '#c62828', fontSize: 32 }} />
-          Confirm Delete Item
-        </DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to delete this item? This action cannot be undone.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteItemConfirm(false)} color="inherit">Cancel</Button>
-          <Button onClick={handleConfirmDeleteItem} variant="contained" color="error">Delete</Button>
-        </DialogActions>
-      </Dialog>
+      {openDeleteItemConfirm && (
+        <div className="modal-overlay" onClick={() => setOpenDeleteItemConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-exclamation-triangle text-danger me-2"></i>
+                Confirm Delete Item
+              </h5>
+              <button type="button" className="btn-close" onClick={() => setOpenDeleteItemConfirm(false)}></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteItemConfirm(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-danger" onClick={handleConfirmDeleteItem}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Category Confirmation Modal */}
-      <Dialog open={openDeleteCategoryConfirm} onClose={() => setOpenDeleteCategoryConfirm(false)}>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <WarningIcon sx={{ color: '#c62828', fontSize: 32 }} />
-          Confirm Delete Category
-        </DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to delete this category? This action cannot be undone.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteCategoryConfirm(false)} color="inherit">Cancel</Button>
-          <Button onClick={handleConfirmDeleteCategory} variant="contained" color="error">Delete</Button>
-        </DialogActions>
-      </Dialog>
+      {openDeleteCategoryConfirm && (
+        <div className="modal-overlay" onClick={() => setOpenDeleteCategoryConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-exclamation-triangle text-danger me-2"></i>
+                Confirm Delete Category
+              </h5>
+              <button type="button" className="btn-close" onClick={() => setOpenDeleteCategoryConfirm(false)}></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this category? This action cannot be undone.</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteCategoryConfirm(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-danger" onClick={handleConfirmDeleteCategory}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

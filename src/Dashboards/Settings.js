@@ -1,30 +1,4 @@
 import React, { useState } from "react";
-import { 
-  Box, 
-  Typography,
-  Switch,
-  FormControlLabel,
-  Divider,
-  Alert,
-  Snackbar,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button
-} from "@mui/material";
-import { 
-  Person as PersonIcon,
-  Security as SecurityIcon,
-  Notifications as NotificationsIcon,
-  Palette as PaletteIcon,
-  Language as LanguageIcon,
-  Storage as StorageIcon,
-  Save as SaveIcon,
-  CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon,
-  Restore as RestoreIcon
-} from "@mui/icons-material";
 import "./Settings.css";
 
 const Settings = () => {
@@ -60,8 +34,7 @@ const Settings = () => {
     // System Settings
     autoBackup: true,
     backupFrequency: "daily",
-    dataRetention: 365,
-    performanceMode: false
+    dataRetention: 365
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -101,75 +74,82 @@ const Settings = () => {
   };
 
   const navigationItems = [
-    { id: 'appearance', label: 'Appearance', icon: <PaletteIcon /> },
-    { id: 'notifications', label: 'Notification Preferences', icon: <NotificationsIcon /> },
-    { id: 'security', label: 'Security', icon: <SecurityIcon /> },
-    { id: 'system', label: 'System Settings', icon: <StorageIcon /> }
+    { id: 'appearance', label: 'Appearance', icon: 'fas fa-palette' },
+    { id: 'notifications', label: 'Notification Preferences', icon: 'fas fa-bell' },
+    { id: 'security', label: 'Security', icon: 'fas fa-shield-alt' },
+    { id: 'system', label: 'System Settings', icon: 'fas fa-cog' }
   ];
 
   const renderContent = () => {
     switch (activeTab) {
       case 'appearance':
         return (
-          <div className="settings-content">
-            <h3>Appearance Settings</h3>
-            <p>Customize the look and feel of your dashboard</p>
-            
-            <div className="settings-form-group">
-              <label>Theme</label>
-              <select
-                className="settings-select"
-                value={settings.theme}
-                onChange={(e) => handleSettingChange('theme', e.target.value)}
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto</option>
-              </select>
+          <div className="settings-content">    
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Theme</label>
+                  <select
+                    className="form-select"
+                    value={settings.theme}
+                    onChange={(e) => handleSettingChange('theme', e.target.value)}
+                  >
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="auto">Auto</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Timezone</label>
+                  <select
+                    className="form-select"
+                    value={settings.timezone}
+                    onChange={(e) => handleSettingChange('timezone', e.target.value)}
+                  >
+                    <option value="EAT">East Africa Time (EAT)</option>
+                    <option value="UTC-5">Eastern Time (UTC-5)</option>
+                    <option value="UTC-6">Central Time (UTC-6)</option>
+                    <option value="UTC-7">Mountain Time (UTC-7)</option>
+                    <option value="UTC-8">Pacific Time (UTC-8)</option>
+                    <option value="UTC+0">UTC</option>
+                  </select>
+                </div>
+              </div>
             </div>
             
-            <div className="settings-form-group">
-              <label>Timezone</label>
-              <select
-                className="settings-select"
-                value={settings.timezone}
-                onChange={(e) => handleSettingChange('timezone', e.target.value)}
-              >
-                <option value="EAT">East Africa Time (EAT)</option>
-                <option value="UTC-5">Eastern Time (UTC-5)</option>
-                <option value="UTC-6">Central Time (UTC-6)</option>
-                <option value="UTC-7">Mountain Time (UTC-7)</option>
-                <option value="UTC-8">Pacific Time (UTC-8)</option>
-                <option value="UTC+0">UTC</option>
-              </select>
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Currency</label>
-              <select
-                className="settings-select"
-                value={settings.currency}
-                onChange={(e) => handleSettingChange('currency', e.target.value)}
-              >
-                <option value="Ksh">Kenyan Shilling (Ksh)</option>
-                <option value="USD">US Dollar (USD)</option>
-                <option value="EUR">Euro (EUR)</option>
-                <option value="GBP">British Pound (GBP)</option>
-                <option value="JPY">Japanese Yen (JPY)</option>
-              </select>
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Date Format</label>
-              <select
-                className="settings-select"
-                value={settings.dateFormat}
-                onChange={(e) => handleSettingChange('dateFormat', e.target.value)}
-              >
-                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-              </select>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Currency</label>
+                  <select
+                    className="form-select"
+                    value={settings.currency}
+                    onChange={(e) => handleSettingChange('currency', e.target.value)}
+                  >
+                    <option value="Ksh">Kenyan Shilling (Ksh)</option>
+                    <option value="USD">US Dollar (USD)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                    <option value="GBP">British Pound (GBP)</option>
+                    <option value="JPY">Japanese Yen (JPY)</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Date Format</label>
+                  <select
+                    className="form-select"
+                    value={settings.dateFormat}
+                    onChange={(e) => handleSettingChange('dateFormat', e.target.value)}
+                  >
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -177,120 +157,70 @@ const Settings = () => {
       case 'notifications':
         return (
           <div className="settings-content">
-            <h3>Notification Preferences</h3>
-            <p>Manage how you receive notifications and alerts</p>
-            
             <div className="settings-notifications-section">
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.emailNotifications}
-                      onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Email Notifications"
-                  labelPlacement="start"
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="emailNotifications"
+                  checked={settings.emailNotifications}
+                  onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
                 />
+                <label className="form-check-label" htmlFor="emailNotifications">
+                  Email Notifications
+                </label>
               </div>
               
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.pushNotifications}
-                      onChange={(e) => handleSettingChange('pushNotifications', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Push Notifications"
-                  labelPlacement="start"
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="pushNotifications"
+                  checked={settings.pushNotifications}
+                  onChange={(e) => handleSettingChange('pushNotifications', e.target.checked)}
                 />
+                <label className="form-check-label" htmlFor="pushNotifications">
+                  Push Notifications
+                </label>
               </div>
               
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.smsNotifications}
-                      onChange={(e) => handleSettingChange('smsNotifications', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="SMS Notifications"
-                  labelPlacement="start"
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="smsNotifications"
+                  checked={settings.smsNotifications}
+                  onChange={(e) => handleSettingChange('smsNotifications', e.target.checked)}
                 />
+                <label className="form-check-label" htmlFor="smsNotifications">
+                  SMS Notifications
+                </label>
               </div>
               
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.lowStockAlerts}
-                      onChange={(e) => handleSettingChange('lowStockAlerts', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Low Stock Alerts"
-                  labelPlacement="start"
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="weeklyReports"
+                  checked={settings.weeklyReports}
+                  onChange={(e) => handleSettingChange('weeklyReports', e.target.checked)}
                 />
+                <label className="form-check-label" htmlFor="weeklyReports">
+                  Weekly Reports
+                </label>
               </div>
               
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.expiringItemsAlerts}
-                      onChange={(e) => handleSettingChange('expiringItemsAlerts', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Expiring Items Alerts"
-                  labelPlacement="start"
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="systemAlerts"
+                  checked={settings.systemAlerts}
+                  onChange={(e) => handleSettingChange('systemAlerts', e.target.checked)}
                 />
-              </div>
-              
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.stockMovementAlerts}
-                      onChange={(e) => handleSettingChange('stockMovementAlerts', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Stock Movement Notifications"
-                  labelPlacement="start"
-                />
-              </div>
-              
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.weeklyReports}
-                      onChange={(e) => handleSettingChange('weeklyReports', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Weekly Reports"
-                  labelPlacement="start"
-                />
-              </div>
-              
-              <div className="settings-switch">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.systemAlerts}
-                      onChange={(e) => handleSettingChange('systemAlerts', e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="System Alerts"
-                  labelPlacement="start"
-                />
+                <label className="form-check-label" htmlFor="systemAlerts">
+                  System Alerts
+                </label>
               </div>
             </div>
           </div>
@@ -299,66 +229,64 @@ const Settings = () => {
       case 'security':
         return (
           <div className="settings-content">
-            <h3>Security Settings</h3>
-            <p>Configure your account security and privacy settings</p>
-            
-            <div className="settings-switch">
-              <FormControlLabel
-                control={
-                  <Switch
+            <div className="row">
+              <div className="col-md-6">
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="twoFactorAuth"
                     checked={settings.twoFactorAuth}
                     onChange={(e) => handleSettingChange('twoFactorAuth', e.target.checked)}
-                    color="primary"
                   />
-                }
-                label="Two-Factor Authentication"
-                labelPlacement="start"
-              />
-            </div>
-            
-            <div className="settings-switch">
-              <FormControlLabel
-                control={
-                  <Switch
+                  <label className="form-check-label" htmlFor="twoFactorAuth">
+                    Two-Factor Authentication
+                  </label>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="loginNotifications"
                     checked={settings.loginNotifications}
                     onChange={(e) => handleSettingChange('loginNotifications', e.target.checked)}
-                    color="primary"
                   />
-                }
-                label="Login Notifications"
-                labelPlacement="start"
-              />
+                  <label className="form-check-label" htmlFor="loginNotifications">
+                    Login Notifications
+                  </label>
+                </div>
+              </div>
             </div>
             
-            <div className="settings-form-group">
-              <label>Password Expiry</label>
-              <select
-                className="settings-select"
-                value={settings.passwordExpiry}
-                onChange={(e) => handleSettingChange('passwordExpiry', parseInt(e.target.value))}
-              >
-                <option value="30">30 days</option>
-                <option value="60">60 days</option>
-                <option value="90">90 days</option>
-                <option value="180">180 days</option>
-                <option value="365">1 year</option>
-              </select>
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Session Timeout</label>
-              <select
-                className="settings-select"
-                value={settings.sessionTimeout}
-                onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
-              > 
-                <option value="never">Never</option>
-                <option value="15">15 minutes</option>
-                <option value="30">30 minutes</option>
-                <option value="60">1 hour</option>
-                <option value="120">2 hours</option>
-                <option value="240">4 hours</option>
-              </select>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Password Expiry (days)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={settings.passwordExpiry}
+                    onChange={(e) => handleSettingChange('passwordExpiry', parseInt(e.target.value))}
+                    min="30"
+                    max="365"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Session Timeout (minutes)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={settings.sessionTimeout}
+                    onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
+                    min="5"
+                    max="480"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -366,72 +294,65 @@ const Settings = () => {
       case 'system':
         return (
           <div className="settings-content">
-            <h3>System Settings</h3>
-            <p>Manage system preferences and backup options</p>
-            
-            <div className="settings-switch">
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.autoBackup}
-                    onChange={(e) => handleSettingChange('autoBackup', e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Auto Backup"
-                labelPlacement="start"
-              />
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Backup Frequency</label>
-              <select
-                className="settings-select"
-                value={settings.backupFrequency}
-                onChange={(e) => handleSettingChange('backupFrequency', e.target.value)}
-              >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Data Retention</label>
-              <select
-                className="settings-select"
-                value={settings.dataRetention}
-                onChange={(e) => handleSettingChange('dataRetention', parseInt(e.target.value))}
-              >
-                <option value="30">30 days</option>
-                <option value="90">90 days</option>
-                <option value="180">180 days</option>
-                <option value="365">1 year</option>
-                <option value="730">2 years</option>
-                <option value="1095">3 years</option>
-              </select>
-            </div>
-            
-            <div className="settings-form-group">
-              <label>Storage Usage</label>
-              <div className="storage-progress-container">
-                <div className="storage-info">
-                  <span>2.4 GB used of 10 GB</span>
-                  <span>24%</span>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Backup Frequency</label>
+                  <select
+                    className="form-select"
+                    value={settings.backupFrequency}
+                    onChange={(e) => handleSettingChange('backupFrequency', e.target.value)}
+                  >
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
                 </div>
-                <div className="storage-progress-bar">
-                  <div className="storage-progress-fill" style={{width: '24%'}}></div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Data Retention (days)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={settings.dataRetention}
+                    onChange={(e) => handleSettingChange('dataRetention', parseInt(e.target.value))}
+                    min="30"
+                    max="1095"
+                  />
                 </div>
               </div>
             </div>
             
-            <div className="settings-backup-actions">
-              <button className="backup-btn">
-                Backup
-              </button>
-              <button className="restore-backup-btn">
-                Restore from Backup
-              </button>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="autoBackup"
+                    checked={settings.autoBackup}
+                    onChange={(e) => handleSettingChange('autoBackup', e.target.checked)}
+                  />
+                  <label className="form-check-label" htmlFor="autoBackup">
+                    Auto Backup
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="storage-info">
+              <h4>Storage Information</h4>
+              <div className="storage-progress-container">
+                <div className="d-flex justify-content-between mb-2">
+                  <span>Used Storage</span>
+                  <span>2.4 GB / 10 GB</span>
+                </div>
+                <div className="progress">
+                  <div className="progress-bar" style={{width: '24%'}}></div>
+                </div>
+                <small className="text-muted">24% of storage used</small>
+              </div>
             </div>
           </div>
         );
@@ -443,88 +364,118 @@ const Settings = () => {
 
   return (
     <div className="settings-container">
-      <div className="settings-layout">
+      <div className="row">
         {/* Navigation Card */}
-        <div className="settings-nav-card">
-          <div className="settings-nav-header">
-            <h4>Settings Categories</h4>
-          </div>
-          <div className="settings-nav-list">
-            {navigationItems.map((item) => (
-              <button
-                key={item.id}
-                className={`settings-nav-item ${activeTab === item.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(item.id)}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                <span className="nav-label">{item.label}</span>
-              </button>
-            ))}
+        <div className="col-md-3">
+          <div className="settings-nav-card">
+            <h4>Settings</h4>
+            <div className="nav-list">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.id}
+                  className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                  onClick={() => setActiveTab(item.id)}
+                >
+                  <i className={item.icon}></i>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Content Card */}
-        <div className="settings-content-card">
-          {renderContent()}
-          <div className="settings-save-section">
-            <button 
-              className="save-button"
-              onClick={handleSave}
-            >
-              Save Changes
-            </button>
-            <button 
-              className="restore-button"
-              onClick={handleRestoreDefaults}
-            >
-              Restore Defaults
-            </button>
+        <div className="col-md-9">
+          <div className="settings-content-card">
+            <div className="content-header">
+              <div>
+                <h2>Settings</h2>
+                <p>Manage your account preferences and system settings</p>
+              </div>
+            </div>
+            
+            <div className="content-body">
+              {renderContent()}
+            </div>
+            
+            <div className="content-footer">
+              <div className="d-flex justify-content-end gap-3">
+                <button className="btn btn-outline-secondary" onClick={handleRestoreDefaults}>
+                  <i className="fas fa-undo me-2"></i>
+                  Restore Defaults
+                </button>
+                <button className="btn btn-primary" onClick={handleSave}>
+                  <i className="fas fa-save me-2"></i>
+                  Save Changes
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Success Snackbar */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        className="settings-snackbar"
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-
       {/* Save Confirmation Modal */}
-      <Dialog open={openSaveConfirm} onClose={() => setOpenSaveConfirm(false)}>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CheckCircleIcon sx={{ color: '#27ae60', fontSize: 32 }} />
-          Confirm Save
-        </DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to save these settings? This will overwrite your current settings.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenSaveConfirm(false)} color="inherit">Cancel</Button>
-          <Button onClick={handleConfirmSave} variant="contained" color="success">Confirm</Button>
-        </DialogActions>
-      </Dialog>
+      {openSaveConfirm && (
+        <div className="modal-overlay" onClick={() => setOpenSaveConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-check-circle text-success me-2"></i>
+                Confirm Save
+              </h5>
+              <button type="button" className="btn-close" onClick={() => setOpenSaveConfirm(false)}></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to save these settings?</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setOpenSaveConfirm(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleConfirmSave}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Restore Defaults Confirmation Modal */}
-      <Dialog open={openRestoreConfirm} onClose={() => setOpenRestoreConfirm(false)}>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <WarningIcon sx={{ color: '#e67e22', fontSize: 32 }} />
-          Confirm Restore Defaults
-        </DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to restore default settings? Your current settings will be lost. This action cannot be undone.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenRestoreConfirm(false)} color="inherit">Cancel</Button>
-          <Button onClick={handleConfirmRestore} variant="contained" color="warning">Confirm</Button>
-        </DialogActions>
-      </Dialog>
+      {openRestoreConfirm && (
+        <div className="modal-overlay" onClick={() => setOpenRestoreConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-exclamation-triangle text-warning me-2"></i>
+                Confirm Restore
+              </h5>
+              <button type="button" className="btn-close" onClick={() => setOpenRestoreConfirm(false)}></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to restore all settings to their default values? This action cannot be undone.</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setOpenRestoreConfirm(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-warning" onClick={handleConfirmRestore}>
+                Restore
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Snackbar */}
+      {openSnackbar && (
+        <div className="snackbar">
+          <div className="snackbar-content">
+            <i className="fas fa-check-circle text-success me-2"></i>
+            {snackbarMessage}
+            <button className="btn-close ms-auto" onClick={handleCloseSnackbar}></button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
