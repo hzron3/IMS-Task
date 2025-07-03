@@ -6,7 +6,7 @@ import {LineChart,Line,BarChart,Bar,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,
 // Mock data for demonstration
 const mockData = {
   kpis: {
-    totalValue: 125000,
+    totalValue: 497550,
     totalItems: 2847,
     lowStock: 23,
     outOfStock: 5
@@ -20,12 +20,12 @@ const mockData = {
     { category: 'Automotive', turnover: 3.4, color: '#FFBB28' }
   ],
   inventoryValueOverTime: [
-    { month: 'Jan', value: 115000 },
-    { month: 'Feb', value: 118000 },
-    { month: 'Mar', value: 122000 },
-    { month: 'Apr', value: 119000 },
-    { month: 'May', value: 125000 },
-    { month: 'Jun', value: 128000 }
+    { month: 'Jan', value: 17000000 },
+    { month: 'Feb', value: 17500000 },
+    { month: 'Mar', value: 18200000 },
+    { month: 'Apr', value: 17800000 },
+    { month: 'May', value: 18500000 },
+    { month: 'Jun', value: 19200000 }
   ],
   topMovingItems: [
     { name: 'Laptop Charger', sales: 156, category: 'Electronics' },
@@ -60,7 +60,7 @@ const KPICard = ({ title, value, icon, subtitle, bgGradient }) => (
         <Box>
           <Typography variant="h4" component="div" sx={{ color: 'white', fontWeight: 'bold' }}>
             {title === "Total Inventory Value" && typeof value === 'number' && value >= 1000 
-              ? `$${(value / 1000).toFixed(1)}K` 
+              ? `Ksh ${(value / 1000).toFixed(1)}K` 
               : value}
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', mt: 1 }}>

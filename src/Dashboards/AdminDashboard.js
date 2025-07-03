@@ -17,6 +17,7 @@ import Sidebar from './Sidebar';
 import Overview from './Overview';
 import UserManagement from './UserManagement';
 import InventoryManagement from './InventoryManagement';
+import Analytics from './Analytics';
 import Settings from './Settings';
 
 const MIN_DRAWER_WIDTH = 60;
@@ -159,6 +160,8 @@ const AdminDashboard = () => {
             <InventoryManagement />
           ) : selectedIndex === 2 ? (
             <UserManagement />
+          ) : selectedIndex === 3 ? (
+            <Analytics />
           ) : selectedIndex === 4 ? (
             <Settings />
           ) : (

@@ -12,9 +12,9 @@ const InventoryManagement = () => {
       category: "Electronics",
       quantity: 15,
       minStock: 10,
-      price: 1299.99,
+      price: 185000,
       supplier: "Dell Inc.",
-      lastUpdated: "2024-01-15"
+      lastUpdated: "2024-01-15T09:30:00"
     },
     {
       id: 2,
@@ -23,9 +23,9 @@ const InventoryManagement = () => {
       category: "Furniture",
       quantity: 25,
       minStock: 15,
-      price: 299.99,
+      price: 45000,
       supplier: "Office Depot",
-      lastUpdated: "2024-01-14"
+      lastUpdated: "2024-01-14T14:15:00"
     },
     {
       id: 3,
@@ -34,9 +34,9 @@ const InventoryManagement = () => {
       category: "Electronics",
       quantity: 8,
       minStock: 5,
-      price: 449.99,
+      price: 65000,
       supplier: "HP Inc.",
-      lastUpdated: "2024-01-13"
+      lastUpdated: "2024-01-13T11:45:00"
     },
     {
       id: 4,
@@ -45,9 +45,97 @@ const InventoryManagement = () => {
       category: "Furniture",
       quantity: 30,
       minStock: 10,
-      price: 89.99,
+      price: 8500,
       supplier: "IKEA",
-      lastUpdated: "2024-01-12"
+      lastUpdated: "2024-01-12T16:20:00"
+    },
+    {
+      id: 5,
+      sku: 'SKU-005',
+      name: "Wireless Mouse",
+      category: "Electronics",
+      quantity: 45,
+      minStock: 20,
+      price: 3500,
+      supplier: "Logitech",
+      lastUpdated: "2024-01-10T08:55:00"
+    },
+    {
+      id: 6,
+      sku: 'SKU-006',
+      name: "USB Cable",
+      category: "Electronics",
+      quantity: 0,
+      minStock: 15,
+      price: 1200,
+      supplier: "Amazon",
+      lastUpdated: "2024-01-08T13:10:00"
+    },
+    {
+      id: 7,
+      sku: 'SKU-007',
+      name: "Notebook",
+      category: "Office Supplies",
+      quantity: 100,
+      minStock: 50,
+      price: 450,
+      supplier: "Staples",
+      lastUpdated: "2024-01-05T10:25:00"
+    },
+    {
+      id: 8,
+      sku: 'SKU-008',
+      name: "Pen Set",
+      category: "Office Supplies",
+      quantity: 75,
+      minStock: 30,
+      price: 850,
+      supplier: "Office Depot",
+      lastUpdated: "2024-01-03T15:40:00"
+    },
+    {
+      id: 9,
+      sku: 'SKU-009',
+      name: "Old Model Phone",
+      category: "Electronics",
+      quantity: 5,
+      minStock: 10,
+      price: 25000,
+      supplier: "Samsung",
+      lastUpdated: "2023-11-20T12:30:00"
+    },
+    {
+      id: 10,
+      sku: 'SKU-010',
+      name: "Monitor LG 24",
+      category: "Electronics",
+      quantity: 2,
+      minStock: 5,
+      price: 52000,
+      supplier: "LG Electronics",
+      lastUpdated: "2023-10-15T09:15:00"
+    },
+    {
+      id: 11,
+      sku: 'SKU-011',
+      name: "Expensive Desk",
+      category: "Furniture",
+      quantity: 3,
+      minStock: 2,
+      price: 135000,
+      supplier: "Herman Miller",
+      lastUpdated: "2024-01-16T17:45:00"
+    },
+    {
+      id: 12,
+      sku: 'SKU-012',
+      name: "Paper Clips",
+      category: "Office Supplies",
+      quantity: 500,
+      minStock: 100,
+      price: 250,
+      supplier: "Staples",
+      lastUpdated: "2024-01-17T08:20:00"
     }
   ]);
 
@@ -56,25 +144,25 @@ const InventoryManagement = () => {
       id: 1,
       name: "Electronics",
       description: "Electronic devices and equipment",
-      itemCount: 2,
-      totalValue: 1749.98,
-      lastUpdated: "2024-01-15"
+      itemCount: 6,
+      totalValue: 308000,
+      lastUpdated: "2024-01-15T10:30:00"
     },
     {
       id: 2,
       name: "Furniture",
       description: "Office furniture and fixtures",
-      itemCount: 2,
-      totalValue: 389.98,
-      lastUpdated: "2024-01-14"
+      itemCount: 3,
+      totalValue: 188500,
+      lastUpdated: "2024-01-14T14:45:00"
     },
     {
       id: 3,
       name: "Office Supplies",
       description: "General office supplies and stationery",
-      itemCount: 0,
-      totalValue: 0,
-      lastUpdated: "2024-01-10"
+      itemCount: 3,
+      totalValue: 1550,
+      lastUpdated: "2024-01-10T11:20:00"
     }
   ]);
 
@@ -100,6 +188,7 @@ const InventoryManagement = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [openDeleteCategoryConfirm, setOpenDeleteCategoryConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
 
   const handleOpenDialog = (item = null) => {
     if (item) {
@@ -149,7 +238,25 @@ const InventoryManagement = () => {
     });
   };
 
+  const validateItemForm = () => {
+    return formData.sku.trim() !== '' &&
+           formData.name.trim() !== '' &&
+           formData.category.trim() !== '' &&
+           formData.supplier.trim() !== '' &&
+           formData.quantity.trim() !== '' &&
+           formData.minStock.trim() !== '' &&
+           formData.price.trim() !== '' &&
+           parseInt(formData.quantity) >= 0 &&
+           parseInt(formData.minStock) >= 0 &&
+           parseFloat(formData.price) >= 0;
+  };
+
   const handleSubmit = () => {
+    if (!validateItemForm()) {
+      alert('Please fill in all required fields with valid values.');
+      return;
+    }
+
     if (editingItem) {
       setInventory(inventory.map(item =>
         item.id === editingItem.id
@@ -159,7 +266,7 @@ const InventoryManagement = () => {
               quantity: parseInt(formData.quantity),
               minStock: parseInt(formData.minStock),
               price: parseFloat(formData.price),
-              lastUpdated: new Date().toISOString().split('T')[0]
+              lastUpdated: new Date().toISOString()
             }
           : item
       ));
@@ -170,7 +277,7 @@ const InventoryManagement = () => {
         quantity: parseInt(formData.quantity),
         minStock: parseInt(formData.minStock),
         price: parseFloat(formData.price),
-        lastUpdated: new Date().toISOString().split('T')[0]
+        lastUpdated: new Date().toISOString()
       };
       setInventory([...inventory, newItem]);
     }
@@ -221,24 +328,34 @@ const InventoryManagement = () => {
     });
   };
 
+  const validateCategoryForm = () => {
+    return categoryFormData.name.trim() !== '' &&
+           categoryFormData.description.trim() !== '';
+  };
+
   const handleCategorySubmit = () => {
+    if (!validateCategoryForm()) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
     if (editingCategory) {
-      setCategories(categories.map(cat => 
-        cat.id === editingCategory.id 
+      setCategories(categories.map(category =>
+        category.id === editingCategory.id
           ? {
-              ...cat,
+              ...category,
               ...categoryFormData,
-              lastUpdated: new Date().toISOString().split('T')[0]
+              lastUpdated: new Date().toISOString()
             }
-          : cat
+          : category
       ));
     } else {
       const newCategory = {
-        id: Math.max(...categories.map(cat => cat.id)) + 1,
+        id: Math.max(...categories.map(category => category.id)) + 1,
         ...categoryFormData,
         itemCount: 0,
         totalValue: 0,
-        lastUpdated: new Date().toISOString().split('T')[0]
+        lastUpdated: new Date().toISOString()
       };
       setCategories([...categories, newCategory]);
     }
@@ -256,17 +373,47 @@ const InventoryManagement = () => {
     setCategoryToDelete(null);
   };
 
+  const sortByDate = (a, b) => {
+    const dateA = new Date(a.lastUpdated);
+    const dateB = new Date(b.lastUpdated);
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const now = new Date();
+    const diffInHours = (now - date) / (1000 * 60 * 60);
+    
+    // Format: "Jan 15, 2024 09:30 AM" or "2 hours ago" for recent updates
+    if (diffInHours < 24) {
+      if (diffInHours < 1) {
+        const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+        return `${diffInMinutes} minutes ago`;
+      }
+      return `${Math.floor(diffInHours)} hours ago`;
+    } else {
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+  };
+
   const filteredInventory = inventory.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort(sortByDate);
 
   const filteredCategories = categories.filter(cat =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cat.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort(sortByDate);
 
   const getStockStatus = (quantity, minStock) => {
     if (quantity === 0) return 'Out of Stock';
@@ -274,6 +421,14 @@ const InventoryManagement = () => {
     if (quantity <= minStock && quantity > minStock / 2) return 'Low Stock';
     if (quantity <= minStock / 2 && quantity > 0) return 'Critical';
     return '';
+  };
+
+  const getQuantityStatus = (quantity, minStock) => {
+    if (quantity === 0) return 'outofstock';
+    if (quantity > minStock) return 'instock';
+    if (quantity <= minStock && quantity > minStock / 2) return 'lowstock';
+    if (quantity <= minStock / 2 && quantity > 0) return 'critical';
+    return 'instock';
   };
 
   return (
@@ -339,10 +494,22 @@ const InventoryManagement = () => {
                   <th>Category</th>
                   <th className="text-end">Quantity</th>
                   <th className="text-end">Min Stock</th>
-                  <th className="text-end">Price ($)</th>
+                  <th className="text-end">Price (Ksh)</th>
                   <th>Supplier</th>
                   <th>Status</th>
-                  <th>Last Updated</th>
+                  <th 
+                    className="sortable-header"
+                    onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
+                  >
+                    Last Updated
+                    <span className="sort-indicator">
+                      {sortOrder === 'newest' ? (
+                        <i className="fas fa-sort-up"></i>
+                      ) : (
+                        <i className="fas fa-sort-down"></i>
+                      )}
+                    </span>
+                  </th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
@@ -357,19 +524,19 @@ const InventoryManagement = () => {
                       </span>
                     </td>
                     <td className="text-end">
-                      <span className={`quantity-badge ${item.quantity < 10 ? 'low' : item.quantity < 20 ? 'medium' : 'high'}`}>
+                      <span className={`quantity-badge ${getQuantityStatus(item.quantity, item.minStock)}`}>
                         {item.quantity}
                       </span>
                     </td>
                     <td className="text-end">{item.minStock}</td>
-                    <td className="text-end">${item.price.toFixed(2)}</td>
+                    <td className="text-end">Ksh {item.price.toFixed(2)}</td>
                     <td>{item.supplier}</td>
                     <td>
                       <span className={`stock-status-badge ${getStockStatus(item.quantity, item.minStock).replace(/\s/g, '').toLowerCase()}`}>
                         {getStockStatus(item.quantity, item.minStock)}
                       </span>
                     </td>
-                    <td>{item.lastUpdated}</td>
+                    <td>{formatDateTime(item.lastUpdated)}</td>
                     <td className="text-center">
                       <div className="action-buttons">
                         <button
@@ -404,8 +571,20 @@ const InventoryManagement = () => {
                   <th>Category Name</th>
                   <th>Description</th>
                   <th className="text-end">Item Count</th>
-                  <th className="text-end">Total Value ($)</th>
-                  <th>Last Updated</th>
+                  <th className="text-end">Total Value (Ksh)</th>
+                  <th 
+                    className="sortable-header"
+                    onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
+                  >
+                    Last Updated
+                    <span className="sort-indicator">
+                      {sortOrder === 'newest' ? (
+                        <i className="fas fa-sort-up"></i>
+                      ) : (
+                        <i className="fas fa-sort-down"></i>
+                      )}
+                    </span>
+                  </th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
@@ -419,8 +598,8 @@ const InventoryManagement = () => {
                     <td className="text-end">
                       <span className="item-count">{category.itemCount}</span>
                     </td>
-                    <td className="text-end">${category.totalValue.toFixed(2)}</td>
-                    <td>{category.lastUpdated}</td>
+                    <td className="text-end">Ksh {category.totalValue.toFixed(2)}</td>
+                    <td>{formatDateTime(category.lastUpdated)}</td>
                     <td className="text-center">
                       <div className="action-buttons">
                         <button
@@ -573,7 +752,7 @@ const InventoryManagement = () => {
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label">Price ($)</label>
+                <label className="form-label">Price (Ksh)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -589,7 +768,12 @@ const InventoryManagement = () => {
               <button type="button" className="btn btn-secondary" onClick={handleCloseDialog}>
                 Cancel
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                onClick={handleSubmit}
+                disabled={!validateItemForm()}
+              >
                 {editingItem ? "Update" : "Add"}
               </button>
             </div>
@@ -635,7 +819,12 @@ const InventoryManagement = () => {
               <button type="button" className="btn btn-secondary" onClick={handleCloseCategoryDialog}>
                 Cancel
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleCategorySubmit}>
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                onClick={handleCategorySubmit}
+                disabled={!validateCategoryForm()}
+              >
                 {editingCategory ? "Update" : "Add"}
               </button>
             </div>
