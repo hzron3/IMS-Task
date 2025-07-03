@@ -2,9 +2,9 @@ import './App.css';
 import LandingPage from './LandingPage/LandingPage';
 import Login from './Login';
 import Signup from './Signup';
-import AdminDashboard from './AdminDashboard';
-import ManagerDashboard from './ManagerDashboard';
-import StaffDashboard from './StaffDashboard';
+import AdminDashboard from './Dashboards/AdminDashboard';
+import ManagerDashboard from './Dashboards/ManagerDashboard';
+import StaffDashboard from './Dashboards/StaffDashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {

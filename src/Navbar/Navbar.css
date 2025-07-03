@@ -189,7 +189,7 @@
 
 .mobile-nav-btn:hover {
   background: #1ABC9C;
-  color: #fff;
+  color: #fff !important;
 }
 
 /* Responsive Design */
