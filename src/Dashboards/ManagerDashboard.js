@@ -14,6 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
+import CategoryOverview from './CategoryOverview';
 
 const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
@@ -149,14 +150,18 @@ const ManagerDashboard = () => {
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-              Manager Dashboard
-            </Typography>
-            <Typography variant="h6" component="h2" sx={{ mt: 2, textAlign: 'center' }}>
-              {sectionContent[selectedIndex]}
-            </Typography>
-          </Box>
+          {selectedIndex === 0 ? (
+            <CategoryOverview />
+          ) : (
+            <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
+                Manager Dashboard
+              </Typography>
+              <Typography variant="h6" component="h2" sx={{ mt: 2, textAlign: 'center' }}>
+                {sectionContent[selectedIndex]}
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>
