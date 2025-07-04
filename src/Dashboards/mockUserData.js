@@ -15,7 +15,7 @@ export const mockData = {
   ],
   roles: [
     { name: 'Admin', count: 2, permissions: ['Full Access', 'User Management', 'System Settings'] },
-    { name: 'Manager', count: 2, permissions: ['Inventory Management', 'Reports', 'Staff Oversight'] },
+    { name: 'Manager', count: 2, permissions: ['Inventory Management', 'Reports', 'Staff Management'] },
     { name: 'Staff', count: 18, permissions: ['Basic Operations', 'Stock Updates', 'View Reports'] },
     { name: 'Guest', count: 2, permissions: ['View Only', 'Limited Access'] }
   ],

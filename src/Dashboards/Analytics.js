@@ -21,7 +21,7 @@ const Analytics = () => {
   const [selectedUser, setSelectedUser] = useState('all');
   const [performancePeriod, setPerformancePeriod] = useState('weekly');
 
-  // Mock inventory data (you can replace this with actual data from InventoryManagement)
+  // Mock inventory data for demo purposes
   const [inventoryData] = useState([
     {
       id: 1,
@@ -748,7 +748,7 @@ const Analytics = () => {
                     <TableCell>{item.category}</TableCell>
                     <TableCell>{item.lastUpdated}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
-                    <TableCell>${(item.price * item.quantity).toFixed(2)}</TableCell>
+                    <TableCell>Ksh{(item.price * item.quantity).toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
                 {analytics.deadStockItems.length === 0 && (
