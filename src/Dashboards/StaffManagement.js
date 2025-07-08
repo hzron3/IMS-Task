@@ -150,6 +150,94 @@ const StaffManagement = () => {
         Staff Overview
       </Typography>
 
+      {/* Staff Summary Cards */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Total Staff
+                  </Typography>
+                </Box>
+                <Group sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.filter(s => s.status === 'online').length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Online Now
+                  </Typography>
+                </Box>
+                <CheckCircle sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #27ae60 0%, #f39c12 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.reduce((sum, s) => sum + s.assignedItems, 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Total Assigned Items
+                  </Typography>
+                </Box>
+                <Inventory sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {Math.round(staff.reduce((sum, s) => sum + s.performance, 0) / staff.length)}%
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Avg Performance
+                  </Typography>
+                </Box>
+                <TrendingUp sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
       {/* Search and Filter Controls */}
       <Card className="search-filter-card" sx={{ mb: 3, borderRadius: 3 }}>
         <CardContent>
@@ -388,26 +476,125 @@ const StaffManagement = () => {
   const renderTaskManagement = () => (
     <Box>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
-        Task Management
+        Staff Task Management
       </Typography>
       
+      {/* Task Overview Cards */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.reduce((sum, s) => sum + s.pendingTasks, 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Active Tasks
+                  </Typography>
+                </Box>
+                <Task sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.reduce((sum, s) => sum + s.completedTasks, 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Completed Today
+                  </Typography>
+                </Box>
+                <CheckCircle sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #27ae60 0%, #f39c12 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {staff.filter(s => s.workloadStatus === 'normal').length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Available Staff
+                  </Typography>
+                </Box>
+                <Person sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {Math.round((staff.reduce((sum, s) => sum + s.completedTasks, 0) / 
+                                (staff.reduce((sum, s) => sum + s.completedTasks, 0) + 
+                                 staff.reduce((sum, s) => sum + s.pendingTasks, 0))) * 100)}%
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Completion Rate
+                  </Typography>
+                </Box>
+                <TrendingUp sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
-                Active Tasks
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
+                  Active Tasks by Staff
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  sx={{ bgcolor: '#1ABC9C', '&:hover': { bgcolor: '#27ae60' } }}
+                >
+                  Assign New Task
+                </Button>
+              </Box>
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Task</TableCell>
-                      <TableCell>Assigned To</TableCell>
-                      <TableCell>Priority</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Due Date</TableCell>
-                      <TableCell>Actions</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Staff Member</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Task</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Priority</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Due Date</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -422,16 +609,38 @@ const StaffManagement = () => {
                         member
                       }))
                     ).map((task) => (
-                      <TableRow key={task.id}>
-                        <TableCell>{task.title}</TableCell>
-                        <TableCell>{task.assignedTo}</TableCell>
+                      <TableRow key={task.id} hover>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Avatar sx={{ width: 32, height: 32, bgcolor: '#1ABC9C', fontSize: '0.875rem' }}>
+                              {task.member.avatar}
+                            </Avatar>
+                            <Box>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                {task.assignedTo}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {task.member.workloadStatus} workload
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                            {task.title}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Assigned {formatDateTime(task.member.lastActivity)}
+                          </Typography>
+                        </TableCell>
                         <TableCell>
                           <Chip 
                             label={task.priority} 
                             size="small"
                             sx={{ 
                               bgcolor: task.priority === 'High' ? '#e74c3c' : '#f39c12',
-                              color: 'white'
+                              color: 'white',
+                              fontWeight: 'bold'
                             }}
                           />
                         </TableCell>
@@ -444,12 +653,23 @@ const StaffManagement = () => {
                         </TableCell>
                         <TableCell>{task.dueDate}</TableCell>
                         <TableCell>
-                          <IconButton size="small">
-                            <Edit />
-                          </IconButton>
-                          <IconButton size="small">
-                            <Visibility />
-                          </IconButton>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <Tooltip title="Edit Task">
+                              <IconButton size="small">
+                                <Edit />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="View Details">
+                              <IconButton size="small">
+                                <Visibility />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Reassign">
+                              <IconButton size="small">
+                                <Assignment />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -464,43 +684,51 @@ const StaffManagement = () => {
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
-                Task Statistics
+                Staff Workload Overview
               </Typography>
-              <List>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar sx={{ bgcolor: '#e74c3c' }}>
-                      <Task />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="High Priority Tasks"
-                    secondary={`${staff.reduce((sum, s) => sum + s.pendingTasks, 0)} pending`}
+              {staff.map((member) => (
+                <Box key={member.id} sx={{ mb: 3, p: 2, border: '1px solid #e9ecef', borderRadius: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      {member.name}
+                    </Typography>
+                    <Chip
+                      label={member.workloadStatus}
+                      size="small"
+                      sx={{
+                        bgcolor: getWorkloadColor(member.workloadStatus),
+                        color: 'white',
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ mb: 1 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Tasks: {member.pendingTasks} pending, {member.completedTasks} completed
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={(member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100}
+                    sx={{ 
+                      height: 6, 
+                      borderRadius: 3,
+                      bgcolor: 'rgba(26, 188, 156, 0.2)',
+                      '& .MuiLinearProgress-bar': {
+                        bgcolor: '#1ABC9C'
+                      }
+                    }}
                   />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar sx={{ bgcolor: '#f39c12' }}>
-                      <Assignment />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="In Progress"
-                    secondary={`${staff.reduce((sum, s) => sum + s.pendingTasks, 0)} tasks`}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar sx={{ bgcolor: '#27ae60' }}>
-                      <CheckCircle />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Completed Today"
-                    secondary={`${staff.reduce((sum, s) => sum + s.completedTasks, 0)} tasks`}
-                  />
-                </ListItem>
-              </List>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {member.assignedItems} items assigned
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {member.status}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
             </CardContent>
           </Card>
         </Grid>

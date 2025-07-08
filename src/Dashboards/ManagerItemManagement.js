@@ -559,346 +559,521 @@ const ManagerItemManagement = () => {
     </Box>
   );
 
-  const renderStaffManagement = () => (
+  const renderStockAlerts = () => (
     <Box>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
-        Staff Management
+        Stock Alerts & Low Inventory
       </Typography>
 
-      {/* Search and Filter Controls */}
-      <Card sx={{ mb: 3, borderRadius: 3 }}>
+      {/* Alert Summary Cards */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={4}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {items.filter(item => item.currentStock === 0).length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Out of Stock
+                  </Typography>
+                </Box>
+                <Warning sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {items.filter(item => item.currentStock < item.minStock && item.currentStock > 0).length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Low Stock
+                  </Typography>
+                </Box>
+                <TrendingUp sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {items.filter(item => item.currentStock <= item.minStock * 0.5).length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Critical Stock
+                  </Typography>
+                </Box>
+                <Schedule sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Critical Items Table */}
+      <Card sx={{ mb: 3, borderRadius: 3, overflow: 'hidden' }}>
         <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                placeholder="Search staff by name..."
-                InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth>
-                <InputLabel>Status</InputLabel>
-                <Select label="Status" defaultValue="all">
-                  <MenuItem value="all">All Status</MenuItem>
-                  <MenuItem value="online">Online</MenuItem>
-                  <MenuItem value="away">Away</MenuItem>
-                  <MenuItem value="offline">Offline</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth>
-                <InputLabel>Workload</InputLabel>
-                <Select label="Workload" defaultValue="all">
-                  <MenuItem value="all">All Workloads</MenuItem>
-                  <MenuItem value="normal">Normal</MenuItem>
-                  <MenuItem value="busy">Busy</MenuItem>
-                  <MenuItem value="overloaded">Overloaded</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={2}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                fullWidth
-                sx={{ bgcolor: '#1ABC9C', '&:hover': { bgcolor: '#27ae60' } }}
-              >
-                Assign Task
-              </Button>
-            </Grid>
-          </Grid>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#2C3E50' }}>
+            Critical Stock Items - Immediate Action Required
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Current Stock</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Min Stock</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Last Updated</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {items
+                  .filter(item => item.currentStock <= item.minStock)
+                  .sort((a, b) => a.currentStock - b.currentStock)
+                  .map((item) => (
+                  <TableRow key={item.id} hover sx={{ 
+                    bgcolor: item.currentStock === 0 ? 'rgba(231, 76, 60, 0.05)' : 'rgba(243, 156, 18, 0.05)'
+                  }}>
+                    <TableCell>
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          SKU: {item.sku} | {item.category}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ 
+                        fontWeight: 'bold',
+                        color: item.currentStock === 0 ? '#e74c3c' : '#f39c12'
+                      }}>
+                        {item.currentStock}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {item.minStock}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.currentStock === 0 ? 'Out of Stock' : 'Low Stock'}
+                        size="small"
+                        sx={{
+                          bgcolor: item.currentStock === 0 ? '#e74c3c' : '#f39c12',
+                          color: 'white',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" color="text.secondary">
+                        {formatDateTime(item.lastUpdated)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <Tooltip title="Restock Item">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleUpdateStock(item)}
+                            sx={{ color: '#27ae60' }}
+                          >
+                            <AddCircle />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="View Details">
+                          <IconButton
+                            size="small"
+                            sx={{ color: '#3498db' }}
+                          >
+                            <Visibility />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
 
-      {/* Staff Cards */}
-      <Grid container spacing={3}>
-        {staff.map((member) => (
-          <Grid item xs={12} md={6} key={member.id}>
-            <Card sx={{ borderRadius: 3, p: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Box sx={{ position: 'relative' }}>
-                  <Avatar sx={{ width: 48, height: 48, bgcolor: '#1ABC9C', fontSize: '1.2rem' }}>
-                    {member.avatar}
-                  </Avatar>
-                  <Box
-                    sx={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: '50%',
-                      bgcolor: member.status === 'online' ? '#27ae60' : 
-                               member.status === 'away' ? '#f39c12' : '#95a5a6',
-                      border: '2px solid white',
-                      position: 'absolute',
-                      bottom: 0,
-                      right: 0
-                    }}
-                  />
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    {member.name}
+      {/* Restock Recommendations */}
+      <Card sx={{ borderRadius: 3 }}>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#2C3E50' }}>
+            Restock Recommendations
+          </Typography>
+          <Grid container spacing={2}>
+            {items
+              .filter(item => item.currentStock <= item.minStock)
+              .map((item) => (
+              <Grid item xs={12} md={6} key={item.id}>
+                <Card sx={{ 
+                  p: 2, 
+                  border: '1px solid #e9ecef',
+                  bgcolor: item.currentStock === 0 ? 'rgba(231, 76, 60, 0.02)' : 'rgba(243, 156, 18, 0.02)'
+                }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                      {item.name}
+                    </Typography>
+                    <Chip
+                      label={`Need ${item.minStock - item.currentStock} units`}
+                      size="small"
+                      sx={{
+                        bgcolor: item.currentStock === 0 ? '#e74c3c' : '#f39c12',
+                        color: 'white',
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Current: {item.currentStock} | Min: {item.minStock} | Supplier: {item.supplier}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {member.email}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Last active: {formatDateTime(member.lastActivity)}
-                  </Typography>
-                </Box>
-              </Box>
-              
-              {/* Workload Status */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Typography variant="body2">Workload:</Typography>
-                <Chip
-                  label={member.workloadStatus}
-                  size="small"
-                  sx={{
-                    bgcolor: getWorkloadColor(member.workloadStatus),
-                    color: 'white',
-                    fontWeight: 'bold'
-                  }}
-                />
-              </Box>
-              
-              {/* Performance Metrics */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 1 }}>
-                  Performance Metrics
-                </Typography>
-                <Grid container spacing={1}>
-                  <Grid item xs={6}>
-                    <Typography variant="caption" color="text.secondary">
-                      Task Completion Rate
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                      {Math.round((member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100)}%
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="caption" color="text.secondary">
-                      Assigned Items
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                      {member.assignedItems}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-              
-              {/* Task Progress */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 1 }}>
-                  Task Progress
-                </Typography>
-                <LinearProgress
-                  variant="determinate"
-                  value={(member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100}
-                  sx={{ height: 6, borderRadius: 3 }}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  {member.completedTasks} completed / {member.completedTasks + member.pendingTasks} total tasks
-                </Typography>
-              </Box>
-              
-              {/* Assigned Categories */}
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
-                {member.assignedCategories.map(category => (
-                  <Chip
-                    key={category}
-                    label={category}
-                    size="small"
-                    sx={{
-                      bgcolor: '#e3f2fd',
-                      color: '#1976d2',
-                      fontWeight: 'bold'
-                    }}
-                  />
-                ))}
-              </Box>
-
-              {/* Action Buttons */}
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<Assignment />}
-                  sx={{ borderRadius: 2 }}
-                >
-                  Assign Task
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<Visibility />}
-                  sx={{ borderRadius: 2 }}
-                >
-                  View Details
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<Notifications />}
-                  sx={{ borderRadius: 2 }}
-                >
-                  Message
-                </Button>
-              </Box>
-            </Card>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      startIcon={<Add />}
+                      onClick={() => handleUpdateStock(item)}
+                      sx={{ 
+                        bgcolor: '#27ae60',
+                        '&:hover': { bgcolor: '#2ecc71' }
+                      }}
+                    >
+                      Restock Now
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      sx={{ borderColor: '#3498db', color: '#3498db' }}
+                    >
+                      Contact Supplier
+                    </Button>
+                  </Box>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </CardContent>
+      </Card>
     </Box>
   );
 
-  const renderQuickActions = () => (
+  const renderItemAnalytics = () => (
     <Box>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
-        Quick Actions
+        Item Analytics & Insights
       </Typography>
-      
-      {/* Priority Alerts */}
-      {items.filter(item => item.status === 'Low Stock' || item.status === 'Out of Stock').length > 0 && (
-        <Card sx={{ mb: 3, borderRadius: 3, border: '2px solid #f39c12' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <Warning sx={{ color: '#f39c12', fontSize: 24 }} />
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
-                Priority Alerts
-              </Typography>
-              <Chip 
-                label={items.filter(item => item.status === 'Low Stock' || item.status === 'Out of Stock').length}
-                size="small"
-                sx={{ 
-                  bgcolor: '#f39c12', 
-                  color: 'white', 
-                  fontWeight: 'bold',
-                  ml: 'auto'
-                }}
-              />
-            </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Items requiring immediate attention
-            </Typography>
-            <List sx={{ p: 0 }}>
-              {items.filter(item => item.status === 'Low Stock' || item.status === 'Out of Stock')
-                .slice(0, 3).map(item => (
-                <ListItem 
-                  key={item.id} 
-                  sx={{ 
-                    px: 2, 
-                    py: 1, 
-                    mb: 1, 
-                    border: '1px solid #f0f0f0', 
-                    borderRadius: 2,
-                    bgcolor: item.status === 'Out of Stock' ? 'rgba(231, 76, 60, 0.05)' : 'rgba(243, 156, 18, 0.05)'
-                  }}
-                >
-                  <ListItemText
-                    primary={
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
-                        {item.name}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2" color="text.secondary">
-                        {item.currentStock} units remaining (Min: {item.minStock})
-                      </Typography>
-                    }
-                  />
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={() => handleUpdateStock(item)}
-                    sx={{ 
-                      borderRadius: 2,
-                      bgcolor: item.status === 'Out of Stock' ? '#e74c3c' : '#f39c12',
-                      '&:hover': { bgcolor: item.status === 'Out of Stock' ? '#c0392b' : '#e67e22' },
-                      fontWeight: 'bold',
-                      px: 2
-                    }}
-                  >
-                    Update Stock
-                  </Button>
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-      )}
 
-      {/* Quick Action Buttons */}
+      {/* Analytics Summary Cards */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {items.length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Total Items
+                  </Typography>
+                </Box>
+                <Inventory sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {categories.length}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Categories
+                  </Typography>
+                </Box>
+                <Assessment sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #27ae60 0%, #f39c12 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    Ksh {items.reduce((sum, item) => sum + (item.currentStock * item.price), 0).toLocaleString()}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Total Value
+                  </Typography>
+                </Box>
+                <TrendingUp sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+            color: 'white',
+            borderRadius: 3
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                    {Math.round((items.filter(item => item.currentStock >= item.minStock).length / items.length) * 100)}%
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                    Stock Health
+                  </Typography>
+                </Box>
+                <CheckCircle sx={{ fontSize: 40, opacity: 0.8 }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Category Performance */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} md={6}>
+          <Card sx={{ borderRadius: 3, height: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
+                Category Performance
+              </Typography>
+              {categories.map((category) => {
+                const categoryItems = items.filter(item => item.category === category.name);
+                const avgStockLevel = categoryItems.length > 0 
+                  ? Math.round(categoryItems.reduce((sum, item) => sum + (item.currentStock / item.minStock * 100), 0) / categoryItems.length)
+                  : 0;
+                
+                return (
+                  <Box key={category.id} sx={{ mb: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                        {category.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#1ABC9C' }}>
+                        {avgStockLevel}%
+                      </Typography>
+                    </Box>
+                    <LinearProgress
+                      variant="determinate"
+                      value={avgStockLevel}
+                      sx={{ 
+                        height: 8, 
+                        borderRadius: 4,
+                        bgcolor: 'rgba(26, 188, 156, 0.2)',
+                        '& .MuiLinearProgress-bar': {
+                          bgcolor: avgStockLevel >= 80 ? '#27ae60' : 
+                                  avgStockLevel >= 60 ? '#f39c12' : '#e74c3c'
+                        }
+                      }}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {categoryItems.length} items
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Ksh {categoryItems.reduce((sum, item) => sum + (item.currentStock * item.price), 0).toLocaleString()}
+                      </Typography>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={6}>
+          <Card sx={{ borderRadius: 3, height: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
+                Stock Level Distribution
+              </Typography>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Well Stocked (≥100% of min)
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(items.filter(item => item.currentStock >= item.minStock).length / items.length) * 100}
+                  sx={{ height: 8, borderRadius: 4, bgcolor: '#27ae60' }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {items.filter(item => item.currentStock >= item.minStock).length} items
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Low Stock (50-99% of min)
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(items.filter(item => item.currentStock >= item.minStock * 0.5 && item.currentStock < item.minStock).length / items.length) * 100}
+                  sx={{ height: 8, borderRadius: 4, bgcolor: '#f39c12' }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {items.filter(item => item.currentStock >= item.minStock * 0.5 && item.currentStock < item.minStock).length} items
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Critical Stock (&lt;50% of min)
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(items.filter(item => item.currentStock < item.minStock * 0.5 && item.currentStock > 0).length / items.length) * 100}
+                  sx={{ height: 8, borderRadius: 4, bgcolor: '#e74c3c' }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {items.filter(item => item.currentStock < item.minStock * 0.5 && item.currentStock > 0).length} items
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Out of Stock (0 units)
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(items.filter(item => item.currentStock === 0).length / items.length) * 100}
+                  sx={{ height: 8, borderRadius: 4, bgcolor: '#95a5a6' }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {items.filter(item => item.currentStock === 0).length} items
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Top Items by Value */}
       <Card sx={{ borderRadius: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
-            Common Actions
+            Top Items by Inventory Value
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<Add />}
-                onClick={handleAddItem}
-                sx={{ 
-                  py: 2.5,
-                  borderRadius: 2,
-                  bgcolor: '#1ABC9C',
-                  '&:hover': { bgcolor: '#27ae60' },
-                  fontWeight: 'bold',
-                  fontSize: '1rem'
-                }}
-              >
-                Add New Item
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<Assignment />}
-                sx={{ 
-                  py: 2.5,
-                  borderRadius: 2,
-                  borderColor: '#1ABC9C',
-                  color: '#1ABC9C',
-                  '&:hover': { 
-                    borderColor: '#27ae60',
-                    bgcolor: 'rgba(26, 188, 156, 0.04)'
-                  },
-                  fontWeight: 'bold',
-                  fontSize: '1rem'
-                }}
-              >
-                Assign Tasks
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<Assessment />}
-                sx={{ 
-                  py: 2.5,
-                  borderRadius: 2,
-                  borderColor: '#1ABC9C',
-                  color: '#1ABC9C',
-                  '&:hover': { 
-                    borderColor: '#27ae60',
-                    bgcolor: 'rgba(26, 188, 156, 0.04)'
-                  },
-                  fontWeight: 'bold',
-                  fontSize: '1rem'
-                }}
-              >
-                Generate Report
-              </Button>
-            </Grid>
-          </Grid>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Category</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Stock Level</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Unit Price</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Total Value</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {items
+                  .sort((a, b) => (b.currentStock * b.price) - (a.currentStock * a.price))
+                  .slice(0, 10)
+                  .map((item) => (
+                  <TableRow key={item.id} hover>
+                    <TableCell>
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          SKU: {item.sku}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.category}
+                        size="small"
+                        sx={{
+                          bgcolor: '#e3f2fd',
+                          color: '#1976d2',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        {item.currentStock} / {item.minStock}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        Ksh {item.price.toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#1ABC9C' }}>
+                        Ksh {(item.currentStock * item.price).toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.status}
+                        size="small"
+                        sx={{
+                          bgcolor: getStatusColor(item.status),
+                          color: 'white',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
     </Box>
@@ -913,15 +1088,15 @@ const ManagerItemManagement = () => {
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={activeTab} onChange={handleTabChange} sx={{ '& .MuiTab-root': { fontWeight: 'bold' } }}>
-          <Tab label="Items" icon={<Inventory />} iconPosition="start" />
-          <Tab label="Staff" icon={<Group />} iconPosition="start" />
-          <Tab label="Quick Actions" icon={<Assessment />} iconPosition="start" />
+          <Tab label="Inventory" icon={<Inventory />} iconPosition="start" />
+          <Tab label="Stock Alerts" icon={<Warning />} iconPosition="start" />
+          <Tab label="Item Analytics" icon={<Analytics />} iconPosition="start" />
         </Tabs>
       </Box>
 
       {activeTab === 0 && renderItemManagement()}
-      {activeTab === 1 && renderStaffManagement()}
-      {activeTab === 2 && renderQuickActions()}
+      {activeTab === 1 && renderStockAlerts()}
+      {activeTab === 2 && renderItemAnalytics()}
 
       {/* Add/Edit Item Dialog */}
       <Dialog open={openItemDialog} onClose={() => setOpenItemDialog(false)} maxWidth="md" fullWidth>
