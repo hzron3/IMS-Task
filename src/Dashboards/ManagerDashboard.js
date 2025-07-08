@@ -12,20 +12,22 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import { useParams, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import CategoryOverview from './CategoryOverview';
 import ManagerItemManagement from './ManagerItemManagement';
+import StaffManagement from './StaffManagement';
 
 const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
 
 const sections = [
-  { label: 'Category Overview', icon: <DashboardIcon /> },
-  { label: 'Item Management', icon: <InventoryIcon /> },
-  { label: 'Staff Management', icon: <PeopleIcon /> },
-  { label: 'Reports & Analytics', icon: <BarChartIcon /> },
-  { label: 'Settings & Notifications', icon: <SettingsIcon /> },
+  { label: 'Category Overview', icon: <DashboardIcon />, path: 'category-overview' },
+  { label: 'Item Management', icon: <InventoryIcon />, path: 'item-management' },
+  { label: 'Staff Management', icon: <PeopleIcon />, path: 'staff-management' },
+  { label: 'Reports & Analytics', icon: <BarChartIcon />, path: 'reports-analytics' },
+  { label: 'Settings & Notifications', icon: <SettingsIcon />, path: 'settings' },
 ];
 
 const sectionContent = [
@@ -124,13 +126,30 @@ function DashboardNavbar({ user, role, onSettings }) {
 }
 
 const ManagerDashboard = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { section } = useParams();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   // Mock user info for now
   const user = { name: 'John Smith', email: 'manager@inventorypro.com' };
   const role = 'Manager';
 
-  const handleSettings = () => setSelectedIndex(sections.length - 1);
+  // Find the selected index based on the URL section
+  const getSelectedIndex = () => {
+    const index = sections.findIndex(s => s.path === section);
+    return index >= 0 ? index : 0;
+  };
+
+  const selectedIndex = getSelectedIndex();
+
+  const handleSectionSelect = (index) => {
+    const newSection = sections[index].path;
+    navigate(`/manager-dashboard/${newSection}`);
+  };
+
+  const handleSettings = () => {
+    navigate('/manager-dashboard/settings');
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f6fefb' }}>
@@ -140,7 +159,7 @@ const ManagerDashboard = () => {
       <Sidebar
         sections={sections}
         selectedIndex={selectedIndex}
-        onSectionSelect={setSelectedIndex}
+        onSectionSelect={handleSectionSelect}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
@@ -155,6 +174,8 @@ const ManagerDashboard = () => {
             <CategoryOverview />
           ) : selectedIndex === 1 ? (
             <ManagerItemManagement />
+          ) : selectedIndex === 2 ? (
+            <StaffManagement />
           ) : (
             <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>

@@ -5,7 +5,7 @@ import Signup from './Signup';
 import AdminDashboard from './Dashboards/AdminDashboard';
 import ManagerDashboard from './Dashboards/ManagerDashboard';
 import StaffDashboard from './Dashboards/StaffDashboard';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
   return (
@@ -15,9 +15,14 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/manager-dashboard" element={<ManagerDashboard />} />
-          <Route path="/staff-dashboard" element={<StaffDashboard />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/admin-dashboard" element={<Navigate to="/admin-dashboard/overview" replace />} />
+          <Route path="/admin-dashboard/:section" element={<AdminDashboard />} />
+          <Route path="/manager-dashboard" element={<Navigate to="/manager-dashboard/category-overview" replace />} />
+          <Route path="/manager-dashboard/:section" element={<ManagerDashboard />} />
+          <Route path="/staff-dashboard" element={<Navigate to="/staff-dashboard/assigned-inventory" replace />} />
+          <Route path="/staff-dashboard/:section" element={<StaffDashboard />} />
         </Routes>
       </div>
     </Router>

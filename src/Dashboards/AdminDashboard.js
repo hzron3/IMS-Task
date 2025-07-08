@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Toolbar, AppBar, IconButton } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -12,6 +12,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import { useParams, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import Overview from './Overview';
@@ -24,11 +25,11 @@ const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
 
 const sections = [
-  { label: 'Overview', icon: <DashboardIcon /> },
-  { label: 'Inventory Management', icon: <InventoryIcon /> },
-  { label: 'User & Role Management', icon: <PeopleIcon /> },
-  { label: 'Analytics & Reports', icon: <BarChartIcon /> },
-  { label: 'System Settings', icon: <SettingsIcon /> },
+  { label: 'Overview', icon: <DashboardIcon />, path: 'overview' },
+  { label: 'Inventory Management', icon: <InventoryIcon />, path: 'inventory-management' },
+  { label: 'User & Role Management', icon: <PeopleIcon />, path: 'user-management' },
+  { label: 'Analytics & Reports', icon: <BarChartIcon />, path: 'analytics' },
+  { label: 'System Settings', icon: <SettingsIcon />, path: 'settings' },
 ];
 
 const sectionContent = [
@@ -127,13 +128,30 @@ function DashboardNavbar({ user, role, onSettings }) {
 }
 
 const AdminDashboard = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { section } = useParams();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   // Mock user info for now
   const user = { name: 'Jane Doe', email: 'admin@inventorypro.com' };
   const role = 'Admin';
 
-  const handleSettings = () => setSelectedIndex(sections.length - 1);
+  // Find the selected index based on the URL section
+  const getSelectedIndex = () => {
+    const index = sections.findIndex(s => s.path === section);
+    return index >= 0 ? index : 0;
+  };
+
+  const selectedIndex = getSelectedIndex();
+
+  const handleSectionSelect = (index) => {
+    const newSection = sections[index].path;
+    navigate(`/admin-dashboard/${newSection}`);
+  };
+
+  const handleSettings = () => {
+    navigate('/admin-dashboard/settings');
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f6fefb' }}>
@@ -143,7 +161,7 @@ const AdminDashboard = () => {
       <Sidebar
         sections={sections}
         selectedIndex={selectedIndex}
-        onSectionSelect={setSelectedIndex}
+        onSectionSelect={handleSectionSelect}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />

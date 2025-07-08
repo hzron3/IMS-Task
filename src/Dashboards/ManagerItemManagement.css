@@ -9,15 +9,7 @@
   overflow-x: hidden;
 }
 
-.manager-item-management .MuiGrid-container {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-}
 
-.manager-item-management .MuiGrid-item {
-  width: 100% !important;
-}
 
 .tab-navigation {
   border-bottom: 1px solid #e9ecef;

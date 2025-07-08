@@ -3,7 +3,6 @@ import { Box, Typography, Toolbar, AppBar, IconButton } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
@@ -12,6 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import { useParams, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 
@@ -19,10 +19,10 @@ const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
 
 const sections = [
-  { label: 'Assigned Inventory', icon: <DashboardIcon /> },
-  { label: 'Stock Updates', icon: <InventoryIcon /> },
-  { label: 'Tasks & Activity', icon: <AssignmentIcon /> },
-  { label: 'Settings & Notifications', icon: <SettingsIcon /> },
+  { label: 'Assigned Inventory', icon: <DashboardIcon />, path: 'assigned-inventory' },
+  { label: 'Stock Updates', icon: <InventoryIcon />, path: 'stock-updates' },
+  { label: 'Tasks & Activity', icon: <AssignmentIcon />, path: 'tasks-activity' },
+  { label: 'Settings & Notifications', icon: <SettingsIcon />, path: 'settings' },
 ];
 
 const sectionContent = [
@@ -120,13 +120,30 @@ function DashboardNavbar({ user, role, onSettings }) {
 }
 
 const StaffDashboard = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { section } = useParams();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   // Mock user info for now
   const user = { name: 'Mike Johnson', email: 'staff@inventorypro.com' };
   const role = 'Warehouse Staff';
 
-  const handleSettings = () => setSelectedIndex(sections.length - 1);
+  // Find the selected index based on the URL section
+  const getSelectedIndex = () => {
+    const index = sections.findIndex(s => s.path === section);
+    return index >= 0 ? index : 0;
+  };
+
+  const selectedIndex = getSelectedIndex();
+
+  const handleSectionSelect = (index) => {
+    const newSection = sections[index].path;
+    navigate(`/staff-dashboard/${newSection}`);
+  };
+
+  const handleSettings = () => {
+    navigate('/staff-dashboard/settings');
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f6fefb' }}>
@@ -136,7 +153,7 @@ const StaffDashboard = () => {
       <Sidebar
         sections={sections}
         selectedIndex={selectedIndex}
-        onSectionSelect={setSelectedIndex}
+        onSectionSelect={handleSectionSelect}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
