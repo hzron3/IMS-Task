@@ -37,6 +37,8 @@ function DashboardNavbar({ user, role, onSettings }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
+  const navigate = useNavigate();
+  
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const handleProfileOpen = () => {
@@ -47,6 +49,10 @@ function DashboardNavbar({ user, role, onSettings }) {
   const handleSettings = () => {
     if (onSettings) onSettings();
     handleClose();
+  };
+  const handleLogout = () => {
+    handleClose();
+    navigate('/login');
   };
 
   return (
@@ -100,7 +106,7 @@ function DashboardNavbar({ user, role, onSettings }) {
             >
               <MenuItem onClick={handleProfileOpen}>Profile</MenuItem>
               <MenuItem onClick={handleSettings}>Settings</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>

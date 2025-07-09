@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, Tabs, Tab } from '@mui/material';
 import { BarChart, Bar, PieChart, Pie, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import './Dashboard.css';
 
-const sidebarTabs = [
+const topTabs = [
   { id: 'category', label: 'Category Overview', icon: 'fas fa-layer-group' },
   { id: 'stock', label: 'Stock Movement', icon: 'fas fa-exchange-alt' },
   { id: 'staff', label: 'Staff Performance', icon: 'fas fa-user-check' },
@@ -316,38 +316,57 @@ const ManagerReportsAnalytics = () => {
   );
 
   return (
-    <div className="manager-reports-analytics d-flex" style={{ minHeight: '100vh', background: '#f6fefb' }}>
-      {/* Sidebar */}
-      <div className="sidebar p-3" style={{ minWidth: 220, background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)', color: 'white', borderTopRightRadius: 24, borderBottomRightRadius: 24 }}>
-        <h4 className="mb-4" style={{ fontWeight: 'bold', color: '#fff' }}>Reports & Analytics</h4>
-        <div className="nav flex-column">
-          {sidebarTabs.map(tab => (
-            <button
-              key={tab.id}
-              className={`nav-link text-start mb-2 ${activeTab === tab.id ? 'active' : ''}`}
-              style={{
-                background: activeTab === tab.id ? 'rgba(255,255,255,0.12)' : 'transparent',
+    <div className="manager-reports-analytics" style={{ minHeight: '100vh', background: '#f6fefb' }}>
+      {/* Top Navigation */}
+      <Box sx={{ 
+        background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)', 
+        color: 'white', 
+        borderRadius: '0 0 24px 24px',
+        mb: 3,
+        p: 2
+      }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#fff', mb: 2, textAlign: 'center' }}>
+          Reports & Analytics
+        </Typography>
+        <Tabs 
+          value={activeTab} 
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          sx={{
+            '& .MuiTab-root': {
+              color: 'rgba(255,255,255,0.7)',
+              fontWeight: 500,
+              fontSize: '1rem',
+              textTransform: 'none',
+              minHeight: 48,
+              '&.Mui-selected': {
                 color: '#fff',
-                border: 'none',
-                borderRadius: 8,
-                fontWeight: 500,
-                fontSize: 18,
-                padding: '12px 16px',
-                transition: 'background 0.2s',
-                outline: 'none',
-                boxShadow: activeTab === tab.id ? '0 2px 8px rgba(44,62,80,0.08)' : 'none',
-                cursor: 'pointer',
-              }}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <i className={`${tab.icon} me-2`}></i>
-              {tab.label}
-            </button>
+                fontWeight: 600,
+              }
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#fff',
+              height: 3,
+              borderRadius: 2
+            }
+          }}
+        >
+          {topTabs.map(tab => (
+            <Tab 
+              key={tab.id} 
+              value={tab.id} 
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <i className={tab.icon}></i>
+                  {tab.label}
+                </Box>
+              }
+            />
           ))}
-        </div>
-      </div>
+        </Tabs>
+      </Box>
+      
       {/* Content */}
-      <div className="flex-grow-1 p-4">
+      <div className="p-4">
         {activeTab === 'category' && renderCategoryOverview()}
         {activeTab === 'stock' && renderStockMovement()}
         {activeTab === 'staff' && renderStaffPerformance()}

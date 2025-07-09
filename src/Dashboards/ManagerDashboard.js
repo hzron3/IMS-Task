@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Toolbar, AppBar, IconButton } from '@mui/material';
+import { Box, Typography, Toolbar, AppBar, IconButton, Avatar, DialogActions, Button } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PeopleIcon from '@mui/icons-material/People';
@@ -45,6 +45,8 @@ function DashboardNavbar({ user, role, onSettings }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
+  const navigate = useNavigate();
+  
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const handleProfileOpen = () => {
@@ -55,6 +57,10 @@ function DashboardNavbar({ user, role, onSettings }) {
   const handleSettings = () => {
     if (onSettings) onSettings();
     handleClose();
+  };
+  const handleLogout = () => {
+    handleClose();
+    navigate('/login');
   };
 
   return (
@@ -108,20 +114,181 @@ function DashboardNavbar({ user, role, onSettings }) {
             >
               <MenuItem onClick={handleProfileOpen}>Profile</MenuItem>
               <MenuItem onClick={handleSettings}>Settings</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>
       </AppBar>
       {/* Profile Popup Window */}
-      <Dialog open={profileOpen} onClose={handleProfileClose}>
-        <DialogTitle>User Profile</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <strong>Name:</strong> {user.name}<br />
-            <strong>Email:</strong> {user.email}
-          </DialogContentText>
+      <Dialog 
+        open={profileOpen} 
+        onClose={handleProfileClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <AccountCircle sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            User Profile
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+            <Avatar 
+              sx={{ 
+                width: 80, 
+                height: 80, 
+                fontSize: '2rem', 
+                bgcolor: '#1ABC9C',
+                mb: 2,
+                boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)'
+              }}
+            >
+              {user.name.split(' ').map(n => n[0]).join('')}
+            </Avatar>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#2C3E50', mb: 1 }}>
+              {user.name}
+            </Typography>
+            <Typography variant="body1" sx={{ color: '#7f8c8d', mb: 2 }}>
+              {role}
+            </Typography>
+          </Box>
+          
+          <Box sx={{ 
+            p: 3, 
+            background: 'rgba(26, 188, 156, 0.05)', 
+            borderRadius: 2, 
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }}>
+            <Typography variant="h6" sx={{ mb: 2, color: '#2C3E50', fontWeight: 'bold' }}>
+              Contact Information
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ 
+                  width: 32, 
+                  height: 32, 
+                  borderRadius: '50%', 
+                  background: '#1ABC9C',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <AccountCircle sx={{ color: 'white', fontSize: 16 }} />
+                </Box>
+                <Box>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
+                    Full Name
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
+                    {user.name}
+                  </Typography>
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ 
+                  width: 32, 
+                  height: 32, 
+                  borderRadius: '50%', 
+                  background: '#27ae60',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <AccountCircle sx={{ color: 'white', fontSize: 16 }} />
+                </Box>
+                <Box>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
+                    Email Address
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
+                    {user.email}
+                  </Typography>
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ 
+                  width: 32, 
+                  height: 32, 
+                  borderRadius: '50%', 
+                  background: '#2C3E50',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <AccountCircle sx={{ color: 'white', fontSize: 16 }} />
+                </Box>
+                <Box>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
+                    Role
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
+                    {role}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={handleProfileClose}
+            variant="contained"
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              }
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );

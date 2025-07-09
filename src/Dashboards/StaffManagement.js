@@ -6,7 +6,7 @@ import {
   TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
   Badge, LinearProgress, Divider, List, ListItem, ListItemText,
   ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
-  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails
+  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, Grid
 } from '@mui/material';
 import './StaffManagement.css';
 import {
@@ -26,6 +26,32 @@ const StaffManagement = () => {
   const [workloadFilter, setWorkloadFilter] = useState('all');
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  
+  // Modal states
+  const [openAddStaffDialog, setOpenAddStaffDialog] = useState(false);
+  const [openEditStaffDialog, setOpenEditStaffDialog] = useState(false);
+  const [openAssignTaskDialog, setOpenAssignTaskDialog] = useState(false);
+  const [openViewDetailsDialog, setOpenViewDetailsDialog] = useState(false);
+  const [openMessageDialog, setOpenMessageDialog] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  
+  // Form states
+  const [staffForm, setStaffForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    role: '',
+    department: '',
+    supervisor: ''
+  });
+  
+  const [taskForm, setTaskForm] = useState({
+    title: '',
+    description: '',
+    priority: 'medium',
+    dueDate: '',
+    assignedTo: ''
+  });
 
   // Mock staff data
   const [staff] = useState([
@@ -144,11 +170,79 @@ const StaffManagement = () => {
     setActiveTab(newValue);
   };
 
+  // Modal handlers
+  const handleAddStaff = () => {
+    setOpenAddStaffDialog(true);
+  };
+
+  const handleEditStaff = (staffMember) => {
+    setSelectedStaff(staffMember);
+    setStaffForm({
+      name: staffMember.name,
+      email: staffMember.email,
+      phone: staffMember.phone,
+      role: staffMember.role,
+      department: staffMember.department,
+      supervisor: staffMember.supervisor
+    });
+    setOpenEditStaffDialog(true);
+  };
+
+  const handleAssignTask = (staffMember) => {
+    setSelectedStaff(staffMember);
+    setTaskForm({
+      title: '',
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+      assignedTo: staffMember.id
+    });
+    setOpenAssignTaskDialog(true);
+  };
+
+  const handleSaveStaff = () => {
+    showNotification('Staff member saved successfully!');
+    setOpenAddStaffDialog(false);
+    setOpenEditStaffDialog(false);
+    setStaffForm({
+      name: '',
+      email: '',
+      phone: '',
+      role: '',
+      department: '',
+      supervisor: ''
+    });
+  };
+
+  const handleSaveTask = () => {
+    showNotification('Task assigned successfully!');
+    setOpenAssignTaskDialog(false);
+    setTaskForm({
+      title: '',
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+      assignedTo: ''
+    });
+  };
+
+  const handleViewDetails = (staffMember) => {
+    setSelectedStaff(staffMember);
+    setOpenViewDetailsDialog(true);
+  };
+
+  const handleMessage = (staffMember) => {
+    setSelectedStaff(staffMember);
+    setOpenMessageDialog(true);
+  };
+
   const renderStaffOverview = () => (
     <Box>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
-        Staff Overview
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
+          Staff Overview
+        </Typography>
+      </Box>
 
       {/* Staff Summary Cards */}
       <div className="row mb-4">
@@ -363,6 +457,7 @@ const StaffManagement = () => {
                 variant="contained"
                 startIcon={<Add />}
                 fullWidth
+                onClick={handleAddStaff}
                 sx={{ 
                   borderRadius: 3,
                   background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
@@ -378,28 +473,7 @@ const StaffManagement = () => {
                 Add Staff
               </Button>
             </div>
-            <div className="col-12 col-sm-6 col-md-2 mb-3">
-              <Button
-                variant="outlined"
-                startIcon={<Assignment />}
-                fullWidth
-                sx={{ 
-                  borderRadius: 3,
-                  borderColor: '#1ABC9C',
-                  color: '#1ABC9C',
-                  borderWidth: 2,
-                  '&:hover': { 
-                    borderColor: '#16a085',
-                    color: '#16a085',
-                    bgcolor: 'rgba(26, 188, 156, 0.05)',
-                    transform: 'translateY(-2px)'
-                  },
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Assign Task
-              </Button>
-            </div>
+
           </div>
         </CardContent>
       </Card>
@@ -604,6 +678,7 @@ const StaffManagement = () => {
                   size="small"
                   variant="contained"
                   startIcon={<Assignment />}
+                  onClick={() => handleAssignTask(member)}
                   sx={{ 
                     borderRadius: 3,
                     background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
@@ -622,6 +697,7 @@ const StaffManagement = () => {
                   size="small"
                   variant="outlined"
                   startIcon={<Visibility />}
+                  onClick={() => handleViewDetails(member)}
                   sx={{ 
                     borderRadius: 3,
                     borderColor: '#1ABC9C',
@@ -639,6 +715,7 @@ const StaffManagement = () => {
                   size="small"
                   variant="outlined"
                   startIcon={<Message />}
+                  onClick={() => handleMessage(member)}
                   sx={{ 
                     borderRadius: 3,
                     borderColor: '#2C3E50',
@@ -677,7 +754,17 @@ const StaffManagement = () => {
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography 
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      color: 'white !important',
+                      background: 'none !important',
+                      WebkitBackgroundClip: 'unset !important',
+                      WebkitTextFillColor: 'white !important',
+                      backgroundClip: 'unset !important'
+                    }}
+                  >
                     {staff.reduce((sum, s) => sum + s.pendingTasks, 0)}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
@@ -698,11 +785,21 @@ const StaffManagement = () => {
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography 
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      color: 'white !important',
+                      background: 'none !important',
+                      WebkitBackgroundClip: 'unset !important',
+                      WebkitTextFillColor: 'white !important',
+                      backgroundClip: 'unset !important'
+                    }}
+                  >
                     {staff.reduce((sum, s) => sum + s.completedTasks, 0)}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    Completed Today
+                    Completed Tasks
                   </Typography>
                 </Box>
                 <CheckCircle sx={{ fontSize: 40, opacity: 0.8 }} />
@@ -719,7 +816,17 @@ const StaffManagement = () => {
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography 
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      color: 'white !important',
+                      background: 'none !important',
+                      WebkitBackgroundClip: 'unset !important',
+                      WebkitTextFillColor: 'white !important',
+                      backgroundClip: 'unset !important'
+                    }}
+                  >
                     {staff.filter(s => s.workloadStatus === 'normal').length}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
@@ -740,7 +847,17 @@ const StaffManagement = () => {
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography 
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      color: 'white !important',
+                      background: 'none !important',
+                      WebkitBackgroundClip: 'unset !important',
+                      WebkitTextFillColor: 'white !important',
+                      backgroundClip: 'unset !important'
+                    }}
+                  >
                     {Math.round((staff.reduce((sum, s) => sum + s.completedTasks, 0) / 
                                 (staff.reduce((sum, s) => sum + s.completedTasks, 0) + 
                                  staff.reduce((sum, s) => sum + s.pendingTasks, 0))) * 100)}%
@@ -1035,6 +1152,770 @@ const StaffManagement = () => {
       {activeTab === 0 && renderStaffOverview()}
       {activeTab === 1 && renderTaskManagement()}
       {activeTab === 2 && renderPerformanceAnalytics()}
+
+      {/* Add Staff Dialog */}
+      <Dialog 
+        open={openAddStaffDialog} 
+        onClose={() => setOpenAddStaffDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Add sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Add New Staff Member
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Fill in the details to add a new staff member to your team
+            </Typography>
+          </Box>
+          
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Full Name"
+                value={staffForm.name}
+                onChange={(e) => setStaffForm({...staffForm, name: e.target.value})}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Email Address"
+                type="email"
+                value={staffForm.email}
+                onChange={(e) => setStaffForm({...staffForm, email: e.target.value})}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Phone Number"
+                value={staffForm.phone}
+                onChange={(e) => setStaffForm({...staffForm, phone: e.target.value})}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Role</InputLabel>
+                <Select
+                  value={staffForm.role}
+                  label="Role"
+                  onChange={(e) => setStaffForm({...staffForm, role: e.target.value})}
+                  sx={{ 
+                    borderRadius: 2,
+                    minWidth: '200px',
+                    '& .MuiSelect-select': {
+                      minWidth: '180px',
+                      paddingRight: '32px'
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#e0e0e0',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }}
+                >
+                  <MenuItem value="Warehouse Staff">Warehouse Staff</MenuItem>
+                  <MenuItem value="Inventory Manager">Inventory Manager</MenuItem>
+                  <MenuItem value="Supervisor">Supervisor</MenuItem>
+                  <MenuItem value="Assistant">Assistant</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+          </Grid>
+        </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenAddStaffDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveStaff}
+            variant="contained"
+            disabled={!staffForm.name || !staffForm.email || !staffForm.role}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              },
+              '&:disabled': {
+                background: '#bdc3c7',
+                boxShadow: 'none'
+              }
+            }}
+          >
+            Add Staff Member
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Assign Task Dialog */}
+      <Dialog 
+        open={openAssignTaskDialog} 
+        onClose={() => setOpenAssignTaskDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Assignment sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Assign New Task
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          {selectedStaff && (
+            <Box>
+              <Box sx={{ mb: 3, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: '#2C3E50', fontWeight: 'bold' }}>
+                  Assigning to: {selectedStaff.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                  Current workload: {selectedStaff.workloadStatus} | Pending tasks: {selectedStaff.pendingTasks}
+                </Typography>
+              </Box>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Task Title"
+                    value={taskForm.title}
+                    onChange={(e) => setTaskForm({...taskForm, title: e.target.value})}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Task Description"
+                    multiline
+                    rows={3}
+                    value={taskForm.description}
+                    onChange={(e) => setTaskForm({...taskForm, description: e.target.value})}
+                    placeholder="Provide detailed description of the task..."
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Priority</InputLabel>
+                    <Select
+                      value={taskForm.priority}
+                      label="Priority"
+                      onChange={(e) => setTaskForm({...taskForm, priority: e.target.value})}
+                      sx={{ 
+                        borderRadius: 2,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e0e0e0',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }}
+                    >
+                      <MenuItem value="low">🟢 Low</MenuItem>
+                      <MenuItem value="medium">🟡 Medium</MenuItem>
+                      <MenuItem value="high">🔴 High</MenuItem>
+                      <MenuItem value="urgent">🚨 Urgent</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Due Date"
+                    type="date"
+                    value={taskForm.dueDate}
+                    onChange={(e) => setTaskForm({...taskForm, dueDate: e.target.value})}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenAssignTaskDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveTask}
+            variant="contained"
+            disabled={!taskForm.title || !taskForm.description}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              },
+              '&:disabled': {
+                background: '#bdc3c7',
+                boxShadow: 'none'
+              }
+            }}
+          >
+            Assign Task
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* View Details Dialog */}
+      <Dialog 
+        open={openViewDetailsDialog} 
+        onClose={() => setOpenViewDetailsDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Visibility sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Staff Details & Tasks
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          {selectedStaff && (
+            <Box>
+              {/* Staff Info Header */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 3, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Avatar sx={{ 
+                  width: 64, 
+                  height: 64, 
+                  background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold'
+                }}>
+                  {selectedStaff.avatar}
+                </Avatar>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#2C3E50', mb: 1 }}>
+                    {selectedStaff.name}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#7f8c8d', mb: 0.5 }}>
+                    {selectedStaff.email}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Chip
+                      label={selectedStaff.role}
+                      size="small"
+                      sx={{ background: '#1ABC9C', color: 'white', fontWeight: 'bold' }}
+                    />
+                    <Chip
+                      label={selectedStaff.workloadStatus}
+                      size="small"
+                      sx={{ 
+                        background: `linear-gradient(135deg, ${getWorkloadColor(selectedStaff.workloadStatus)} 0%, ${getWorkloadColor(selectedStaff.workloadStatus)}dd 100%)`,
+                        color: 'white',
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* Tasks Section */}
+              <Typography variant="h6" sx={{ mb: 3, color: '#2C3E50', fontWeight: 'bold' }}>
+                Assigned Tasks
+              </Typography>
+              
+              <Box sx={{ mb: 3 }}>
+                {/* Mock tasks data */}
+                {[
+                  {
+                    id: 1,
+                    title: 'Inventory Count - Electronics Section',
+                    description: 'Complete physical count of all electronics items in warehouse A',
+                    status: 'completed',
+                    priority: 'high',
+                    assignedDate: '2024-01-10',
+                    completedDate: '2024-01-12',
+                    dueDate: '2024-01-15'
+                  },
+                  {
+                    id: 2,
+                    title: 'Restock Laptops',
+                    description: 'Update stock levels for laptop inventory and prepare restock order',
+                    status: 'in-progress',
+                    priority: 'medium',
+                    assignedDate: '2024-01-13',
+                    dueDate: '2024-01-18'
+                  },
+                  {
+                    id: 3,
+                    title: 'Quality Check - Mobile Phones',
+                    description: 'Perform quality inspection on newly received mobile phone shipment',
+                    status: 'pending',
+                    priority: 'low',
+                    assignedDate: '2024-01-14',
+                    dueDate: '2024-01-20'
+                  }
+                ].map((task) => (
+                  <Card key={task.id} sx={{ mb: 2, borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2C3E50', mb: 1 }}>
+                            {task.title}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: '#7f8c8d', mb: 2 }}>
+                            {task.description}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                            <Chip
+                              label={task.priority}
+                              size="small"
+                              sx={{ 
+                                background: task.priority === 'high' ? '#e74c3c' : 
+                                           task.priority === 'medium' ? '#f39c12' : '#27ae60',
+                                color: 'white',
+                                fontWeight: 'bold'
+                              }}
+                            />
+                            <Chip
+                              label={task.status}
+                              size="small"
+                              sx={{ 
+                                background: task.status === 'completed' ? '#27ae60' : 
+                                           task.status === 'in-progress' ? '#f39c12' : '#95a5a6',
+                                color: 'white',
+                                fontWeight: 'bold'
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="caption" sx={{ color: '#7f8c8d' }}>
+                          Assigned: {task.assignedDate}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#7f8c8d' }}>
+                          Due: {task.dueDate}
+                        </Typography>
+                        {task.completedDate && (
+                          <Typography variant="caption" sx={{ color: '#27ae60', fontWeight: 'bold' }}>
+                            Completed: {task.completedDate}
+                          </Typography>
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenViewDetailsDialog(false)}
+            variant="contained"
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              }
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Message Dialog */}
+      <Dialog 
+        open={openMessageDialog} 
+        onClose={() => setOpenMessageDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Message sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Send Message
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          {selectedStaff && (
+            <Box>
+              <Box sx={{ mb: 3, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: '#2C3E50', fontWeight: 'bold' }}>
+                  To: {selectedStaff.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                  {selectedStaff.email}
+                </Typography>
+              </Box>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Subject"
+                    placeholder="Enter message subject..."
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Message"
+                    multiline
+                    rows={4}
+                    placeholder="Type your message here..."
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel>Priority</InputLabel>
+                    <Select
+                      label="Priority"
+                      defaultValue="normal"
+                      sx={{ 
+                        borderRadius: 2,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e0e0e0',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }}
+                    >
+                      <MenuItem value="normal">📧 Normal</MenuItem>
+                      <MenuItem value="important">⚠️ Important</MenuItem>
+                      <MenuItem value="urgent">🚨 Urgent</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenMessageDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="contained"
+            onClick={() => {
+              showNotification('Message sent successfully!');
+              setOpenMessageDialog(false);
+            }}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              }
+            }}
+          >
+            Send Message
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar for notifications */}
       <Snackbar

@@ -413,10 +413,22 @@ const CategoryOverview = () => {
                         <div className="staff-info">
                           <h6>{staff.name}</h6>
                           <p>{staff.email}</p>
-                          <div className="progress mb-2">
+                          <div className="progress mb-2" style={{ height: '20px', borderRadius: '10px', overflow: 'visible' }}>
                             <div 
                               className="progress-bar" 
-                              style={{width: `${(staff.tasksCompleted / staff.totalTasks) * 100}%`}}
+                              style={{
+                                width: `${(staff.tasksCompleted / staff.totalTasks) * 100}%`,
+                                height: '100%',
+                                borderRadius: '10px',
+                                backgroundColor: '#1ABC9C',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '12px',
+                                fontWeight: '500',
+                                color: 'white',
+                                minWidth: 'fit-content'
+                              }}
                             >
                               {staff.tasksCompleted}/{staff.totalTasks} tasks
                             </div>

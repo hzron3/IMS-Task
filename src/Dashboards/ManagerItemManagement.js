@@ -26,6 +26,7 @@ const ManagerItemManagement = () => {
   const [openItemDialog, setOpenItemDialog] = useState(false);
   const [openStockDialog, setOpenStockDialog] = useState(false);
   const [openAssignmentDialog, setOpenAssignmentDialog] = useState(false);
+  const [openSupplierDialog, setOpenSupplierDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,6 +52,13 @@ const ManagerItemManagement = () => {
     newStock: '',
     reason: 'restock',
     notes: ''
+  });
+
+  const [supplierForm, setSupplierForm] = useState({
+    to: '',
+    subject: '',
+    message: '',
+    priority: 'normal'
   });
 
   // Mock data for manager's assigned categories
@@ -366,6 +374,30 @@ const ManagerItemManagement = () => {
       showNotification('Item assigned successfully!');
     }
     setOpenAssignmentDialog(false);
+  };
+
+  // Contact supplier
+  const handleContactSupplier = (item) => {
+    setSelectedItem(item);
+    setSupplierForm({
+      to: `${item.supplier} <supplier@${item.supplier.toLowerCase().replace(/\s+/g, '')}.com>`,
+      subject: `Inquiry about ${item.name} (SKU: ${item.sku})`,
+      message: `Dear ${item.supplier},\n\nWe would like to inquire about the following item:\n\nItem: ${item.name}\nSKU: ${item.sku}\nCurrent Stock: ${item.currentStock}\nMinimum Stock: ${item.minStock}\n\nPlease provide information about availability, pricing, and delivery options.\n\nBest regards,\nInventory Management Team`,
+      priority: 'normal'
+    });
+    setOpenSupplierDialog(true);
+  };
+
+  const handleSaveSupplierContact = () => {
+    showNotification('Email sent to supplier successfully!');
+    setOpenSupplierDialog(false);
+    setSupplierForm({
+      to: '',
+      subject: '',
+      message: '',
+      priority: 'normal'
+    });
+    setSelectedItem(null);
   };
 
   const filteredItems = items.filter(item => {
@@ -708,6 +740,7 @@ const ManagerItemManagement = () => {
                     <Button
                       size="small"
                       variant="outlined"
+                      onClick={() => handleContactSupplier(item)}
                       sx={{ borderColor: '#3498db', color: '#3498db' }}
                     >
                       Contact Supplier
@@ -944,19 +977,73 @@ const ManagerItemManagement = () => {
       {activeTab === 2 && renderItemAnalytics()}
 
       {/* Add/Edit Item Dialog */}
-      <Dialog open={openItemDialog} onClose={() => setOpenItemDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {editingItem ? 'Edit Item' : 'Add New Item'}
+      <Dialog 
+        open={openItemDialog} 
+        onClose={() => setOpenItemDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Add sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            {editingItem ? 'Edit Item Details' : 'Add New Item'}
+          </Typography>
         </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {editingItem ? 'Update the item information below' : 'Fill in the details to add a new item to your inventory'}
+            </Typography>
+          </Box>
+          
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="SKU"
                 value={itemForm.sku}
                 onChange={(e) => setItemForm({...itemForm, sku: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -965,16 +1052,38 @@ const ManagerItemManagement = () => {
                 label="Item Name"
                 value={itemForm.name}
                 onChange={(e) => setItemForm({...itemForm, name: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select
                   value={itemForm.category}
                   label="Category"
                   onChange={(e) => setItemForm({...itemForm, category: e.target.value})}
+                  sx={{ 
+                    borderRadius: 2,
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#e0e0e0',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }}
                 >
                   {categories.map((category) => (
                     <MenuItem key={category.id} value={category.name}>
@@ -990,9 +1099,26 @@ const ManagerItemManagement = () => {
                 label="Supplier"
                 value={itemForm.supplier}
                 onChange={(e) => setItemForm({...itemForm, supplier: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
+            
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#2C3E50', fontWeight: 'bold' }}>
+                Stock & Pricing Information
+              </Typography>
+            </Grid>
+            
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
@@ -1000,7 +1126,17 @@ const ManagerItemManagement = () => {
                 type="number"
                 value={itemForm.currentStock}
                 onChange={(e) => setItemForm({...itemForm, currentStock: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -1010,7 +1146,17 @@ const ManagerItemManagement = () => {
                 type="number"
                 value={itemForm.minStock}
                 onChange={(e) => setItemForm({...itemForm, minStock: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -1020,7 +1166,17 @@ const ManagerItemManagement = () => {
                 type="number"
                 value={itemForm.price}
                 onChange={(e) => setItemForm({...itemForm, price: e.target.value})}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -1028,26 +1184,68 @@ const ManagerItemManagement = () => {
                 fullWidth
                 label="Description"
                 multiline
-                rows={3}
+                rows={4}
                 value={itemForm.description}
                 onChange={(e) => setItemForm({...itemForm, description: e.target.value})}
-                sx={{ mb: 2 }}
+                placeholder="Provide a detailed description of the item..."
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }
+                }}
               />
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
           <Button 
             onClick={() => setOpenItemDialog(false)}
-            sx={{ color: '#7f8c8d' }}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
           >
             Cancel
           </Button>
           <Button 
             onClick={handleSaveItem}
             variant="contained"
-            sx={{ bgcolor: '#1ABC9C', '&:hover': { bgcolor: '#27ae60' } }}
             disabled={!itemForm.name || !itemForm.sku || !itemForm.category}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              },
+              '&:disabled': {
+                background: '#bdc3c7',
+                boxShadow: 'none'
+              }
+            }}
           >
             {editingItem ? 'Update Item' : 'Add Item'}
           </Button>
@@ -1055,75 +1253,480 @@ const ManagerItemManagement = () => {
       </Dialog>
 
       {/* Stock Update Dialog */}
-      <Dialog open={openStockDialog} onClose={() => setOpenStockDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Update Stock Level</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={openStockDialog} 
+        onClose={() => setOpenStockDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <AddCircle sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Update Stock Level
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
           {selectedItem && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                {selectedItem.name} ({selectedItem.sku})
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 3, color: '#7f8c8d' }}>
-                Current Stock: {selectedItem.currentStock} | Min Stock: {selectedItem.minStock}
-              </Typography>
-              <TextField
-                fullWidth
-                label="New Stock Level"
-                type="number"
-                value={stockUpdateForm.newStock}
-                onChange={(e) => setStockUpdateForm({...stockUpdateForm, newStock: e.target.value})}
-                sx={{ mb: 2 }}
-              />
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Reason</InputLabel>
-                <Select 
-                  value={stockUpdateForm.reason}
-                  label="Reason"
-                  onChange={(e) => setStockUpdateForm({...stockUpdateForm, reason: e.target.value})}
-                >
-                  <MenuItem value="restock">Restock</MenuItem>
-                  <MenuItem value="damaged">Damaged</MenuItem>
-                  <MenuItem value="sold">Sold</MenuItem>
-                  <MenuItem value="returned">Returned</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                fullWidth
-                label="Notes"
-                multiline
-                rows={3}
-                value={stockUpdateForm.notes}
-                onChange={(e) => setStockUpdateForm({...stockUpdateForm, notes: e.target.value})}
-                placeholder="Additional notes..."
-              />
+            <Box>
+              <Box sx={{ mb: 3, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: '#2C3E50', fontWeight: 'bold' }}>
+                  {selectedItem.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#7f8c8d', mb: 1 }}>
+                  SKU: {selectedItem.sku}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 3 }}>
+                  <Typography variant="body2" sx={{ color: '#2C3E50', fontWeight: 500 }}>
+                    Current Stock: <span style={{ color: '#1ABC9C', fontWeight: 'bold' }}>{selectedItem.currentStock}</span>
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#2C3E50', fontWeight: 500 }}>
+                    Min Stock: <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>{selectedItem.minStock}</span>
+                  </Typography>
+                </Box>
+              </Box>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="New Stock Level"
+                    type="number"
+                    value={stockUpdateForm.newStock}
+                    onChange={(e) => setStockUpdateForm({...stockUpdateForm, newStock: e.target.value})}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel>Reason for Update</InputLabel>
+                    <Select 
+                      value={stockUpdateForm.reason}
+                      label="Reason for Update"
+                      onChange={(e) => setStockUpdateForm({...stockUpdateForm, reason: e.target.value})}
+                      sx={{ 
+                        borderRadius: 2,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e0e0e0',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }}
+                    >
+                      <MenuItem value="restock">🔄 Restock</MenuItem>
+                      <MenuItem value="damaged">⚠️ Damaged</MenuItem>
+                      <MenuItem value="sold">💰 Sold</MenuItem>
+                      <MenuItem value="returned">↩️ Returned</MenuItem>
+                      <MenuItem value="other">📝 Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Additional Notes"
+                    multiline
+                    rows={3}
+                    value={stockUpdateForm.notes}
+                    onChange={(e) => setStockUpdateForm({...stockUpdateForm, notes: e.target.value})}
+                    placeholder="Provide details about this stock update..."
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenStockDialog(false)}>Cancel</Button>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenStockDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
           <Button 
             onClick={handleSaveStockUpdate}
             variant="contained"
-            sx={{ bgcolor: '#1ABC9C' }}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              }
+            }}
           >
             Update Stock
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Assignment Dialog */}
-      <Dialog open={openAssignmentDialog} onClose={() => setOpenAssignmentDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Assign Item to Staff</DialogTitle>
-        <DialogContent>
+      {/* Supplier Contact Dialog */}
+      <Dialog 
+        open={openSupplierDialog} 
+        onClose={() => setOpenSupplierDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Message sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Send Email to Supplier
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
           {selectedItem && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                {selectedItem.name} ({selectedItem.sku})
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 3, color: '#7f8c8d' }}>
-                Currently assigned to: {selectedItem.assignedStaff}
-              </Typography>
+            <Box>
+              {/* Email Header Info */}
+              <Box sx={{ mb: 3, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: '#2C3E50', fontWeight: 'bold' }}>
+                  📧 Email Details
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#7f8c8d', mb: 2 }}>
+                  Item: {selectedItem.name} | SKU: {selectedItem.sku}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 3 }}>
+                  <Typography variant="body2" sx={{ color: '#2C3E50', fontWeight: 500 }}>
+                    Current Stock: <span style={{ color: '#1ABC9C', fontWeight: 'bold' }}>{selectedItem.currentStock}</span>
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#2C3E50', fontWeight: 500 }}>
+                    Min Stock: <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>{selectedItem.minStock}</span>
+                  </Typography>
+                </Box>
+              </Box>
+              
+              {/* Email Form */}
+              <Box sx={{ 
+                border: '1px solid #e0e0e0', 
+                borderRadius: 2, 
+                overflow: 'hidden',
+                background: 'white'
+              }}>
+                {/* Email Header Fields */}
+                <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', background: '#f8f9fa' }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="To"
+                        value={supplierForm.to}
+                        onChange={(e) => setSupplierForm({...supplierForm, to: e.target.value})}
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 1,
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <TextField
+                        fullWidth
+                        label="Subject"
+                        value={supplierForm.subject}
+                        onChange={(e) => setSupplierForm({...supplierForm, subject: e.target.value})}
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 1,
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl fullWidth>
+                        <InputLabel>Priority</InputLabel>
+                        <Select
+                          value={supplierForm.priority}
+                          label="Priority"
+                          onChange={(e) => setSupplierForm({...supplierForm, priority: e.target.value})}
+                          sx={{ 
+                            borderRadius: 1,
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#e0e0e0',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1ABC9C',
+                            }
+                          }}
+                        >
+                          <MenuItem value="low">🟢 Low</MenuItem>
+                          <MenuItem value="normal">🟡 Normal</MenuItem>
+                          <MenuItem value="high">🔴 High</MenuItem>
+                          <MenuItem value="urgent">🚨 Urgent</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Box>
+                
+                {/* Email Body */}
+                <Box sx={{ p: 3 }}>
+                  <TextField
+                    fullWidth
+                    label="Message"
+                    multiline
+                    rows={8}
+                    value={supplierForm.message}
+                    onChange={(e) => setSupplierForm({...supplierForm, message: e.target.value})}
+                    placeholder="Compose your email message..."
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 1,
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1ABC9C',
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenSupplierDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveSupplierContact}
+            variant="contained"
+            disabled={!supplierForm.to || !supplierForm.subject || !supplierForm.message}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              },
+              '&:disabled': {
+                background: '#bdc3c7',
+                boxShadow: 'none'
+              }
+            }}
+          >
+            Send Email
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Assignment Dialog */}
+      <Dialog 
+        open={openAssignmentDialog} 
+        onClose={() => setOpenAssignmentDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.12)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            border: '1px solid rgba(26, 188, 156, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle 
+          sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+            color: 'white',
+            borderRadius: '12px 12px 0 0',
+            py: 3,
+            px: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Box sx={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: '50%', 
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Assignment sx={{ color: 'white', fontSize: 20 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Assign Item to Staff
+          </Typography>
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, background: '#f6fefb' }}>
+          {selectedItem && (
+            <Box>
+              <Box sx={{ mb: 3, p: 3, background: 'rgba(26, 188, 156, 0.05)', borderRadius: 2, border: '1px solid rgba(26, 188, 156, 0.1)' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: '#2C3E50', fontWeight: 'bold' }}>
+                  {selectedItem.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#7f8c8d', mb: 2 }}>
+                  SKU: {selectedItem.sku}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="body2" sx={{ color: '#2C3E50', fontWeight: 500 }}>
+                    Currently assigned to:
+                  </Typography>
+                  <Avatar sx={{ width: 20, height: 20, fontSize: '0.7rem', bgcolor: '#1ABC9C', ml: 1 }}>
+                    {selectedItem.assignedStaff.split(' ').map(n => n[0]).join('')}
+                  </Avatar>
+                  <Typography variant="body2" sx={{ color: '#1ABC9C', fontWeight: 'bold' }}>
+                    {selectedItem.assignedStaff}
+                  </Typography>
+                </Box>
+              </Box>
+              
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: '#2C3E50', fontWeight: 'bold' }}>
+                  Select Staff Member
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 3, color: '#7f8c8d' }}>
+                  Choose a staff member to assign this item to. Consider their current workload.
+                </Typography>
+              </Box>
+              
               <FormControl fullWidth>
                 <InputLabel>Assign To</InputLabel>
                 <Select
@@ -1133,14 +1736,42 @@ const ManagerItemManagement = () => {
                     const staffMember = staff.find(s => s.id === e.target.value);
                     setSelectedStaff(staffMember);
                   }}
+                  sx={{ 
+                    borderRadius: 2,
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#e0e0e0',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1ABC9C',
+                    }
+                  }}
                 >
                   {staff.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', bgcolor: '#1ABC9C' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                        <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: '#1ABC9C' }}>
                           {member.avatar}
                         </Avatar>
-                        {member.name} ({member.assignedItems} items)
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                            {member.name}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                            {member.assignedItems} items assigned
+                          </Typography>
+                        </Box>
+                        <Chip 
+                          label={member.workload} 
+                          size="small" 
+                          sx={{ 
+                            bgcolor: getWorkloadColor(member.workload),
+                            color: 'white',
+                            fontWeight: 'bold'
+                          }}
+                        />
                       </Box>
                     </MenuItem>
                   ))}
@@ -1149,15 +1780,51 @@ const ManagerItemManagement = () => {
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAssignmentDialog(false)}>Cancel</Button>
+        
+        <DialogActions sx={{ 
+          p: 4, 
+          background: '#f8f9fa',
+          borderRadius: '0 0 12px 12px',
+          borderTop: '1px solid rgba(26, 188, 156, 0.1)'
+        }}>
+          <Button 
+            onClick={() => setOpenAssignmentDialog(false)}
+            sx={{ 
+              color: '#7f8c8d',
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              '&:hover': {
+                background: 'rgba(127, 140, 141, 0.1)'
+              }
+            }}
+          >
+            Cancel
+          </Button>
           <Button 
             onClick={handleAssignToStaff}
             variant="contained"
-            sx={{ bgcolor: '#1ABC9C' }}
             disabled={!selectedStaff}
+            sx={{ 
+              background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(26, 188, 156, 0.3)',
+              '&:hover': { 
+                background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)',
+                boxShadow: '0 6px 16px rgba(26, 188, 156, 0.4)'
+              },
+              '&:disabled': {
+                background: '#bdc3c7',
+                boxShadow: 'none'
+              }
+            }}
           >
-            Assign
+            Assign Item
           </Button>
         </DialogActions>
       </Dialog>
