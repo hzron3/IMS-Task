@@ -18,6 +18,8 @@ import Sidebar from './Sidebar';
 import CategoryOverview from './CategoryOverview';
 import ManagerItemManagement from './ManagerItemManagement';
 import StaffManagement from './StaffManagement';
+import Settings from './Settings';
+import ManagerReportsAnalytics from './ManagerReportsAnalytics';
 
 const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
@@ -176,6 +178,10 @@ const ManagerDashboard = () => {
             <ManagerItemManagement />
           ) : selectedIndex === 2 ? (
             <StaffManagement />
+          ) : selectedIndex === 3 ? (
+            <ManagerReportsAnalytics />
+          ) : selectedIndex === 4 ? (
+            <Settings />
           ) : (
             <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>

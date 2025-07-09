@@ -1,59 +1,43 @@
 /* Staff Management Styles */
 
-/* Override Bootstrap grid interference with Material-UI Grid */
-.staff-management-container .MuiGrid-container {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  margin: 0 !important;
+/* Bootstrap grid */
+.staff-management-container .row {
+  margin: 0;
 }
 
-.staff-management-container .MuiGrid-item {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
+.staff-management-container .col-12,
+.staff-management-container .col-sm-6,
+.staff-management-container .col-md-3,
+.staff-management-container .col-md-4,
+.staff-management-container .col-md-6,
+.staff-management-container .col-md-8 {
+  padding: 0 12px;
 }
 
-/* Ensure proper responsive behavior */
-.staff-management-container .MuiGrid-item[class*="xs-12"] {
-  flex-basis: 100% !important;
-  max-width: 100% !important;
-}
-
-.staff-management-container .MuiGrid-item[class*="sm-4"] {
-  flex-basis: 33.333333% !important;
-  max-width: 33.333333% !important;
-}
-
-.staff-management-container .MuiGrid-item[class*="md-6"] {
-  flex-basis: 50% !important;
-  max-width: 50% !important;
-}
-
-.staff-management-container .MuiGrid-item[class*="lg-4"] {
-  flex-basis: 33.333333% !important;
-  max-width: 33.333333% !important;
-}
-
-/* Responsive breakpoints */
+/* responsive grid */
 @media (max-width: 600px) {
-  .staff-management-container .MuiGrid-item[class*="sm-4"] {
-    flex-basis: 100% !important;
-    max-width: 100% !important;
-  }
-  
-  .staff-management-container .MuiGrid-item[class*="md-6"] {
-    flex-basis: 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-@media (max-width: 960px) {
-  .staff-management-container .MuiGrid-item[class*="lg-4"] {
-    flex-basis: 50% !important;
-    max-width: 50% !important;
+  .staff-management-container .col-12,
+  .staff-management-container .col-sm-6,
+  .staff-management-container .col-md-3,
+  .staff-management-container .col-md-4,
+  .staff-management-container .col-md-6,
+  .staff-management-container .col-md-8 {
+    padding: 0 8px;
   }
 }
 
-/* Enhanced Card Styles */
+@media (min-width: 601px) and (max-width: 960px) {
+  .staff-management-container .col-12,
+  .staff-management-container .col-sm-6,
+  .staff-management-container .col-md-3,
+  .staff-management-container .col-md-4,
+  .staff-management-container .col-md-6,
+  .staff-management-container .col-md-8 {
+    padding: 0 10px;
+  }
+}
+
+/* Card Styles */
 .staff-management-container .MuiCard-root {
   border-radius: 16px !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
@@ -89,7 +73,7 @@
   padding: 24px !important;
 }
 
-/* Enhanced Summary Cards */
+/* Summary Cards */
 .staff-management-container .summary-card {
   background: linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%) !important;
   color: white !important;
@@ -143,7 +127,7 @@
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) !important;
 }
 
-/* Enhanced Staff Cards */
+/* Staff Cards */
 .staff-management-container .staff-card {
   border-radius: 16px !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -197,7 +181,7 @@
   padding: 20px !important;
 }
 
-/* Enhanced Search Filter Card */
+/* Search Filter Card */
 .staff-management-container .search-filter-card {
   border-radius: 16px !important;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08) !important;
@@ -215,7 +199,7 @@
   padding: 24px !important;
 }
 
-/* Enhanced Table Cards */
+/* Table Cards */
 .staff-management-container .MuiTableContainer-root {
   border-radius: 16px !important;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08) !important;
@@ -254,7 +238,7 @@
   border-bottom: 1px solid rgba(0,0,0,0.05) !important;
 }
 
-/* Enhanced Status Indicator */
+/* Status Indicator */
 .staff-management-container .status-indicator {
   width: 14px !important;
   height: 14px !important;
@@ -286,7 +270,7 @@
   100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
 }
 
-/* Enhanced Workload Indicator */
+/* Workload Indicator */
 .staff-management-container .workload-indicator {
   width: 10px !important;
   height: 10px !important;
@@ -308,7 +292,7 @@
   background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
 }
 
-/* Enhanced Progress Bar */
+/* Progress Bar */
 .staff-management-container .MuiLinearProgress-root {
   border-radius: 8px !important;
   height: 10px !important;
@@ -322,7 +306,7 @@
   box-shadow: 0 2px 4px rgba(26, 188, 156, 0.3) !important;
 }
 
-/* Enhanced Button Styling */
+/* Button Styling */
 .staff-management-container .MuiButton-contained {
   background: linear-gradient(135deg, #1ABC9C, #27ae60) !important;
   border-radius: 12px !important;
@@ -359,7 +343,7 @@
   box-shadow: 0 4px 12px rgba(26, 188, 156, 0.2) !important;
 }
 
-/* Enhanced Chip Styling */
+/* Chip Styling */
 .staff-management-container .MuiChip-root {
   border-radius: 12px !important;
   font-weight: 600 !important;
@@ -373,7 +357,7 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
 }
 
-/* Enhanced Tab Styling */
+/* Tab Styling */
 .staff-management-container .MuiTabs-root {
   border-bottom: 2px solid #e9ecef !important;
   margin-bottom: 24px !important;
@@ -403,7 +387,7 @@
   border-radius: 2px !important;
 }
 
-/* Enhanced Form Controls */
+/* Form Controls */
 .staff-management-container .MuiTextField-root {
   border-radius: 12px !important;
 }
@@ -429,7 +413,7 @@
   border-radius: 12px !important;
 }
 
-/* Enhanced Avatar Styling */
+/* Avatar Styling */
 .staff-management-container .MuiAvatar-root {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
   transition: all 0.3s ease !important;
@@ -440,7 +424,7 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.2) !important;
 }
 
-/* Enhanced Typography */
+/* Typography */
 .staff-management-container .MuiTypography-h4 {
   font-weight: 800 !important;
   background: linear-gradient(135deg, #2C3E50, #1ABC9C) !important;
@@ -461,7 +445,7 @@
   color: #2C3E50 !important;
 }
 
-/* Enhanced List Styling */
+/* List Styling */
 .staff-management-container .MuiList-root {
   border-radius: 12px !important;
   overflow: hidden !important;
@@ -480,12 +464,17 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .staff-management-container .MuiGrid-container {
-    margin: 0 -8px !important;
+  .staff-management-container .row {
+    margin: 0;
   }
   
-  .staff-management-container .MuiGrid-item {
-    padding: 0 8px !important;
+  .staff-management-container .col-12,
+  .staff-management-container .col-sm-6,
+  .staff-management-container .col-md-3,
+  .staff-management-container .col-md-4,
+  .staff-management-container .col-md-6,
+  .staff-management-container .col-md-8 {
+    padding: 0 8px;
   }
   
   .staff-management-container .MuiCardContent-root {
@@ -494,12 +483,17 @@
 }
 
 @media (max-width: 480px) {
-  .staff-management-container .MuiGrid-container {
-    margin: 0 -4px !important;
+  .staff-management-container .row {
+    margin: 0;
   }
   
-  .staff-management-container .MuiGrid-item {
-    padding: 0 4px !important;
+  .staff-management-container .col-12,
+  .staff-management-container .col-sm-6,
+  .staff-management-container .col-md-3,
+  .staff-management-container .col-md-4,
+  .staff-management-container .col-md-6,
+  .staff-management-container .col-md-8 {
+    padding: 0 4px;
   }
   
   .staff-management-container .MuiCardContent-root {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Box, Typography, Card, CardContent, Grid, Button, Avatar, Chip,
+  Box, Typography, Card, CardContent, Button, Avatar, Chip,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
   FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
@@ -146,120 +146,189 @@ const StaffManagement = () => {
 
   const renderStaffOverview = () => (
     <Box>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
+      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
         Staff Overview
       </Typography>
 
       {/* Staff Summary Cards */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
+      <div className="row mb-4">
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
             color: 'white',
-            borderRadius: 3
+            borderRadius: 4,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.3)',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': { transform: 'translateY(-4px)' }
           }}>
-            <CardContent>
+            <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 1 }}>
                     {staff.length}
                   </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                  <Typography variant="body1" sx={{ opacity: 0.9, fontWeight: 500 }}>
                     Total Staff
                   </Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                    Active team members
+                  </Typography>
                 </Box>
-                <Group sx={{ fontSize: 40, opacity: 0.8 }} />
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 3, 
+                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <Group sx={{ fontSize: 36, opacity: 0.9 }} />
+                </Box>
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #16a085 100%)',
+            color: 'white',
+            borderRadius: 4,
+            boxShadow: '0 8px 32px rgba(26, 188, 156, 0.3)',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    {staff.filter(s => s.status === 'online').length}
+                  </Typography>
+                  <Typography variant="body1" sx={{ opacity: 0.9, fontWeight: 500 }}>
+                    Online Now
+                  </Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                    Currently active
+                  </Typography>
+                </Box>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 3, 
+                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <CheckCircle sx={{ fontSize: 36, opacity: 0.9 }} />
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, #2C3E50 0%, #34495e 100%)',
+            color: 'white',
+            borderRadius: 4,
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.3)',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    {staff.reduce((sum, s) => sum + s.assignedItems, 0)}
+                  </Typography>
+                  <Typography variant="body1" sx={{ opacity: 0.9, fontWeight: 500 }}>
+                    Assigned Items
+                  </Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                    Total inventory managed
+                  </Typography>
+                </Box>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 3, 
+                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <Inventory sx={{ fontSize: 36, opacity: 0.9 }} />
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
             color: 'white',
-            borderRadius: 3
+            borderRadius: 4,
+            boxShadow: '0 8px 32px rgba(26, 188, 156, 0.3)',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': { transform: 'translateY(-4px)' }
           }}>
-            <CardContent>
+            <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                    {staff.filter(s => s.status === 'online').length}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    Online Now
-                  </Typography>
-                </Box>
-                <CheckCircle sx={{ fontSize: 40, opacity: 0.8 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            background: 'linear-gradient(135deg, #27ae60 0%, #f39c12 100%)',
-            color: 'white',
-            borderRadius: 3
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                    {staff.reduce((sum, s) => sum + s.assignedItems, 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    Total Assigned Items
-                  </Typography>
-                </Box>
-                <Inventory sx={{ fontSize: 40, opacity: 0.8 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
-            color: 'white',
-            borderRadius: 3
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 1 }}>
                     {Math.round(staff.reduce((sum, s) => sum + s.performance, 0) / staff.length)}%
                   </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                  <Typography variant="body1" sx={{ opacity: 0.9, fontWeight: 500 }}>
                     Avg Performance
                   </Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                    Team efficiency
+                  </Typography>
                 </Box>
-                <TrendingUp sx={{ fontSize: 40, opacity: 0.8 }} />
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 3, 
+                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <TrendingUp sx={{ fontSize: 36, opacity: 0.9 }} />
+                </Box>
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       {/* Search and Filter Controls */}
-      <Card className="search-filter-card" sx={{ mb: 3, borderRadius: 3 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
+      <Card sx={{ 
+        mb: 4, 
+        borderRadius: 4, 
+        background: 'linear-gradient(135deg, #f6fefb 0%, #ecf0f1 100%)',
+        boxShadow: '0 4px 20px rgba(44, 62, 80, 0.1)'
+      }}>
+        <CardContent sx={{ p: 3 }}>
+          <div className="row align-items-center">
+            <div className="col-12 col-md-4 mb-3">
               <TextField
                 fullWidth
-                placeholder="Search staff by name..."
+                placeholder="Search staff by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                  startAdornment: <Search sx={{ mr: 1, color: '#1ABC9C' }} />,
+                  sx: { 
+                    borderRadius: 3,
+                    bgcolor: 'white',
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
+                  }
                 }}
+                sx={{ '& .MuiInputBase-root': { boxShadow: '0 2px 8px rgba(44, 62, 80, 0.1)' } }}
               />
-            </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            </div>
+            <div className="col-12 col-sm-6 col-md-2 mb-3">
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select 
                   label="Status" 
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
+                  sx={{ 
+                    borderRadius: 3,
+                    bgcolor: 'white',
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    boxShadow: '0 2px 8px rgba(44, 62, 80, 0.1)'
+                  }}
                 >
                   <MenuItem value="all">All Status</MenuItem>
                   <MenuItem value="online">Online</MenuItem>
@@ -267,14 +336,20 @@ const StaffManagement = () => {
                   <MenuItem value="offline">Offline</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            </div>
+            <div className="col-12 col-sm-6 col-md-2 mb-3">
               <FormControl fullWidth>
                 <InputLabel>Workload</InputLabel>
                 <Select 
                   label="Workload" 
                   value={workloadFilter}
                   onChange={(e) => setWorkloadFilter(e.target.value)}
+                  sx={{ 
+                    borderRadius: 3,
+                    bgcolor: 'white',
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    boxShadow: '0 2px 8px rgba(44, 62, 80, 0.1)'
+                  }}
                 >
                   <MenuItem value="all">All Workloads</MenuItem>
                   <MenuItem value="normal">Normal</MenuItem>
@@ -282,33 +357,55 @@ const StaffManagement = () => {
                   <MenuItem value="overloaded">Overloaded</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            </div>
+            <div className="col-12 col-sm-6 col-md-2 mb-3">
               <Button
                 variant="contained"
                 startIcon={<Add />}
                 fullWidth
-                sx={{ bgcolor: '#1ABC9C', '&:hover': { bgcolor: '#27ae60' } }}
+                sx={{ 
+                  borderRadius: 3,
+                  background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                  boxShadow: '0 4px 15px rgba(44, 62, 80, 0.4)',
+                  '&:hover': { 
+                    background: 'linear-gradient(135deg, #1ABC9C 0%, #16a085 100%)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 20px rgba(26, 188, 156, 0.5)'
+                  },
+                  transition: 'all 0.3s ease'
+                }}
               >
                 Add Staff
               </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            </div>
+            <div className="col-12 col-sm-6 col-md-2 mb-3">
               <Button
                 variant="outlined"
                 startIcon={<Assignment />}
                 fullWidth
-                sx={{ borderColor: '#1ABC9C', color: '#1ABC9C' }}
+                sx={{ 
+                  borderRadius: 3,
+                  borderColor: '#1ABC9C',
+                  color: '#1ABC9C',
+                  borderWidth: 2,
+                  '&:hover': { 
+                    borderColor: '#16a085',
+                    color: '#16a085',
+                    bgcolor: 'rgba(26, 188, 156, 0.05)',
+                    transform: 'translateY(-2px)'
+                  },
+                  transition: 'all 0.3s ease'
+                }}
               >
                 Assign Task
               </Button>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Staff Cards */}
-      <Grid container spacing={3}>
+      <div className="row">
         {staff
           .filter(member => 
             member.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -316,135 +413,207 @@ const StaffManagement = () => {
             (workloadFilter === 'all' || member.workloadStatus === workloadFilter)
           )
           .map((member) => (
-          <Grid item xs={12} md={6} key={member.id}>
-            <Card className={`staff-card ${member.status}`} sx={{ 
-              borderRadius: 3, 
-              p: 2,
-              border: member.status === 'online' ? '2px solid #27ae60' : 
-                      member.status === 'away' ? '2px solid #f39c12' : '2px solid #95a5a6',
-              bgcolor: member.status === 'online' ? 'rgba(39, 174, 96, 0.02)' : 
-                       member.status === 'away' ? 'rgba(243, 156, 18, 0.02)' : 'rgba(149, 165, 166, 0.02)'
+          <div className="col-12 col-md-6 mb-3" key={member.id}>
+            <Card sx={{ 
+              borderRadius: 4, 
+              p: 3,
+              background: 'linear-gradient(135deg, #ffffff 0%, #f6fefb 100%)',
+              border: member.status === 'online' ? '2px solid #1ABC9C' : 
+                      member.status === 'away' ? '2px solid #2C3E50' : '2px solid #95a5a6',
+              boxShadow: member.status === 'online' ? '0 8px 32px rgba(26, 188, 156, 0.2)' : 
+                         member.status === 'away' ? '0 8px 32px rgba(44, 62, 80, 0.2)' : '0 4px 20px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { 
+                transform: 'translateY(-8px)',
+                boxShadow: member.status === 'online' ? '0 12px 40px rgba(26, 188, 156, 0.3)' : 
+                           member.status === 'away' ? '0 12px 40px rgba(44, 62, 80, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.15)'
+              }
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+              {/* Header Section */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
                 <Box sx={{ position: 'relative' }}>
-                  <Avatar sx={{ width: 48, height: 48, bgcolor: '#1ABC9C', fontSize: '1.2rem' }}>
+                  <Avatar sx={{ 
+                    width: 64, 
+                    height: 64, 
+                    background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    boxShadow: '0 4px 15px rgba(44, 62, 80, 0.3)'
+                  }}>
                     {member.avatar}
                   </Avatar>
                   <Box
                     sx={{
-                      width: 12,
-                      height: 12,
+                      width: 16,
+                      height: 16,
                       borderRadius: '50%',
-                      bgcolor: member.status === 'online' ? '#27ae60' : 
-                               member.status === 'away' ? '#f39c12' : '#95a5a6',
-                      border: '2px solid white',
+                      bgcolor: member.status === 'online' ? '#1ABC9C' : 
+                               member.status === 'away' ? '#2C3E50' : '#95a5a6',
+                      border: '3px solid white',
                       position: 'absolute',
-                      bottom: 0,
-                      right: 0
+                      bottom: 2,
+                      right: 2,
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
                     }}
                   />
                 </Box>
                 <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#2C3E50', mb: 0.5 }}>
                     {member.name}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body1" color="text.secondary" sx={{ mb: 0.5 }}>
                     {member.email}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Last active: {formatDateTime(member.lastActivity)}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                         <Box
+                       sx={{
+                         width: 8,
+                         height: 8,
+                         borderRadius: '50%',
+                         bgcolor: member.status === 'online' ? '#1ABC9C' : 
+                                  member.status === 'away' ? '#2C3E50' : '#95a5a6'
+                       }}
+                     />
+                    <Typography variant="caption" color="text.secondary">
+                      Last active: {formatDateTime(member.lastActivity)}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
               
-              {/* Workload Status */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Typography variant="body2" color="text.secondary">Workload:</Typography>
+              {/* Status and Performance Row */}
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
                 <Chip
                   label={member.workloadStatus}
-                  size="small"
+                  size="medium"
                   sx={{
-                    bgcolor: getWorkloadColor(member.workloadStatus),
+                    background: `linear-gradient(135deg, ${getWorkloadColor(member.workloadStatus)} 0%, ${getWorkloadColor(member.workloadStatus)}dd 100%)`,
                     color: 'white',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    fontSize: '0.875rem',
+                    px: 2
                   }}
                 />
+                                 <Box sx={{ textAlign: 'right' }}>
+                   <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1ABC9C' }}>
+                     {member.performance}%
+                   </Typography>
+                   <Typography variant="caption" color="text.secondary">
+                     Performance
+                   </Typography>
+                 </Box>
               </Box>
               
-              {/* Performance Metrics */}
-              <Box sx={{ mb: 2 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Box sx={{ textAlign: 'center', p: 1, bgcolor: 'rgba(26, 188, 156, 0.05)', borderRadius: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1ABC9C' }}>
-                        {Math.round((member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100)}%
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Completion Rate
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Box sx={{ textAlign: 'center', p: 1, bgcolor: 'rgba(52, 152, 219, 0.05)', borderRadius: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#3498db' }}>
-                        {member.assignedItems}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Assigned Items
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
+              {/* Metrics Grid */}
+              <div className="row mb-3">
+                <div className="col-4">
+                  <Box sx={{ 
+                    textAlign: 'center', 
+                    p: 2, 
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg,rgb(206, 207, 207) 0%,rgb(196, 229, 222) 100%)',
+                    color: 'white'
+                  }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      {Math.round((member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100)}%
+                    </Typography>
+                    <Typography variant="caption" color="black" sx={{ opacity: 0.9 }}>
+                      Completion
+                    </Typography>
+                  </Box>
+                </div>
+                <div className="col-4">
+                  <Box sx={{ 
+                    textAlign: 'center', 
+                    p: 2, 
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg,rgb(206, 207, 207) 0%,rgb(196, 229, 222) 100%)',
+                    color: 'white'
+                  }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      {member.assignedItems}
+                    </Typography>
+                    <Typography variant="caption" color="black" sx={{ opacity: 0.9 }}>
+                      Items
+                    </Typography>
+                  </Box>
+                </div>
+                <div className="col-4">
+                  <Box sx={{ 
+                    textAlign: 'center', 
+                    p: 2, 
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg,rgb(206, 207, 207) 0%,rgb(196, 229, 222) 100%)',
+                    color: 'white'
+                  }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      {member.pendingTasks}
+                    </Typography>
+                    <Typography variant="caption" color="black" sx={{ opacity: 0.9 }}>
+                      Pending
+                    </Typography>
+                  </Box>
+                </div>
+              </div>
               
               {/* Task Progress */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Task Progress
-                </Typography>
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
+                    Task Progress
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {member.completedTasks}/{member.completedTasks + member.pendingTasks}
+                  </Typography>
+                </Box>
                 <LinearProgress
                   variant="determinate"
                   value={(member.completedTasks / (member.completedTasks + member.pendingTasks)) * 100}
                   sx={{ 
-                    height: 8, 
-                    borderRadius: 4,
-                    bgcolor: 'rgba(26, 188, 156, 0.2)',
+                    height: 10, 
+                    borderRadius: 5,
+                    bgcolor: 'rgba(26, 188, 156, 0.1)',
                     '& .MuiLinearProgress-bar': {
-                      bgcolor: '#1ABC9C'
+                      background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                      borderRadius: 5
                     }
                   }}
                 />
-                <Typography variant="caption" color="text.secondary">
-                  {member.completedTasks} completed / {member.completedTasks + member.pendingTasks} total tasks
-                </Typography>
               </Box>
               
               {/* Assigned Categories */}
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 3 }}>
                 {member.assignedCategories.map(category => (
-                  <Chip
-                    key={category}
-                    label={category}
-                    size="small"
-                    sx={{
-                      bgcolor: '#e3f2fd',
-                      color: '#1976d2',
-                      fontWeight: 'bold'
-                    }}
-                  />
+                                      <Chip
+                      key={category}
+                      label={category}
+                      size="small"
+                      sx={{
+                        background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '0.75rem'
+                      }}
+                    />
                 ))}
               </Box>
 
               {/* Action Buttons */}
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                 <Button
                   size="small"
                   variant="contained"
                   startIcon={<Assignment />}
                   sx={{ 
-                    borderRadius: 2,
-                    bgcolor: '#1ABC9C',
-                    '&:hover': { bgcolor: '#27ae60' }
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
+                    boxShadow: '0 4px 15px rgba(44, 62, 80, 0.3)',
+                    '&:hover': { 
+                      background: 'linear-gradient(135deg, #1ABC9C 0%, #16a085 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 20px rgba(26, 188, 156, 0.4)'
+                    },
+                    transition: 'all 0.3s ease'
                   }}
                 >
                   Assign Task
@@ -453,7 +622,16 @@ const StaffManagement = () => {
                   size="small"
                   variant="outlined"
                   startIcon={<Visibility />}
-                  sx={{ borderRadius: 2 }}
+                  sx={{ 
+                    borderRadius: 3,
+                    borderColor: '#1ABC9C',
+                    color: '#1ABC9C',
+                    '&:hover': { 
+                      borderColor: '#16a085',
+                      color: '#16a085',
+                      bgcolor: 'rgba(26, 188, 156, 0.05)'
+                    }
+                  }}
                 >
                   View Details
                 </Button>
@@ -461,15 +639,24 @@ const StaffManagement = () => {
                   size="small"
                   variant="outlined"
                   startIcon={<Message />}
-                  sx={{ borderRadius: 2 }}
+                  sx={{ 
+                    borderRadius: 3,
+                    borderColor: '#2C3E50',
+                    color: '#2C3E50',
+                    '&:hover': { 
+                      borderColor: '#34495e',
+                      color: '#34495e',
+                      bgcolor: 'rgba(44, 62, 80, 0.05)'
+                    }
+                  }}
                 >
                   Message
                 </Button>
               </Box>
             </Card>
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </div>
     </Box>
   );
 
@@ -480,8 +667,8 @@ const StaffManagement = () => {
       </Typography>
       
       {/* Task Overview Cards */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
+      <div className="row mb-3">
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)',
             color: 'white',
@@ -501,8 +688,8 @@ const StaffManagement = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
             color: 'white',
@@ -522,8 +709,8 @@ const StaffManagement = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #27ae60 0%, #f39c12 100%)',
             color: 'white',
@@ -543,8 +730,8 @@ const StaffManagement = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        </div>
+        <div className="col-12 col-sm-6 col-md-3 mb-3">
           <Card sx={{ 
             background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
             color: 'white',
@@ -566,11 +753,11 @@ const StaffManagement = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+      <div className="row">
+        <div className="col-12 col-md-8 mb-3">
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -678,9 +865,9 @@ const StaffManagement = () => {
               </TableContainer>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={4}>
+        <div className="col-12 col-md-4 mb-3">
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
@@ -731,8 +918,8 @@ const StaffManagement = () => {
               ))}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Box>
   );
 
@@ -742,8 +929,8 @@ const StaffManagement = () => {
         Performance Analytics
       </Typography>
       
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+      <div className="row">
+        <div className="col-12 col-md-6 mb-3">
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
@@ -776,9 +963,9 @@ const StaffManagement = () => {
               ))}
             </CardContent>
           </Card>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={6}>
+        <div className="col-12 col-md-6 mb-3">
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#2C3E50' }}>
@@ -825,8 +1012,8 @@ const StaffManagement = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Box>
   );
 

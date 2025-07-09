@@ -2,39 +2,36 @@ import React, { useState } from "react";
 import "./Settings.css";
 
 const Settings = () => {
-  const [activeTab, setActiveTab] = useState('appearance');
+  // Mock user role
+  const userRole = "Manager"; // Can be "Admin", "Manager", "Staff", "Guest"
+  
+  const [activeTab, setActiveTab] = useState('profile');
   const [settings, setSettings] = useState({
-    // User Profile Settings
+    // Profile Settings
     firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@company.com",
-    phone: "+1 (555) 123-4567",
-    department: "IT",
-    position: "System Administrator",
-    
-    // Security Settings
-    twoFactorAuth: true,
-    passwordExpiry: 90,
-    sessionTimeout: 30,
-    loginNotifications: true,
+    lastName: "Smith",
+    email: "john.smith@inventorypro.com",
+    phone: "+254 700 123 456",
+    department: "Warehouse Management",
+    profilePicture: null,
     
     // Notification Settings
     emailNotifications: true,
-    pushNotifications: false,
-    smsNotifications: false,
+    pushNotifications: true,
+    lowStockAlerts: true,
+    taskAssignments: true,
     weeklyReports: true,
-    systemAlerts: true,
+    systemUpdates: true,
+    realTimeUpdates: false,
+    urgentAlerts: true,
     
-    // Appearance Settings
+    // Preferences
     theme: "light",
     timezone: "EAT",
-    dateFormat: "MM/DD/YYYY",
+    dateFormat: "DD/MM/YYYY",
     currency: "Ksh",
-    
-    // System Settings
-    autoBackup: true,
-    backupFrequency: "daily",
-    dataRetention: 365
+    exportFormat: "PDF",
+    weeklyReports: true
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -73,15 +70,352 @@ const Settings = () => {
     setOpenSnackbar(false);
   };
 
-  const navigationItems = [
-    { id: 'appearance', label: 'Appearance', icon: 'fas fa-palette' },
-    { id: 'notifications', label: 'Notification Preferences', icon: 'fas fa-bell' },
-    { id: 'security', label: 'Security', icon: 'fas fa-shield-alt' },
-    { id: 'system', label: 'System Settings', icon: 'fas fa-cog' }
-  ];
+  // Role-based navigation items
+  const getNavigationItems = () => {
+    switch (userRole) {
+      case "Manager":
+        return [
+          { id: 'profile', label: 'Profile & Account', icon: 'fas fa-user' },
+          { id: 'notifications', label: 'Notifications', icon: 'fas fa-bell' },
+          { id: 'preferences', label: 'Preferences', icon: 'fas fa-cog' }
+        ];
+      case "Admin":
+        return [
+          { id: 'appearance', label: 'Appearance', icon: 'fas fa-palette' },
+          { id: 'notifications', label: 'Notification Preferences', icon: 'fas fa-bell' },
+          { id: 'security', label: 'Security', icon: 'fas fa-shield-alt' },
+          { id: 'system', label: 'System Settings', icon: 'fas fa-cog' }
+        ];
+      default:
+        return [
+          { id: 'profile', label: 'Profile & Account', icon: 'fas fa-user' },
+          { id: 'notifications', label: 'Notifications', icon: 'fas fa-bell' },
+          { id: 'preferences', label: 'Preferences', icon: 'fas fa-cog' }
+        ];
+    }
+  };
+
+  const navigationItems = getNavigationItems();
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'profile':
+        return (
+          <div className="settings-content">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">First Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={settings.firstName}
+                    onChange={(e) => handleSettingChange('firstName', e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Last Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={settings.lastName}
+                    onChange={(e) => handleSettingChange('lastName', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Email Address</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    value={settings.email}
+                    onChange={(e) => handleSettingChange('email', e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    className="form-control"
+                    value={settings.phone}
+                    onChange={(e) => handleSettingChange('phone', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Department</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={settings.department}
+                    onChange={(e) => handleSettingChange('department', e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Profile Picture</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept="image/*"
+                    onChange={(e) => handleSettingChange('profilePicture', e.target.files[0])}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Last Login</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value="2024-01-15 09:30 AM"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Account Status</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value="Active"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-12">
+                <div className="mb-3">
+                  <button className="btn btn-outline-primary">
+                    <i className="fas fa-key me-2"></i>
+                    Change Password
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'notifications':
+        return (
+          <div className="settings-content">
+            <div className="settings-section">
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="emailNotifications"
+                  checked={settings.emailNotifications}
+                  onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="emailNotifications">
+                  Email Notifications
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="lowStockAlerts"
+                  checked={settings.lowStockAlerts}
+                  onChange={(e) => handleSettingChange('lowStockAlerts', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="lowStockAlerts">
+                  Low Stock Alerts
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="taskAssignments"
+                  checked={settings.taskAssignments}
+                  onChange={(e) => handleSettingChange('taskAssignments', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="taskAssignments">
+                  Task Assignments
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="weeklyReports"
+                  checked={settings.weeklyReports}
+                  onChange={(e) => handleSettingChange('weeklyReports', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="weeklyReports">
+                  Weekly Reports
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="systemUpdates"
+                  checked={settings.systemUpdates}
+                  onChange={(e) => handleSettingChange('systemUpdates', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="systemUpdates">
+                  System Updates
+                </label>
+              </div>
+            </div>
+            
+            <div className="settings-section">
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="pushNotifications"
+                  checked={settings.pushNotifications}
+                  onChange={(e) => handleSettingChange('pushNotifications', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="pushNotifications">
+                  Push Notifications
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="realTimeUpdates"
+                  checked={settings.realTimeUpdates}
+                  onChange={(e) => handleSettingChange('realTimeUpdates', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="realTimeUpdates">
+                  Real-time Stock Updates
+                </label>
+              </div>
+              
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="urgentAlerts"
+                  checked={settings.urgentAlerts}
+                  onChange={(e) => handleSettingChange('urgentAlerts', e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="urgentAlerts">
+                  Urgent Alerts
+                </label>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'preferences':
+        return (
+          <div className="settings-content">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Theme</label>
+                  <select
+                    className="form-select"
+                    value={settings.theme}
+                    onChange={(e) => handleSettingChange('theme', e.target.value)}
+                  >
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="auto">Auto</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Timezone</label>
+                  <select
+                    className="form-select"
+                    value={settings.timezone}
+                    onChange={(e) => handleSettingChange('timezone', e.target.value)}
+                  >
+                    <option value="EAT">East Africa Time (EAT)</option>
+                    <option value="UTC-5">Eastern Time (UTC-5)</option>
+                    <option value="UTC-6">Central Time (UTC-6)</option>
+                    <option value="UTC-7">Mountain Time (UTC-7)</option>
+                    <option value="UTC-8">Pacific Time (UTC-8)</option>
+                    <option value="UTC+0">UTC</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Date Format</label>
+                  <select
+                    className="form-select"
+                    value={settings.dateFormat}
+                    onChange={(e) => handleSettingChange('dateFormat', e.target.value)}
+                  >
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Currency</label>
+                  <select
+                    className="form-select"
+                    value={settings.currency}
+                    onChange={(e) => handleSettingChange('currency', e.target.value)}
+                  >
+                    <option value="Ksh">Kenyan Shilling (Ksh)</option>
+                    <option value="USD">US Dollar (USD)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                    <option value="GBP">British Pound (GBP)</option>
+                    <option value="JPY">Japanese Yen (JPY)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Default Export Format</label>
+                  <select
+                    className="form-select"
+                    value={settings.exportFormat}
+                    onChange={(e) => handleSettingChange('exportFormat', e.target.value)}
+                  >
+                    <option value="Excel">Excel</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      // admin tab
       case 'appearance':
         return (
           <div className="settings-content">    
@@ -149,78 +483,6 @@ const Settings = () => {
                     <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'notifications':
-        return (
-          <div className="settings-content">
-            <div className="settings-notifications-section">
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="emailNotifications"
-                  checked={settings.emailNotifications}
-                  onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="emailNotifications">
-                  Email Notifications
-                </label>
-              </div>
-              
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="pushNotifications"
-                  checked={settings.pushNotifications}
-                  onChange={(e) => handleSettingChange('pushNotifications', e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="pushNotifications">
-                  Push Notifications
-                </label>
-              </div>
-              
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="smsNotifications"
-                  checked={settings.smsNotifications}
-                  onChange={(e) => handleSettingChange('smsNotifications', e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="smsNotifications">
-                  SMS Notifications
-                </label>
-              </div>
-              
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="weeklyReports"
-                  checked={settings.weeklyReports}
-                  onChange={(e) => handleSettingChange('weeklyReports', e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="weeklyReports">
-                  Weekly Reports
-                </label>
-              </div>
-              
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="systemAlerts"
-                  checked={settings.systemAlerts}
-                  onChange={(e) => handleSettingChange('systemAlerts', e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="systemAlerts">
-                  System Alerts
-                </label>
               </div>
             </div>
           </div>
@@ -452,7 +714,7 @@ const Settings = () => {
               <button type="button" className="btn-close" onClick={() => setOpenRestoreConfirm(false)}></button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to restore all settings to their default values? This action cannot be undone.</p>
+              <p>Are you sure you want to restore all settings to their default values?</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={() => setOpenRestoreConfirm(false)}>
@@ -472,7 +734,7 @@ const Settings = () => {
           <div className="snackbar-content">
             <i className="fas fa-check-circle text-success me-2"></i>
             {snackbarMessage}
-            <button className="btn-close ms-auto" onClick={handleCloseSnackbar}></button>
+            <button className="btn-close" onClick={handleCloseSnackbar}></button>
           </div>
         </div>
       )}
