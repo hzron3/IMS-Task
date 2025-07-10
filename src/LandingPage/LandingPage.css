@@ -464,7 +464,7 @@
   transform: scale(1.12) rotate(-6deg);
 }
 
-/* Force mobile layout for about and problem sections */
+ Force mobile layout for about and problem sections */
 @media (max-width: 900px) {
   .section-content-inner {
     display: grid !important;
