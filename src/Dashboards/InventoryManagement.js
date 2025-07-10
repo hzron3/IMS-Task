@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./InventoryManagement.css";
 
 const InventoryManagement = () => {
@@ -144,33 +144,49 @@ const InventoryManagement = () => {
       id: 1,
       name: "Electronics",
       description: "Electronic devices and equipment",
-      itemCount: 6,
-      totalValue: 308000,
-      lastUpdated: "2024-01-15T10:30:00"
+      itemCount: 0,
+      totalValue: 0,
+      lastUpdated: "2024-01-15T10:30:00",
+      assignedManager: null
     },
     {
       id: 2,
       name: "Furniture",
       description: "Office furniture and fixtures",
-      itemCount: 3,
-      totalValue: 188500,
-      lastUpdated: "2024-01-14T14:45:00"
+      itemCount: 0,
+      totalValue: 0,
+      lastUpdated: "2024-01-14T14:45:00",
+      assignedManager: "John Smith"
     },
     {
       id: 3,
       name: "Office Supplies",
       description: "General office supplies and stationery",
-      itemCount: 3,
-      totalValue: 1550,
-      lastUpdated: "2024-01-10T11:20:00"
+      itemCount: 0,
+      totalValue: 0,
+      lastUpdated: "2024-01-10T11:20:00",
+      assignedManager: "Lisa Davis"
     }
+  ]);
+
+  // Mock managers data
+  const [managers, setManagers] = useState([
+    { id: 1, name: "John Smith", email: "john@inventorypro.com", assignedCategories: ["Furniture"] },
+    { id: 2, name: "Lisa Davis", email: "lisa@inventorypro.com", assignedCategories: ["Office Supplies"] },
+    { id: 3, name: "Mike Johnson", email: "mike@inventorypro.com", assignedCategories: [] },
+    { id: 4, name: "Sarah Wilson", email: "sarah@inventorypro.com", assignedCategories: [] }
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openCategoryDialog, setOpenCategoryDialog] = useState(false);
+  const [openAssignmentDialog, setOpenAssignmentDialog] = useState(false);
+  const [openReassignmentWarning, setOpenReassignmentWarning] = useState(false);
+  const [pendingAssignment, setPendingAssignment] = useState(null);
   const [editingItem, setEditingItem] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [selectedCategoryForAssignment, setSelectedCategoryForAssignment] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [stockStatusFilter, setStockStatusFilter] = useState("all");
   const [formData, setFormData] = useState({
     sku: '',
     name: '',
@@ -184,11 +200,37 @@ const InventoryManagement = () => {
     name: "",
     description: ""
   });
+  const [assignmentFormData, setAssignmentFormData] = useState({
+    managerId: "",
+    managerName: ""
+  });
   const [openDeleteItemConfirm, setOpenDeleteItemConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [openDeleteCategoryConfirm, setOpenDeleteCategoryConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
+  const [sortOrder, setSortOrder] = useState('newest'); 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  // Calculate number of items in each category
+  const calculateCategoryStats = (inventoryItems, categoriesList) => {
+    return categoriesList.map(category => {
+      const categoryItems = inventoryItems.filter(item => item.category === category.name);
+      const itemCount = categoryItems.length;
+      const totalValue = categoryItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      return {
+        ...category,
+        itemCount,
+        totalValue
+      };
+    });
+  };
+
+  // Update categories whenever inventory changes
+  useEffect(() => {
+    setCategories(prevCategories => calculateCategoryStats(inventory, prevCategories));
+  }, [inventory]);
 
   const handleOpenDialog = (item = null) => {
     if (item) {
@@ -239,7 +281,8 @@ const InventoryManagement = () => {
   };
 
   const validateItemForm = () => {
-    return formData.sku.trim() !== '' &&
+    // Check if all required fields are filled and valid
+    const basicValidation = formData.sku.trim() !== '' &&
            formData.name.trim() !== '' &&
            formData.category.trim() !== '' &&
            formData.supplier.trim() !== '' &&
@@ -249,11 +292,31 @@ const InventoryManagement = () => {
            parseInt(formData.quantity) >= 0 &&
            parseInt(formData.minStock) >= 0 &&
            parseFloat(formData.price) >= 0;
+
+    return basicValidation;
+  };
+
+  const validateSKU = () => {
+    const existingItemWithSKU = inventory.find(item => 
+      item.sku.toLowerCase() === formData.sku.trim().toLowerCase() && 
+      (!editingItem || item.id !== editingItem.id)
+    );
+
+    if (existingItemWithSKU) {
+      alert(`${formData.sku.trim()} SKU already exists.`);
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = () => {
     if (!validateItemForm()) {
       alert('Please fill in all required fields with valid values.');
+      return;
+    }
+
+    if (!validateSKU()) {
       return;
     }
 
@@ -368,9 +431,209 @@ const InventoryManagement = () => {
   };
 
   const handleConfirmDeleteCategory = () => {
+    const categoryToDeleteObj = categories.find(cat => cat.id === categoryToDelete);
+    
+    // Check if there are items in this category
+    const itemsInCategory = inventory.filter(item => item.category === categoryToDeleteObj?.name);
+    
+    if (itemsInCategory.length > 0) {
+      // If there are items, show an alert and prevent deletion
+      alert(`Cannot delete category "${categoryToDeleteObj?.name}" because it contains ${itemsInCategory.length} item(s). Please reassign or delete these items first.`);
+      setOpenDeleteCategoryConfirm(false);
+      setCategoryToDelete(null);
+      return;
+    }
+    
     setCategories(categories.filter(cat => cat.id !== categoryToDelete));
     setOpenDeleteCategoryConfirm(false);
     setCategoryToDelete(null);
+  };
+
+  // Category Assignment Handlers
+  const handleOpenAssignmentDialog = (category) => {
+    setSelectedCategoryForAssignment(category);
+    setAssignmentFormData({
+      managerId: category.assignedManager ? managers.find(m => m.name === category.assignedManager)?.id || "" : "",
+      managerName: category.assignedManager || ""
+    });
+    setOpenAssignmentDialog(true);
+  };
+
+  const handleCloseAssignmentDialog = () => {
+    setOpenAssignmentDialog(false);
+    setSelectedCategoryForAssignment(null);
+    setAssignmentFormData({
+      managerId: "",
+      managerName: ""
+    });
+  };
+
+  const handleAssignmentInputChange = (e) => {
+    const { name, value } = e.target;
+    setAssignmentFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Update manager name when manager ID changes
+    if (name === 'managerId') {
+      const selectedManager = managers.find(m => m.id.toString() === value);
+      setAssignmentFormData(prev => ({
+        ...prev,
+        managerName: selectedManager ? selectedManager.name : ""
+      }));
+    }
+  };
+
+  const handleAssignmentSubmit = () => {
+    if (!selectedCategoryForAssignment || !assignmentFormData.managerId) return;
+
+    const selectedManager = managers.find(m => m.id.toString() === assignmentFormData.managerId);
+    
+    // Check if the selected manager already has a category assigned and show warning modal if true
+    if (selectedManager && selectedManager.assignedCategories.length > 0) {
+      setPendingAssignment({
+        manager: selectedManager,
+        category: selectedCategoryForAssignment,
+        oldCategory: selectedManager.assignedCategories[0] 
+      });
+      setOpenReassignmentWarning(true);
+      return;
+    }
+
+    performAssignment(selectedManager, selectedCategoryForAssignment);
+  };
+
+  const performAssignment = (selectedManager, category) => {
+    // Update category with assigned manager
+    setCategories(prevCategories => 
+      prevCategories.map(cat => 
+        cat.id === category.id 
+          ? { ...cat, assignedManager: selectedManager ? selectedManager.name : null }
+          : cat
+      )
+    );
+
+    // Update managers state to reflect the new assignment
+    setManagers(prevManagers => 
+      prevManagers.map(manager => {
+        if (manager.id.toString() === assignmentFormData.managerId) {
+          const updatedCategories = [...manager.assignedCategories, category.name];
+          return { ...manager, assignedCategories: updatedCategories };
+        } else if (manager.assignedCategories.includes(category.name)) {
+          // Remove the category from other managers (in case it was previously assigned)
+          const updatedCategories = manager.assignedCategories.filter(cat => cat !== category.name);
+          return { ...manager, assignedCategories: updatedCategories };
+        }
+        return manager;
+      })
+    );
+
+    handleCloseAssignmentDialog();
+  };
+
+  const handleConfirmReassignment = () => {
+    if (!pendingAssignment) return;
+
+    const { manager, category, oldCategory } = pendingAssignment;
+
+    // Remove the old assignment
+    setCategories(prevCategories => 
+      prevCategories.map(cat => 
+        cat.name === oldCategory 
+          ? { ...cat, assignedManager: null }
+          : cat
+      )
+    );
+
+    // Update managers to remove old category
+    setManagers(prevManagers => 
+      prevManagers.map(m => 
+        m.id === manager.id 
+          ? { ...m, assignedCategories: [] }
+          : m
+      )
+    );
+
+    // Performs the new assignment
+    performAssignment(manager, category);
+
+    setOpenReassignmentWarning(false);
+    setPendingAssignment(null);
+  };
+
+  // Cancel reassignment if false
+  const handleCancelReassignment = () => {
+    setOpenReassignmentWarning(false);
+    setPendingAssignment(null);
+    setAssignmentFormData({
+      managerId: "",
+      managerName: ""
+    });
+  };
+
+  const showToastNotification = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 30000); // Auto-hide after 30 seconds
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    
+    // Show toast notification for categories tab if there are unassigned categories
+    if (tab === 'categories') {
+      const unassignedCategories = categories.filter(cat => !cat.assignedManager);
+      if (unassignedCategories.length > 0) {
+        const message = unassignedCategories.length === 1 
+          ? "1 category is missing a manager assignment"
+          : `${unassignedCategories.length} categories are missing manager assignments`;
+        showToastNotification(message);
+      }
+    }
+  };
+
+  const handleRemoveAssignment = (categoryId) => {
+    const categoryToRemove = categories.find(cat => cat.id === categoryId);
+    
+    setCategories(prevCategories => 
+      prevCategories.map(cat => 
+        cat.id === categoryId 
+          ? { ...cat, assignedManager: null }
+          : cat
+      )
+    );
+
+    // Update managers state to remove the category from the assigned manager
+    if (categoryToRemove && categoryToRemove.assignedManager) {
+      setManagers(prevManagers => 
+        prevManagers.map(manager => {
+          if (manager.name === categoryToRemove.assignedManager) {
+            const updatedCategories = manager.assignedCategories.filter(cat => cat !== categoryToRemove.name);
+            return { ...manager, assignedCategories: updatedCategories };
+          }
+          return manager;
+        })
+      );
+    }
+  };
+
+  const getStockStatus = (quantity, minStock) => {
+    if (quantity === 0) return 'Out of Stock';
+    if (quantity > minStock) return 'In Stock';
+    if (quantity <= minStock && quantity > minStock / 2) return 'Low Stock';
+    if (quantity <= minStock / 2 && quantity > 0) return 'Critical';
+    return '';
+  };
+
+  const getQuantityStatus = (quantity, minStock) => {
+    if (quantity === 0) return 'outofstock';
+    if (quantity > minStock) return 'instock';
+    if (quantity <= minStock && quantity > minStock / 2) return 'lowstock';
+    if (quantity <= minStock / 2 && quantity > 0) return 'critical';
+    return 'instock';
   };
 
   const sortByDate = (a, b) => {
@@ -403,33 +666,24 @@ const InventoryManagement = () => {
     }
   };
 
-  const filteredInventory = inventory.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort(sortByDate);
+  const filteredInventory = inventory.filter(item => {
+    // Text search filter
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.sku.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Stock status filter
+    const matchesStockStatus = stockStatusFilter === "all" || 
+                              getStockStatus(item.quantity, item.minStock).toLowerCase() === stockStatusFilter.toLowerCase();
+    
+    return matchesSearch && matchesStockStatus;
+  }).sort(sortByDate);
 
   const filteredCategories = categories.filter(cat =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cat.description.toLowerCase().includes(searchTerm.toLowerCase())
   ).sort(sortByDate);
-
-  const getStockStatus = (quantity, minStock) => {
-    if (quantity === 0) return 'Out of Stock';
-    if (quantity > minStock) return 'In Stock';
-    if (quantity <= minStock && quantity > minStock / 2) return 'Low Stock';
-    if (quantity <= minStock / 2 && quantity > 0) return 'Critical';
-    return '';
-  };
-
-  const getQuantityStatus = (quantity, minStock) => {
-    if (quantity === 0) return 'outofstock';
-    if (quantity > minStock) return 'instock';
-    if (quantity <= minStock && quantity > minStock / 2) return 'lowstock';
-    if (quantity <= minStock / 2 && quantity > 0) return 'critical';
-    return 'instock';
-  };
 
   return (
     <div className="inventory-container">
@@ -443,13 +697,13 @@ const InventoryManagement = () => {
           <div className="inventory-tabs">
             <button
               className={`tab-button ${activeTab === 'items' ? 'active' : ''}`}
-              onClick={() => setActiveTab('items')}
+              onClick={() => handleTabChange('items')}
             >
               Items
             </button>
             <button
               className={`tab-button ${activeTab === 'categories' ? 'active' : ''}`}
-              onClick={() => setActiveTab('categories')}
+              onClick={() => handleTabChange('categories')}
             >
               Categories
             </button>
@@ -496,7 +750,23 @@ const InventoryManagement = () => {
                   <th className="text-end">Min Stock</th>
                   <th className="text-end">Price (Ksh)</th>
                   <th>Supplier</th>
-                  <th>Status</th>
+                  <th>
+                    <div className="status-filter-header">
+                      <span>Status</span>
+                      <select
+                        className="status-filter-dropdown"
+                        value={stockStatusFilter}
+                        onChange={(e) => setStockStatusFilter(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <option value="all">All</option>
+                        <option value="In Stock">In Stock</option>
+                        <option value="Low Stock">Low Stock</option>
+                        <option value="Critical">Critical</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                      </select>
+                    </div>
+                  </th>
                   <th 
                     className="sortable-header"
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
@@ -572,6 +842,7 @@ const InventoryManagement = () => {
                   <th>Description</th>
                   <th className="text-end">Item Count</th>
                   <th className="text-end">Total Value (Ksh)</th>
+                  <th>Assigned Manager</th>
                   <th 
                     className="sortable-header"
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
@@ -599,18 +870,51 @@ const InventoryManagement = () => {
                       <span className="item-count">{category.itemCount}</span>
                     </td>
                     <td className="text-end">Ksh {category.totalValue.toFixed(2)}</td>
+                    <td>
+                      {category.assignedManager ? (
+                        <div className="assigned-manager">
+                          <span className="manager-badge">
+                            <i className="fas fa-user-tie me-1"></i>
+                            {category.assignedManager}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="no-manager text-muted">
+                          <i className="fas fa-user-slash me-1"></i>
+                          Not Assigned
+                        </span>
+                      )}
+                    </td>
                     <td>{formatDateTime(category.lastUpdated)}</td>
                     <td className="text-center">
                       <div className="action-buttons">
                         <button
                           className="btn btn-sm btn-outline-primary"
                           onClick={() => handleOpenCategoryDialog(category)}
+                          title="Edit Category"
                         >
                           <i className="fas fa-edit"></i>
                         </button>
                         <button
+                          className="btn btn-sm btn-outline-info"
+                          onClick={() => handleOpenAssignmentDialog(category)}
+                          title="Assign Manager"
+                        >
+                          <i className="fas fa-user-plus"></i>
+                        </button>
+                        {category.assignedManager && (
+                          <button
+                            className="btn btn-sm btn-outline-warning"
+                            onClick={() => handleRemoveAssignment(category.id)}
+                            title="Remove Assignment"
+                          >
+                            <i className="fas fa-user-minus"></i>
+                          </button>
+                        )}
+                        <button
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteCategory(category.id)}
+                          title="Delete Category"
                         >
                           <i className="fas fa-trash"></i>
                         </button>
@@ -628,22 +932,66 @@ const InventoryManagement = () => {
       {activeTab === 'categories' && (
         <div className="stats-container">
           <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="stat-card">
                 <h3>{categories.length}</h3>
                 <p>Total Categories</p>
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="stat-card">
                 <h3>{categories.reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
                 <p>Total Items</p>
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="stat-card">
                 <h3>{categories.filter(cat => cat.itemCount === 0).length}</h3>
                 <p>Empty Categories</p>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="stat-card">
+                <h3>{categories.filter(cat => cat.assignedManager).length}</h3>
+                <p>Assigned Categories</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Summary Cards for Items */}
+      {activeTab === 'items' && (
+        <div className="stats-container">
+          <div className="row">
+            <div className="col-md-2">
+              <div className="stat-card">
+                <h3>{inventory.length}</h3>
+                <p>Total Items</p>
+              </div>
+            </div>
+            <div className="col-md-2">
+              <div className="stat-card">
+                <h3>{inventory.filter(item => item.quantity === 0).length}</h3>
+                <p>Out of Stock</p>
+              </div>
+            </div>
+            <div className="col-md-2">
+              <div className="stat-card">
+                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock && item.quantity > item.minStock / 2).length}</h3>
+                <p>Low Stock</p>
+              </div>
+            </div>
+            <div className="col-md-2">
+              <div className="stat-card">
+                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock / 2).length}</h3>
+                <p>Critical</p>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="stat-card">
+                <h3>Ksh {inventory.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</h3>
+                <p>Total Inventory Value</p>
               </div>
             </div>
           </div>
@@ -652,7 +1000,7 @@ const InventoryManagement = () => {
 
       {/* Add/Edit Item Modal */}
       {openDialog && (
-        <div className="modal-overlay" onClick={handleCloseDialog}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h5 className="modal-title">
@@ -783,7 +1131,7 @@ const InventoryManagement = () => {
 
       {/* Add/Edit Category Modal */}
       {openCategoryDialog && (
-        <div className="modal-overlay" onClick={handleCloseCategoryDialog}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h5 className="modal-title">
@@ -880,6 +1228,154 @@ const InventoryManagement = () => {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Assignment Modal */}
+      {openAssignmentDialog && (
+        <div className="modal-overlay" onClick={handleCloseAssignmentDialog}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-user-plus text-info me-2"></i>
+                Assign Manager to Category
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCloseAssignmentDialog}></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Category</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={selectedCategoryForAssignment?.name || ""}
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Select Manager</label>
+                <select
+                  className="form-select"
+                  name="managerId"
+                  value={assignmentFormData.managerId}
+                  onChange={handleAssignmentInputChange}
+                  required
+                >
+                  <option value="">Select a manager</option>
+                  {managers.map((manager) => (
+                    <option key={manager.id} value={manager.id}>
+                      {manager.name} ({manager.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {assignmentFormData.managerName && (
+                <div className="mb-3">
+                  <label className="form-label">Selected Manager</label>
+                  <div className="alert alert-info">
+                    <i className="fas fa-user-tie me-2"></i>
+                    <strong>{assignmentFormData.managerName}</strong>
+                  </div>
+                </div>
+              )}
+              <div className="mb-3">
+                <label className="form-label">Current Assignments</label>
+                <div className="current-assignments">
+                  {managers.map((manager) => (
+                    <div key={manager.id} className="manager-assignment-item">
+                      <strong>{manager.name}:</strong>
+                      {manager.assignedCategories.length > 0 ? (
+                        <span className="assigned-categories">
+                          {manager.assignedCategories.join(", ")}
+                        </span>
+                      ) : (
+                        <span className="no-assignments text-muted">No categories assigned</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseAssignmentDialog}>
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                onClick={handleAssignmentSubmit}
+                disabled={!assignmentFormData.managerId}
+              >
+                Assign Manager
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reassignment Warning Modal */}
+      {openReassignmentWarning && (
+        <div className="modal-overlay" onClick={handleCancelReassignment}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h5 className="modal-title">
+                <i className="fas fa-exclamation-triangle text-warning me-2"></i>
+                Manager Already Assigned
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCancelReassignment}></button>
+            </div>
+            <div className="modal-body">
+              <div className="alert alert-warning">
+                <i className="fas fa-exclamation-triangle me-2"></i>
+                <strong>Warning:</strong> This manager is already assigned to a category.
+              </div>
+              
+              <div className="mb-3">
+                <p><strong>Manager:</strong> {pendingAssignment?.manager?.name}</p>
+                <p><strong>Currently Assigned to:</strong> {pendingAssignment?.oldCategory}</p>
+                <p><strong>New Assignment:</strong> {pendingAssignment?.category?.name}</p>
+              </div>
+
+              <div className="alert alert-info">
+                <i className="fas fa-info-circle me-2"></i>
+                <strong>What will happen:</strong>
+                <ul className="mb-0 mt-2">
+                  <li>The manager will be <strong>unassigned</strong> from "{pendingAssignment?.oldCategory}"</li>
+                  <li>The manager will be <strong>assigned</strong> to "{pendingAssignment?.category?.name}"</li>
+                </ul>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCancelReassignment}>
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-warning" 
+                onClick={handleConfirmReassignment}
+              >
+                <i className="fas fa-exchange-alt me-2"></i>
+                Proceed with Reassignment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="toast-notification">
+          <div className="toast-content">
+            <i className="fas fa-info-circle toast-icon"></i>
+            <span className="toast-message">{toastMessage}</span>
+            <button 
+              className="toast-close" 
+              onClick={() => setShowToast(false)}
+            >
+              <i className="fas fa-times"></i>
+            </button>
           </div>
         </div>
       )}
