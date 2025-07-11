@@ -12,82 +12,33 @@ import {
   Person, Task, Analytics, Visibility
 } from '@mui/icons-material';
 
-const mockStaffData = {
-  name: 'Mike Johnson',
-  email: 'mike.johnson@inventorypro.com',
-  role: 'Warehouse Staff',
-  avatar: 'MJ',
-  status: 'online',
-  lastActivity: '2024-01-15T10:30:00',
-  performance: 88,
-  assignedItems: 15,
-  lowStockItems: 3,
-  completedTasks: 12,
-  pendingTasks: 2,
-  assignedCategories: ['Electronics', 'Furniture']
-};
+// Import centralized mock data
+import { mockData } from './mockUserData';
 
-const mockAssignedItems = [
-  {
-    id: 1,
-    name: 'Laptop Dell XPS 13',
-    category: 'Electronics',
-    currentStock: 15,
-    minStock: 10,
-    status: 'In Stock',
-    lastUpdated: '2024-01-15T09:30:00'
-  },
-  {
-    id: 2,
-    name: 'Wireless Mouse',
-    category: 'Electronics',
-    currentStock: 8,
-    minStock: 15,
-    status: 'Low Stock',
-    lastUpdated: '2024-01-14T14:15:00'
-  },
-  {
-    id: 3,
-    name: 'Office Chair',
-    category: 'Furniture',
-    currentStock: 25,
-    minStock: 15,
-    status: 'In Stock',
-    lastUpdated: '2024-01-13T11:45:00'
-  },
-  {
-    id: 4,
-    name: 'USB Cable',
-    category: 'Electronics',
-    currentStock: 0,
-    minStock: 20,
-    status: 'Out of Stock',
-    lastUpdated: '2024-01-12T16:20:00'
-  }
-];
+// Use centralized data for Mike Johnson
+const mockStaffData = mockData.inventory.staffAssignments['Mike Johnson'];
+console.log('mockStaffData:', mockStaffData); // Debug log
+const mockAssignedItems = mockData.inventory.items.filter(item => 
+  mockData.inventory.staffAssignments['Mike Johnson'].assignedItems.includes(item.id)
+).map(item => ({
+  id: item.id,
+  name: item.name,
+  category: item.category,
+  currentStock: item.quantity,
+  minStock: item.minStock,
+  status: item.status,
+  lastUpdated: item.lastUpdated
+}));
 
-const mockRecentActivity = [
-  {
-    id: 1,
-    action: 'Updated stock for Laptop Dell XPS 13',
-    quantity: '+5',
-    timestamp: '2024-01-15T09:30:00',
-    type: 'stock_update'
-  },
-  {
-    id: 2,
-    action: 'Completed task: Inventory count for Electronics',
-    timestamp: '2024-01-14T16:45:00',
-    type: 'task_completed'
-  },
-  {
-    id: 3,
-    action: 'Removed stock for Wireless Mouse',
-    quantity: '-3',
-    timestamp: '2024-01-14T14:15:00',
-    type: 'stock_update'
-  }
-];
+const mockRecentActivity = mockData.inventory.recentActivity.filter(activity => 
+  activity.user === 'Mike Johnson'
+).map(activity => ({
+  id: activity.id,
+  action: activity.action,
+  quantity: activity.quantity || '',
+  timestamp: activity.timestamp,
+  type: activity.type
+}));
 
 export default function StaffAssignedInventory() {
   const [items, setItems] = useState(mockAssignedItems);
@@ -210,7 +161,7 @@ export default function StaffAssignedInventory() {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                    {mockStaffData.assignedItems}
+                    {mockStaffData.assignedItemsCount}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
                     Assigned Items
@@ -252,7 +203,7 @@ export default function StaffAssignedInventory() {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                    {mockStaffData.lowStockItems}
+                    {mockStaffData.lowStockItems || 0}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
                     Low Stock Alerts

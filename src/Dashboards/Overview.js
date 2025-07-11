@@ -2,54 +2,7 @@ import React from 'react';
 import { Box, Card, CardContent, Typography, Grid, Paper, Chip, List,ListItem,ListItemText,ListItemIcon,Divider} from '@mui/material';
 import {TrendingUp,Inventory,Warning,Cancel,Timeline,Assessment,Category,TrendingDown} from '@mui/icons-material';
 import {LineChart,Line,BarChart,Bar,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer} from 'recharts';
-
-// Mock data for demonstration
-const mockData = {
-  kpis: {
-    totalValue: 497550,
-    totalItems: 2847,
-    lowStock: 23,
-    outOfStock: 5
-  },
-  turnoverByCategory: [
-    { category: 'Electronics', turnover: 8.5, color: '#8884d8' },
-    { category: 'Clothing', turnover: 12.3, color: '#82ca9d' },
-    { category: 'Books', turnover: 6.2, color: '#ffc658' },
-    { category: 'Home & Garden', turnover: 4.8, color: '#ff7300' },
-    { category: 'Sports', turnover: 9.1, color: '#00C49F' },
-    { category: 'Automotive', turnover: 3.4, color: '#FFBB28' }
-  ],
-  inventoryValueOverTime: [
-    { month: 'Jan', value: 17000000 },
-    { month: 'Feb', value: 17500000 },
-    { month: 'Mar', value: 18200000 },
-    { month: 'Apr', value: 17800000 },
-    { month: 'May', value: 18500000 },
-    { month: 'Jun', value: 19200000 }
-  ],
-  topMovingItems: [
-    { name: 'Laptop Charger', sales: 156, category: 'Electronics' },
-    { name: 'Wireless Mouse', sales: 142, category: 'Electronics' },
-    { name: 'USB Cable', sales: 138, category: 'Electronics' },
-    { name: 'T-Shirt XL', sales: 125, category: 'Clothing' },
-    { name: 'Running Shoes', sales: 118, category: 'Sports' }
-  ],
-  deadStock: [
-    { category: 'Electronics', percentage: 15 },
-    { category: 'Clothing', percentage: 8 },
-    { category: 'Books', percentage: 22 },
-    { category: 'Home & Garden', percentage: 12 },
-    { category: 'Sports', percentage: 5 },
-    { category: 'Automotive', percentage: 18 }
-  ],
-  recentActivity: [
-    { action: 'Item added', item: 'Wireless Headphones', time: '2 hours ago', user: 'Jane Doe', role: 'Admin' },
-    { action: 'Stock updated', item: 'Laptop Charger', time: '4 hours ago', user: 'John Smith', role: 'Manager' },
-    { action: 'Low stock alert', item: 'USB Cable', time: '6 hours ago', user: 'System', role: 'System' },
-    { action: 'Item removed', item: 'Old Model Phone', time: '1 day ago', user: 'Mike Johnson', role: 'Staff' },
-    { action: 'Category created', item: 'Smart Home', time: '2 days ago', user: 'Sarah Wilson', role: 'Admin' }
-  ]
-};
+import { mockData } from './mockUserData';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
@@ -59,8 +12,13 @@ const KPICard = ({ title, value, icon, subtitle, bgGradient }) => (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
           <Typography variant="h4" component="div" sx={{ color: 'white', fontWeight: 'bold' }}>
-            {title === "Total Inventory Value" && typeof value === 'number' && value >= 1000 
-              ? `Ksh ${(value / 1000).toFixed(1)}K` 
+            {title === "Total Inventory Value" && typeof value === 'number' 
+              ? new Intl.NumberFormat('en-KE', {
+                  style: 'currency',
+                  currency: 'KES',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0
+                }).format(value)
               : value}
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', mt: 1 }}>
@@ -100,7 +58,7 @@ const Overview = () => {
         <Box sx={{ flex: '1 1 250px', minWidth: 250 }}>
           <KPICard
             title="Total Inventory Value"
-            value={mockData.kpis.totalValue}
+            value={mockData.inventory.kpis.totalValue}
             icon={<TrendingUp />}
             subtitle="Current market value"
             bgGradient="linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)"
@@ -109,7 +67,7 @@ const Overview = () => {
         <Box sx={{ flex: '1 1 250px', minWidth: 250 }}>
           <KPICard
             title="Total Items"
-            value={mockData.kpis.totalItems}
+            value={mockData.inventory.kpis.totalItems}
             icon={<Inventory />}
             subtitle="Total Items"
             bgGradient="linear-gradient(135deg, #1ABC9C 0%,rgb(153, 157, 157) 100%)"
@@ -118,7 +76,7 @@ const Overview = () => {
         <Box sx={{ flex: '1 1 250px', minWidth: 250 }}>
           <KPICard
             title="Low Stock Alerts"
-            value={mockData.kpis.lowStock}
+            value={mockData.inventory.kpis.lowStock}
             icon={<Warning />}
             subtitle="Below reorder level"
             bgGradient="linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)"
@@ -127,7 +85,7 @@ const Overview = () => {
         <Box sx={{ flex: '1 1 250px', minWidth: 250 }}>
           <KPICard
             title="Out of Stock"
-            value={mockData.kpis.outOfStock}
+            value={mockData.inventory.kpis.outOfStock}
             icon={<Cancel />}
             subtitle="Zero quantity items"
             bgGradient="linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)"
@@ -152,7 +110,7 @@ const Overview = () => {
             </Typography>
             <Box sx={{ flexGrow: 1 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={mockData.turnoverByCategory}>
+                <BarChart data={mockData.inventory.turnoverByCategory}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
                   <XAxis dataKey="category" stroke="#2C3E50" />
                   <YAxis stroke="#2C3E50" />
@@ -178,7 +136,7 @@ const Overview = () => {
               Top Moving Items
             </Typography>
             <List sx={{ flexGrow: 1, overflow: 'auto' }}>
-              {mockData.topMovingItems.map((item, index) => (
+              {mockData.inventory.topMovingItems.map((item, index) => (
                 <React.Fragment key={item.name}>
                   <ListItem sx={{ py: 1 }}>
                     <ListItemIcon>
@@ -201,7 +159,7 @@ const Overview = () => {
                       }}
                     />
                   </ListItem>
-                  {index < mockData.topMovingItems.length - 1 && <Divider sx={{ borderColor: '#BDC3C7' }} />}
+                  {index < mockData.inventory.topMovingItems.length - 1 && <Divider sx={{ borderColor: '#BDC3C7' }} />}
                 </React.Fragment>
               ))}
             </List>
@@ -226,7 +184,7 @@ const Overview = () => {
             </Typography>
             <Box sx={{ flexGrow: 1 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={mockData.inventoryValueOverTime}>
+                <LineChart data={mockData.analytics.monthlyTrends}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
                   <XAxis dataKey="month" stroke="#2C3E50" />
                   <YAxis stroke="#2C3E50" />
@@ -255,27 +213,27 @@ const Overview = () => {
             border: '1px solid #BDC3C7'
           }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mb: 2, color: '#2C3E50' }}>
-              Dead Stock by Category
+              Stock Status Overview
             </Typography>
             <Box sx={{ flexGrow: 1 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={mockData.deadStock}
+                    data={mockData.inventory.stockStatusData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ category, percentage }) => `${category}: ${percentage}%`}
+                    label={({ name, value }) => `${name}: ${value}`}
                     outerRadius={80}
                     innerRadius={50}
                     fill="#8884d8"
-                    dataKey="percentage"
+                    dataKey="value"
                   >
-                    {mockData.deadStock.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={['#2C3E50', '#E67E22', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'][index]} />
+                    {mockData.inventory.stockStatusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #BDC3C7', color: '#2C3E50' }} formatter={(value) => [`${value}%`, 'Dead Stock']} />
+                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #BDC3C7', color: '#2C3E50' }} formatter={(value) => [value, 'Items']} />
                 </PieChart>
               </ResponsiveContainer>
             </Box>
@@ -295,7 +253,7 @@ const Overview = () => {
             Recent Activity
           </Typography>
           <List sx={{ flexGrow: 1, overflow: 'auto', maxHeight: 220 }}>
-            {mockData.recentActivity.map((activity, index) => (
+                          {mockData.inventory.recentActivity.map((activity, index) => (
               <React.Fragment key={index}>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
@@ -303,14 +261,14 @@ const Overview = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary={activity.action}
-                    secondary={`${activity.item} - ${activity.time} - ${activity.user} (${activity.role})`}
+                    secondary={`${activity.item || 'N/A'} - ${new Date(activity.timestamp).toLocaleDateString()} - ${activity.user}`}
                     sx={{ 
                       '& .MuiListItemText-primary': { color: 'white', fontWeight: 'bold' },
                       '& .MuiListItemText-secondary': { color: 'rgba(255,255,255,0.8)' }
                     }}
                   />
                 </ListItem>
-                {index < mockData.recentActivity.length - 1 && <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />}
+                {index < mockData.inventory.recentActivity.length - 1 && <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />}
               </React.Fragment>
             ))}
           </List>

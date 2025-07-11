@@ -21,7 +21,7 @@
   flex-shrink: 0 !important;
 }
 
-/* Ensure proper responsive behavior */
+/* Responsive behavior */
 .manager-item-management .MuiGrid-item[class*="xs-12"] {
   flex-basis: 100% !important;
   max-width: 100% !important;

@@ -5,6 +5,7 @@ import Signup from './Signup';
 import AdminDashboard from './Dashboards/AdminDashboard';
 import ManagerDashboard from './Dashboards/ManagerDashboard';
 import StaffDashboard from './Dashboards/StaffDashboard';
+import GuestDashboard from './Dashboards/GuestDashboard';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
           <Route path="/manager-dashboard/:section" element={<ManagerDashboard />} />
           <Route path="/staff-dashboard" element={<Navigate to="/staff-dashboard/assigned-inventory" replace />} />
           <Route path="/staff-dashboard/:section" element={<StaffDashboard />} />
+          <Route path="/guest-dashboard" element={<Navigate to="/guest-dashboard/overview" replace />} />
+          <Route path="/guest-dashboard/:section" element={<GuestDashboard />} />
         </Routes>
       </div>
     </Router>

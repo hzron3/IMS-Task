@@ -76,7 +76,7 @@ function DashboardNavbar({ user, role, onSettings }) {
         elevation={0}
       >
         <Toolbar sx={{ minHeight: '64px', px: { xs: 2, sm: 5 } }}>
-          {/* Logo as App Name */}
+          {/* App Name as Logo*/}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
             <Typography
               variant="h6"
@@ -161,9 +161,7 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f6fefb' }}>
-      {/* Top Navbar */}
       <DashboardNavbar user={user} role={role} onSettings={handleSettings} />
-      {/* Sidebar */}
       <Sidebar
         sections={sections}
         selectedIndex={selectedIndex}

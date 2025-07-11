@@ -1,0 +1,335 @@
+/* Container and Layout */
+.container-fluid {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+/* Header Section */
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+.text-dark {
+  color: #2C3E50 !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* Export Button */
+.export-btn {
+  background: linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3) !important;
+}
+
+.export-btn:hover {
+  background: linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4) !important;
+}
+
+/* Summary Cards */
+.summary-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
+  height: 100% !important;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.summary-card .MuiCardContent-root {
+  padding: 1.5rem !important;
+}
+
+.text-primary {
+  color: #1ABC9C !important;
+}
+
+.text-success {
+  color: #27ae60 !important;
+}
+
+.text-warning {
+  color: #f39c12 !important;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+
+/* Filter Card */
+.filter-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.filter-card .MuiCardContent-root {
+  padding: 1.5rem !important;
+}
+
+/* Results Info Alert */
+.results-info {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+  border: 1px solid #90caf9 !important;
+  border-radius: 8px !important;
+  color: #1565c0 !important;
+}
+
+/* Table Card */
+.table-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Table Styles */
+.table-header {
+  background: linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%) !important;
+}
+
+.table-header .MuiTableCell-root {
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid #1ABC9C !important;
+  padding: 16px 12px !important;
+}
+
+.sortable-header {
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  user-select: none !important;
+  color: #1a1a1a !important;
+}
+
+.sortable-header:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.sortable-header:hover .d-flex {
+  color: white !important;
+}
+
+.sortable-header:hover .d-flex .MuiTypography-root,
+.sortable-header:hover .d-flex span,
+.sortable-header:hover .d-flex div {
+  color: white !important;
+}
+
+.sortable-header .MuiSvgIcon-root {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 16px !important;
+}
+
+.sortable-header .d-flex {
+  color: #1a1a1a !important;
+}
+
+.sortable-header .d-flex .MuiTypography-root {
+  color: #1a1a1a !important;
+}
+
+.sortable-header .d-flex .MuiTypography-root,
+.sortable-header .d-flex span,
+.sortable-header .d-flex div {
+  color: #1a1a1a !important;
+}
+
+/* Table Rows */
+.table-row {
+  transition: all 0.3s ease !important;
+}
+
+.table-row:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  transform: scale(1.01) !important;
+}
+
+.table-row .MuiTableCell-root {
+  padding: 12px !important;
+  border-bottom: 1px solid #e9ecef !important;
+  vertical-align: middle !important;
+}
+
+/* SKU Cell */
+.sku-cell {
+  font-family: 'Courier New', monospace !important;
+  font-weight: 600 !important;
+}
+
+/* Category Chip */
+.category-chip {
+  background: linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  padding: 4px 12px !important;
+}
+
+/* Status Chip */
+.status-chip {
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  padding: 4px 12px !important;
+  min-width: 80px !important;
+  text-align: center !important;
+}
+
+.status-chip.MuiChip-colorSuccess {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+  color: white !important;
+}
+
+.status-chip.MuiChip-colorWarning {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+  color: white !important;
+}
+
+.status-chip.MuiChip-colorError {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+  color: white !important;
+}
+
+/* Pagination */
+.MuiPagination-root {
+  margin-top: 2rem !important;
+}
+
+.MuiPaginationItem-root {
+  border-radius: 8px !important;
+  margin: 0 2px !important;
+  font-weight: 600 !important;
+}
+
+.MuiPaginationItem-page.Mui-selected {
+  background: linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%) !important;
+  color: white !important;
+}
+
+/* Data Source Info */
+.data-source-info {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 8px !important;
+  color: #495057 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem !important;
+  }
+  
+  .summary-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .filter-card .MuiCardContent-root {
+    padding: 1rem !important;
+  }
+  
+  .table-card {
+    overflow-x: auto !important;
+  }
+  
+  .table-header .MuiTableCell-root,
+  .table-row .MuiTableCell-root {
+    padding: 8px 4px !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .d-flex.justify-content-between {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .export-btn {
+    width: 100% !important;
+  }
+  
+  .table-header .MuiTableCell-root,
+  .table-row .MuiTableCell-root {
+    padding: 6px 2px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .category-chip,
+  .status-chip {
+    font-size: 0.75rem !important;
+    padding: 2px 8px !important;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+  background-size: 200% 100% !important;
+  animation: loading 1.5s infinite !important;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .export-btn,
+  .filter-card,
+  .MuiPagination-root {
+    display: none !important;
+  }
+  
+  .table-card {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+  }
+  
+  .table-header {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+  
+  .table-row {
+    break-inside: avoid !important;
+  }
+} 
