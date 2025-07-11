@@ -284,7 +284,6 @@
   box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
 }
 
-/* Reports Section */
 .reports-section {
   padding: 30px;
 }
@@ -412,12 +411,10 @@
   font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-/* Overview Section */
 .analytics-overview {
   padding: 30px;
 }
 
-/* Performance Metrics */
 .performance-metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

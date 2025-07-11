@@ -43,6 +43,11 @@ const Login = () => {
     }
   };
 
+  const handleGuestLogin = () => {
+    // Direct navigation to guest dashboard without authentication
+    navigate('/guest-dashboard');
+  };
+
   return (
     <div className="login-page">
       <div className="login-container">
@@ -94,6 +99,21 @@ const Login = () => {
               {errors.password && <span className="error">{errors.password}</span>}
             </div>
             <button type="submit" className="login-btn">Login</button>
+            
+            {/* Divider */}
+            <div className="login-divider">
+              <span>or</span>
+            </div>
+            
+            {/* Guest Login Button */}
+            <button 
+              type="button" 
+              className="guest-login-btn"
+              onClick={handleGuestLogin}
+            >
+              Login as Guest
+            </button>
+            
             <div className="login-link-signup">
               <span>Don't have an account? </span>
               <a href="/signup">Sign up</a>

@@ -227,7 +227,7 @@ const InventoryManagement = () => {
     });
   };
 
-  // Update categories whenever inventory changes
+  // Update categories when inventory changes
   useEffect(() => {
     setCategories(prevCategories => calculateCategoryStats(inventory, prevCategories));
   }, [inventory]);
@@ -281,7 +281,6 @@ const InventoryManagement = () => {
   };
 
   const validateItemForm = () => {
-    // Check if all required fields are filled and valid
     const basicValidation = formData.sku.trim() !== '' &&
            formData.name.trim() !== '' &&
            formData.category.trim() !== '' &&
@@ -514,14 +513,13 @@ const InventoryManagement = () => {
       )
     );
 
-    // Update managers state to reflect the new assignment
+    // Update managers state to reflect the new assignment and remove the old category
     setManagers(prevManagers => 
       prevManagers.map(manager => {
         if (manager.id.toString() === assignmentFormData.managerId) {
           const updatedCategories = [...manager.assignedCategories, category.name];
           return { ...manager, assignedCategories: updatedCategories };
         } else if (manager.assignedCategories.includes(category.name)) {
-          // Remove the category from other managers (in case it was previously assigned)
           const updatedCategories = manager.assignedCategories.filter(cat => cat !== category.name);
           return { ...manager, assignedCategories: updatedCategories };
         }
@@ -577,7 +575,7 @@ const InventoryManagement = () => {
     setShowToast(true);
     setTimeout(() => {
       setShowToast(false);
-    }, 30000); // Auto-hide after 30 seconds
+    }, 30000); // hide after 30 seconds
   };
 
   const handleTabChange = (tab) => {

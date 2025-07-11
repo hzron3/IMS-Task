@@ -13,6 +13,7 @@ import {
   FileDownload, FilterList, Refresh
 } from '@mui/icons-material';
 import './Analytics.css';
+import { mockData } from './mockUserData';
 
 const Analytics = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -21,141 +22,8 @@ const Analytics = () => {
   const [selectedUser, setSelectedUser] = useState('all');
   const [performancePeriod, setPerformancePeriod] = useState('weekly');
 
-  // Mock inventory data for demo purposes
-  const [inventoryData] = useState([
-    {
-      id: 1,
-      sku: 'SKU-001',
-      name: "Laptop Dell XPS 13",
-      category: "Electronics",
-      quantity: 15,
-      minStock: 10,
-      price: 185000,
-      supplier: "Dell Inc.",
-      lastUpdated: "2024-01-15"
-    },
-    {
-      id: 2,
-      sku: 'SKU-002',
-      name: "Office Chair",
-      category: "Furniture",
-      quantity: 25,
-      minStock: 15,
-      price: 45000,
-      supplier: "Office Depot",
-      lastUpdated: "2024-01-14"
-    },
-    {
-      id: 3,
-      sku: 'SKU-003',
-      name: "Printer HP LaserJet",
-      category: "Electronics",
-      quantity: 8,
-      minStock: 5,
-      price: 65000,
-      supplier: "HP Inc.",
-      lastUpdated: "2024-01-13"
-    },
-    {
-      id: 4,
-      sku: 'SKU-004',
-      name: "Desk Lamp",
-      category: "Furniture",
-      quantity: 30,
-      minStock: 10,
-      price: 8500,
-      supplier: "IKEA",
-      lastUpdated: "2024-01-12"
-    },
-    {
-      id: 5,
-      sku: 'SKU-005',
-      name: "Wireless Mouse",
-      category: "Electronics",
-      quantity: 45,
-      minStock: 20,
-      price: 3500,
-      supplier: "Logitech",
-      lastUpdated: "2024-01-10"
-    },
-    {
-      id: 6,
-      sku: 'SKU-006',
-      name: "USB Cable",
-      category: "Electronics",
-      quantity: 0,
-      minStock: 15,
-      price: 1200,
-      supplier: "Amazon",
-      lastUpdated: "2024-01-08"
-    },
-    {
-      id: 7,
-      sku: 'SKU-007',
-      name: "Notebook",
-      category: "Office Supplies",
-      quantity: 100,
-      minStock: 50,
-      price: 450,
-      supplier: "Staples",
-      lastUpdated: "2024-01-05"
-    },
-    {
-      id: 8,
-      sku: 'SKU-008',
-      name: "Pen Set",
-      category: "Office Supplies",
-      quantity: 75,
-      minStock: 30,
-      price: 850,
-      supplier: "Office Depot",
-      lastUpdated: "2024-01-03"
-    },
-    {
-      id: 9,
-      sku: 'SKU-009',
-      name: "Old Model Phone",
-      category: "Electronics",
-      quantity: 5,
-      minStock: 10,
-      price: 25000,
-      supplier: "Samsung",
-      lastUpdated: "2023-11-20"
-    },
-    {
-      id: 10,
-      sku: 'SKU-010',
-      name: "Monitor LG 24",
-      category: "Electronics",
-      quantity: 2,
-      minStock: 5,
-      price: 52000,
-      supplier: "LG Electronics",
-      lastUpdated: "2023-10-15"
-    },
-    {
-      id: 11,
-      sku: 'SKU-011',
-      name: "Expensive Desk",
-      category: "Furniture",
-      quantity: 3,
-      minStock: 2,
-      price: 135000,
-      supplier: "Herman Miller",
-      lastUpdated: "2024-01-16"
-    },
-    {
-      id: 12,
-      sku: 'SKU-012',
-      name: "Paper Clips",
-      category: "Office Supplies",
-      quantity: 500,
-      minStock: 100,
-      price: 250,
-      supplier: "Staples",
-      lastUpdated: "2024-01-17"
-    }
-  ]);
+  // Use centralized inventory data
+  const [inventoryData] = useState(mockData.inventory.items);
 
   // Mock user activity data
   const [userActivityData] = useState([
@@ -171,33 +39,16 @@ const Analytics = () => {
     { user: 'Maria Garcia', role: 'Manager', actions: 23, loginTime: '3 hours ago', status: 'online' }
   ]);
 
-  // Mock analytics data for demo purposes
+  // Use centralized analytics data
   const [analyticsData] = useState({
-    turnoverRates: [
-      { category: 'Electronics', rate: 8.5, trend: 'up', change: '+12%' },
-      { category: 'Furniture', rate: 2.1, trend: 'down', change: '-15%' },
-      { category: 'Office Supplies', rate: 25.3, trend: 'up', change: '+28%' }
-    ],
-    monthlyTrends: [
-      { month: 'Jan', value: 18500000, turnover: 6.2 },
-      { month: 'Feb', value: 17200000, turnover: 5.8 },
-      { month: 'Mar', value: 19500000, turnover: 7.1 },
-      { month: 'Apr', value: 18800000, turnover: 6.9 },
-      { month: 'May', value: 21500000, turnover: 8.3 },
-      { month: 'Jun', value: 22800000, turnover: 9.1 },
-      { month: 'Jul', value: 25200000, turnover: 10.2 },
-      { month: 'Aug', value: 21200000, turnover: 7.8 },
-      { month: 'Sep', value: 28500000, turnover: 11.5 },
-      { month: 'Oct', value: 26500000, turnover: 9.9 },
-      { month: 'Nov', value: 29800000, turnover: 12.1 },
-      { month: 'Dec', value: 33500000, turnover: 13.8 }
-    ],
-    performanceMetrics: {
-      avgOrderValue: 45000,
-      orderFulfillmentRate: 96.8,
-      stockAccuracy: 94.2,
-      reorderEfficiency: 78.9
-    },
+    turnoverRates: mockData.inventory.turnoverByCategory.map(cat => ({
+      category: cat.category,
+      rate: cat.turnover,
+      trend: cat.turnover > 5 ? 'up' : 'down',
+      change: cat.turnover > 5 ? `+${Math.floor(Math.random() * 30)}%` : `-${Math.floor(Math.random() * 20)}%`
+    })),
+    monthlyTrends: mockData.analytics.monthlyTrends,
+    performanceMetrics: mockData.analytics.performanceMetrics,
     topPerformers: {
       weekly: [
         { name: 'Laptop Dell XPS 13', sales: 45, revenue: 8325000, growth: '+18%', period: 'This Week' },
@@ -306,7 +157,7 @@ const Analytics = () => {
       status: item.quantity <= item.minStock ? 'Low' : item.quantity === 0 ? 'Out' : 'Good'
     }));
 
-    // Top moving items (based on quantity - in real app this would be based on movement data)
+    // Top moving items (based on quantity)
     const topMovingItems = [...inventoryData]
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 5)

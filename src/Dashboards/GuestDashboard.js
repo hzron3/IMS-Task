@@ -2,38 +2,33 @@ import React, { useState } from 'react';
 import { Box, Typography, Toolbar, AppBar, IconButton, Avatar, Button, DialogActions } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import SettingsIcon from '@mui/icons-material/Settings';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
-import StaffAssignedInventory from './StaffAssignedInventory';
-import StaffStockUpdates from './StaffStockUpdates';
-import StaffTasksActivity from './StaffTasksActivity';
-import StaffSettings from './StaffSettings';
+import GuestOverview from './GuestOverview';
+import GuestInventoryData from './GuestInventoryData';
+import GuestReports from './GuestReports';
 
 const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
 
 const sections = [
-  { label: 'Assigned Inventory', icon: <DashboardIcon />, path: 'assigned-inventory' },
-  { label: 'Stock Updates', icon: <InventoryIcon />, path: 'stock-updates' },
-  { label: 'Tasks & Activity', icon: <AssignmentIcon />, path: 'tasks-activity' },
-  { label: 'Settings & Notifications', icon: <SettingsIcon />, path: 'settings' },
+  { label: 'Inventory Overview', icon: <DashboardIcon />, path: 'overview' },
+  { label: 'Inventory Data', icon: <InventoryIcon />, path: 'inventory-data' },
+  { label: 'Reports', icon: <AssessmentIcon />, path: 'reports' },
 ];
 
 const sectionContent = [
-  'Assigned Inventory Section (List of assigned items, current stock levels, item details)',
-  'Stock Updates Section (Record stock received/issued, quick actions, notes for changes)',
-  'Tasks & Activity Section (Daily/weekly tasks, status tracker, task completion, activity feed, mini charts, items updated this week, stock change activity)',
-  'Settings & Notifications Section (Low stock alerts, restock reminders, recent updates feed, personal settings)',
+  'Inventory Overview Section (Read-only dashboard with key metrics, charts, and inventory summary)',
+  'Inventory Data Section (Read-only inventory table with search, filter, and export capabilities)',
+  'Reports Section (Downloadable reports for various stakeholder needs)',
 ];
 
 // Dashboard Navbar
@@ -109,7 +104,6 @@ function DashboardNavbar({ user, role, onSettings }) {
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
               <MenuItem onClick={handleProfileOpen}>Profile</MenuItem>
-              <MenuItem onClick={handleSettings}>Settings</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
@@ -154,7 +148,7 @@ function DashboardNavbar({ user, role, onSettings }) {
             <AccountCircle sx={{ color: 'white', fontSize: 20 }} />
           </Box>
           <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-            User Profile
+            Guest Profile
           </Typography>
         </DialogTitle>
         
@@ -187,7 +181,7 @@ function DashboardNavbar({ user, role, onSettings }) {
             border: '1px solid rgba(26, 188, 156, 0.1)'
           }}>
             <Typography variant="h6" sx={{ mb: 2, color: '#2C3E50', fontWeight: 'bold' }}>
-              Contact Information
+              Access Information
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -204,7 +198,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 </Box>
                 <Box>
                   <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
-                    Full Name
+                    User:
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
                     {user.name}
@@ -226,7 +220,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 </Box>
                 <Box>
                   <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
-                    Email Address
+                    Email:
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
                     {user.email}
@@ -248,10 +242,10 @@ function DashboardNavbar({ user, role, onSettings }) {
                 </Box>
                 <Box>
                   <Typography variant="body2" sx={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
-                    Role
+                    Access Level
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 500, color: '#2C3E50' }}>
-                    {role}
+                    Read-Only Access
                   </Typography>
                 </Box>
               </Box>
@@ -290,14 +284,14 @@ function DashboardNavbar({ user, role, onSettings }) {
   );
 }
 
-const StaffDashboard = () => {
+const GuestDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
-  // Mock user info
-  const user = { name: 'Mike Johnson', email: 'staff@inventorypro.com' };
-  const role = 'Warehouse Staff';
+  // Mock user info for guest
+  const user = { name: 'Guest Account', email: 'N/A' };
+  const role = 'Guest';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {
@@ -309,17 +303,13 @@ const StaffDashboard = () => {
 
   const handleSectionSelect = (index) => {
     const newSection = sections[index].path;
-    navigate(`/staff-dashboard/${newSection}`);
-  };
-
-  const handleSettings = () => {
-    navigate('/staff-dashboard/settings');
+    navigate(`/guest-dashboard/${newSection}`);
   };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f6fefb' }}>
       {/* Top Navbar */}
-      <DashboardNavbar user={user} role={role} onSettings={handleSettings} />
+      <DashboardNavbar user={user} role={role} />
       {/* Sidebar */}
       <Sidebar
         sections={sections}
@@ -336,17 +326,15 @@ const StaffDashboard = () => {
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {selectedIndex === 0 ? (
-            <StaffAssignedInventory />
+            <GuestOverview />
           ) : selectedIndex === 1 ? (
-            <StaffStockUpdates />
+            <GuestInventoryData />
           ) : selectedIndex === 2 ? (
-            <StaffTasksActivity />
-          ) : selectedIndex === 3 ? (
-            <StaffSettings />
+            <GuestReports />
           ) : (
             <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-                Staff Dashboard
+                Guest Dashboard
               </Typography>
               <Typography variant="h6" component="h2" sx={{ mt: 2, textAlign: 'center' }}>
                 {sectionContent[selectedIndex]}
@@ -359,4 +347,4 @@ const StaffDashboard = () => {
   );
 };
 
-export default StaffDashboard; 
+export default GuestDashboard; 

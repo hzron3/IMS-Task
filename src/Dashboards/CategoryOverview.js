@@ -6,65 +6,13 @@ import {
 import { mockData } from './mockUserData';
 import './CategoryOverview.css';
 
-const CategoryOverview = () => {
-  // Mock data for the assigned category (Furniture)
-  const [assignedCategory] = useState({
-    id: 2,
-    name: "Office Supplies",
-    description: "Office Supplies",
-    itemCount: 4,
-    totalValue: 228500,
-    lastUpdated: "2024-01-16T17:45:00",
-    assignedManager: "John Smith"
-  });
 
-  // Mock inventory data for the assigned category
-  const [categoryItems, setCategoryItems] = useState([
-    {
-      id: 2,
-      sku: 'SKU-002',
-      name: "Office Chair",
-      quantity: 25,
-      minStock: 15,
-      price: 45000,
-      supplier: "Office Depot",
-      lastUpdated: "2024-01-14T14:15:00",
-      status: "In Stock"
-    },
-    {
-      id: 4,
-      sku: 'SKU-004',
-      name: "Desk Lamp",
-      quantity: 30,
-      minStock: 10,
-      price: 8500,
-      supplier: "IKEA",
-      lastUpdated: "2024-01-12T16:20:00",
-      status: "In Stock"
-    },
-    {
-      id: 11,
-      sku: 'SKU-011',
-      name: "Expensive Desk",
-      quantity: 3,
-      minStock: 2,
-      price: 135000,
-      supplier: "Herman Miller",
-      lastUpdated: "2024-01-16T17:45:00",
-      status: "Low Stock"
-    },
-    {
-      id: 13,
-      sku: 'SKU-013',
-      name: "Filing Cabinet",
-      quantity: 0,
-      minStock: 5,
-      price: 25000,
-      supplier: "Staples",
-      lastUpdated: "2024-01-10T09:30:00",
-      status: "Out of Stock"
-    }
-  ]);
+const CategoryOverview = () => {
+  const [assignedCategory] = useState(mockData.inventory.categories.find(cat => cat.name === "Office Supplies"));
+  
+  const [categoryItems, setCategoryItems] = useState(
+    mockData.inventory.items.filter(item => item.category === "Office Supplies")
+  );
 
   // Mock staff data for the category
   const [assignedStaff] = useState([
@@ -80,7 +28,7 @@ const CategoryOverview = () => {
     { action: "Report Generated", description: "Monthly furniture inventory report", time: "2 days ago", user: "John Smith" }
   ]);
 
-  // Calculate stock status distribution
+  // Calculate stock status
   const stockStatusData = [
     { name: 'In Stock', value: 2, color: '#4CAF50' },
     { name: 'Low Stock', value: 1, color: '#FF9800' },
@@ -94,7 +42,7 @@ const CategoryOverview = () => {
     minimum: item.minStock
   }));
 
-  // Trend data for line chart (last 7 days)
+  // Trend data for line chart
   const trendData = [
     { date: 'Jan 10', value: 58 },
     { date: 'Jan 11', value: 55 },
@@ -127,9 +75,9 @@ const CategoryOverview = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-KE', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'KES',
       minimumFractionDigits: 0
     }).format(amount);
   };
@@ -179,7 +127,7 @@ const CategoryOverview = () => {
             <div className="card summary-card">
               <div className="card-body">
                 <div className="card-icon bg-success">
-                  <i className="fas fa-dollar-sign"></i>
+                  <i className="fas fa-coins"></i>
                 </div>
                 <h5 className="card-title">Total Value</h5>
                 <h3 className="card-value">{formatCurrency(assignedCategory.totalValue)}</h3>
