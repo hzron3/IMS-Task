@@ -11,8 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+// Removed unused import
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import CategoryOverview from './CategoryOverview';
@@ -21,8 +22,7 @@ import StaffManagement from './StaffManagement';
 import Settings from './Settings';
 import ManagerReportsAnalytics from './ManagerReportsAnalytics';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+// Removed unused constants
 
 const sections = [
   { label: 'Category Overview', icon: <DashboardIcon />, path: 'category-overview' },
@@ -46,6 +46,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -59,6 +60,7 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -298,10 +300,10 @@ const ManagerDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info for now
-  const user = { name: 'John Smith', email: 'manager@inventorypro.com' };
-  const role = 'Manager';
+  // Use authenticated user info
+  const role = user?.role || 'Manager';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {
