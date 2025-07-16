@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Toolbar, AppBar, IconButton } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -13,6 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import Overview from './Overview';
@@ -21,8 +22,7 @@ import InventoryManagement from './InventoryManagement';
 import Analytics from './Analytics';
 import Settings from './Settings';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+
 
 const sections = [
   { label: 'Overview', icon: <DashboardIcon />, path: 'overview' },
@@ -46,6 +46,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -59,6 +60,7 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -137,10 +139,10 @@ const AdminDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info for now
-  const user = { name: 'Jane Doe', email: 'admin@inventorypro.com' };
-  const role = 'Admin';
+  // Use authenticated user info
+  const role = user?.role || 'Admin';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {

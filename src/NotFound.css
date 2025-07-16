@@ -1,0 +1,138 @@
+.not-found-page {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f6fefb;
+  color: #183a2c;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.not-found-container {
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.error-number {
+  font-size: 6rem;
+  font-weight: 700;
+  color: #1ABC9C;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.5px;
+}
+
+.error-description {
+  font-size: 1.1rem;
+  color: #2C3E50;
+  line-height: 1.5;
+  margin: 0 0 2rem 0;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primary-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #1ABC9C 0%, #2C3E50 100%);
+  color: #fff;
+  border: none;
+  border-radius: 32px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(44,62,80,0.10);
+  transition: background 0.2s, transform 0.2s;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(90deg, #E67E22 0%, #1ABC9C 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+
+.secondary-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: transparent;
+  color: #1ABC9C;
+  border: 2px solid #1ABC9C;
+  border-radius: 32px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.secondary-btn:hover {
+  background: #1ABC9C;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+
+@media (max-width: 768px) {
+  .not-found-page {
+    padding: 1rem;
+  }
+  
+  .not-found-container {
+    padding: 1.5rem;
+  }
+  
+  .error-number {
+    font-size: 5rem;
+  }
+  
+  .error-title {
+    font-size: 1.8rem;
+  }
+  
+  .error-description {
+    font-size: 1rem;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-container {
+    padding: 1rem;
+  }
+  
+  .error-number {
+    font-size: 4rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-description {
+    font-size: 0.95rem;
+  }
+} 

@@ -9,9 +9,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+import DialogContent from '@mui/material/DialogContent';    
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import StaffAssignedInventory from './StaffAssignedInventory';
@@ -19,8 +19,7 @@ import StaffStockUpdates from './StaffStockUpdates';
 import StaffTasksActivity from './StaffTasksActivity';
 import StaffSettings from './StaffSettings';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+
 
 const sections = [
   { label: 'Assigned Inventory', icon: <DashboardIcon />, path: 'assigned-inventory' },
@@ -42,6 +41,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -55,6 +55,7 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -294,10 +295,10 @@ const StaffDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info
-  const user = { name: 'Mike Johnson', email: 'staff@inventorypro.com' };
-  const role = 'Warehouse Staff';
+  // Use authenticated user info
+  const role = user?.role || 'Staff';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {

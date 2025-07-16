@@ -10,14 +10,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import GuestOverview from './GuestOverview';
 import GuestInventoryData from './GuestInventoryData';
 import GuestReports from './GuestReports';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+
 
 const sections = [
   { label: 'Inventory Overview', icon: <DashboardIcon />, path: 'overview' },
@@ -37,6 +37,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -45,11 +46,8 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleProfileClose = () => setProfileOpen(false);
-  const handleSettings = () => {
-    if (onSettings) onSettings();
-    handleClose();
-  };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -288,10 +286,10 @@ const GuestDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info for guest
-  const user = { name: 'Guest Account', email: 'N/A' };
-  const role = 'Guest';
+  // Use authenticated user info
+  const role = user?.role || 'Guest';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {
