@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Box, Card, CardContent, Typography, Grid, Paper, Chip, 
+  Card, CardContent, Typography, Chip, 
   Select, MenuItem, FormControl, InputLabel, Button,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
@@ -9,7 +9,6 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import {
-  TrendingUp, Inventory, Warning, Assessment, 
   FileDownload, FilterList, Refresh
 } from '@mui/icons-material';
 import './Analytics.css';
@@ -19,7 +18,7 @@ const Analytics = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [dateRange, setDateRange] = useState('30');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedUser, setSelectedUser] = useState('all');
+
   const [performancePeriod, setPerformancePeriod] = useState('weekly');
 
   // Use centralized inventory data

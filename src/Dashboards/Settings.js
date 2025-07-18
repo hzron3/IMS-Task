@@ -30,8 +30,7 @@ const Settings = () => {
     timezone: "EAT",
     dateFormat: "DD/MM/YYYY",
     currency: "Ksh",
-    exportFormat: "PDF",
-    weeklyReports: true
+    exportFormat: "PDF"
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);

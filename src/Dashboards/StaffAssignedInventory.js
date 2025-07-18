@@ -1,14 +1,14 @@
 //revamped to be Overview
 import React, { useState } from 'react';
 import {
-  Box, Typography, Card, CardContent, Button, Chip, IconButton, 
+  Box, Typography, Card, CardContent, Button, Chip, IconButton,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField, 
-  Snackbar, Alert, InputAdornment, Avatar, LinearProgress, Divider
+  Snackbar, Alert, InputAdornment, Avatar
 } from '@mui/material';
 import { 
   AddCircle, RemoveCircle, Search, Warning, Inventory, 
-  Assignment, TrendingUp, CheckCircle, Schedule, Notifications,
+  Assignment, CheckCircle, Schedule, Notifications,
   Person, Task, Analytics, Visibility
 } from '@mui/icons-material';
 

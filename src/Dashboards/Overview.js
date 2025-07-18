@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography, Grid, Paper, Chip, List,ListItem,ListItemText,ListItemIcon,Divider} from '@mui/material';
-import {TrendingUp,Inventory,Warning,Cancel,Timeline,Assessment,Category,TrendingDown} from '@mui/icons-material';
+import {TrendingUp,Inventory,Warning,Cancel,Timeline} from '@mui/icons-material';
 import {LineChart,Line,BarChart,Bar,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer} from 'recharts';
 import { mockData } from './mockUserData';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
+
 
 const KPICard = ({ title, value, icon, subtitle, bgGradient }) => (
   <Card sx={{ height: '100%', background: bgGradient }}>

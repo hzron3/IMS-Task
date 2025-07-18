@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Typography, 
-  Box, 
   Chip, 
   TextField, 
   Select, 
@@ -9,15 +8,12 @@ import {
   FormControl, 
   InputLabel,
   Button,
-  IconButton,
-  Tooltip,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Pagination,
   Alert,
   Card,
@@ -31,9 +27,7 @@ import {
   Warning, 
   Cancel,
   CheckCircle,
-  Sort,
-  SortByAlpha,
-  SortByAlphaOutlined
+  Sort
 } from '@mui/icons-material';
 import { mockData } from './mockUserData';
 import './GuestInventoryData.css';

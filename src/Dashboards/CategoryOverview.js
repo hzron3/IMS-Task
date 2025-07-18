@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, Area, AreaChart
+  AreaChart, Area
 } from 'recharts';
 import { mockData } from './mockUserData';
 import './CategoryOverview.css';
@@ -10,7 +10,7 @@ import './CategoryOverview.css';
 const CategoryOverview = () => {
   const [assignedCategory] = useState(mockData.inventory.categories.find(cat => cat.name === "Office Supplies"));
   
-  const [categoryItems, setCategoryItems] = useState(
+  const [categoryItems] = useState(
     mockData.inventory.items.filter(item => item.category === "Office Supplies")
   );
 
@@ -59,11 +59,7 @@ const CategoryOverview = () => {
     { type: 'warning', message: 'Expensive Desk is low on stock', item: 'SKU-011' }
   ]);
 
-  const getStockStatus = (quantity, minStock) => {
-    if (quantity === 0) return 'Out of Stock';
-    if (quantity <= minStock) return 'Low Stock';
-    return 'In Stock';
-  };
+
 
   const getStatusColor = (status) => {
     switch (status) {

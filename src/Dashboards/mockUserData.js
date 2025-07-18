@@ -309,7 +309,7 @@ export const mockData = {
         status: 'offline',
         lastActivity: '2024-01-13T16:45:00',
         performance: 92,
-        assignedItems: 7,
+        assignedItemsCount: 7,
         lowStockItems: 2,
         completedTasks: 15,
         pendingTasks: 1,

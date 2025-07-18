@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, Button, Switch, FormControlLabel, TextField, Avatar, Chip, Divider, Alert, Snackbar } from '@mui/material';
-import { Person, Notifications, Work, Security, Help, Save, Restore, Visibility, VisibilityOff, Email, Phone, LocationOn } from '@mui/icons-material';
+import { Person, Notifications, Work, Security, Help, Save, Restore, Visibility, VisibilityOff, Email, Phone } from '@mui/icons-material';
 
 // Mock user data
 const mockUser = {

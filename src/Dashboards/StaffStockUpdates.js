@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import {
-  Box, Typography, Card, CardContent, Button, Chip, IconButton, 
+  Box, Typography, Card, CardContent, Button, Chip, IconButton,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField, 
-  Snackbar, Alert, InputAdornment, LinearProgress, Divider,
+  Snackbar, Alert, InputAdornment, LinearProgress,
   FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { 
   AddCircle, RemoveCircle, Search, Warning, Inventory, 
-  TrendingUp, CheckCircle, Schedule, Notifications,
+  CheckCircle, Schedule, Notifications,
   Person, Task, Analytics, Visibility, FilterList,
-  Download, Upload, History, Assessment
+  Download, Upload, Assessment, History, TrendingUp
 } from '@mui/icons-material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 

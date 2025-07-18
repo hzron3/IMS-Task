@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, Chip, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, LinearProgress, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, Chip, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert } from '@mui/material';
 import { Task, CheckCircle, TrendingUp, Assignment, Schedule, Warning, Done, MoreHoriz } from '@mui/icons-material';
 
 // Mock data
