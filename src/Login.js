@@ -67,30 +67,14 @@ const Login = () => {
     }
   };
 
-  const handleGuestLogin = () => {
-    // Create a guest user object and authenticate them
-    const guestUser = {
-      id: 'guest',
-      name: 'Guest User',
-      email: 'guest@inventorypro.com',
-      role: 'guest',
-      avatar: 'GU',
-      lastActive: 'Just now',
-      status: 'online'
-    };
+  const handleGuestLogin = async () => {
+    const result = await login('guest@gmail.com', 'guest123.');
     
-    // Create a session for the guest user
-    const session = {
-      user: guestUser,
-      token: Math.random().toString(36).substring(2) + Date.now().toString(36),
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-    };
-    
-    // Store in localStorage
-    localStorage.setItem('authSession', JSON.stringify(session));
-    
-    // Navigate to guest dashboard
-    navigate('/guest-dashboard');
+    if (result.success) {
+      navigate('/guest-dashboard');
+    } else {
+      setErrors({ general: result.message });
+    }
   };
 
   return (

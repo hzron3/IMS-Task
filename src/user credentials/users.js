@@ -30,8 +30,16 @@ export const users = [
     lastActive: '30 min ago',
     status: 'online'
   },
-
-
+  {
+    id: 4,
+    name: 'Guest User',
+    email: 'guest@gmail.com',
+    password: 'guest123.',
+    role: 'guest',
+    avatar: 'GU',
+    lastActive: '5 min ago',
+    status: 'online'
+  }
 ];
 
 export const findUserByEmail = (email) => {
