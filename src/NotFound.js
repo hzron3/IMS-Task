@@ -8,7 +8,6 @@ const NotFound = () => {
   return (
     <div className="not-found-page">
       <div className="not-found-container">
-        <div className="error-number">Error 404:</div>
         <h1 className="error-title">Page Not Found</h1>
         <p className="error-description">
           Oops! The page you're looking for doesn't exist. Please check the URL and try again.
