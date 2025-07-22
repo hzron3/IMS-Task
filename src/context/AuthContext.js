@@ -54,13 +54,23 @@ export const AuthProvider = ({ children }) => {
     return AuthService.hasRole(requiredRoles);
   };
 
+  const isAuthenticatedForDashboard = (requiredRole) => {
+    return AuthService.isAuthenticatedForDashboard(requiredRole);
+  };
+
+  const getAuthenticatedDashboard = () => {
+    return AuthService.getAuthenticatedDashboard();
+  };
+
   const value = {
     user,
     isAuthenticated,
     loading,
     login,
     logout,
-    hasRole
+    hasRole,
+    isAuthenticatedForDashboard,
+    getAuthenticatedDashboard
   };
 
   return (

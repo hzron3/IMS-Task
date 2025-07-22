@@ -5,10 +5,12 @@ class AuthService {
     const user = validateCredentials(email, password);
     
     if (user) {
+      // Create session with specific dashboard authentication
       const session = {
         user,
         token: this.generateToken(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        authenticatedForDashboard: user.role // Track which dashboard they're authenticated for
       };
       
       // Store in localStorage
@@ -70,6 +72,25 @@ class AuthService {
     }
     
     return user.role === requiredRoles;
+  }
+
+  isAuthenticatedForDashboard(requiredRole) {
+    const session = this.getSession();
+    if (!session) return false;
+    
+    // Check if session is expired
+    if (new Date() > new Date(session.expiresAt)) {
+      this.logout();
+      return false;
+    }
+    
+    // Check if user is authenticated for this specific dashboard
+    return session.authenticatedForDashboard === requiredRole;
+  }
+
+  getAuthenticatedDashboard() {
+    const session = this.getSession();
+    return session ? session.authenticatedForDashboard : null;
   }
 }
 

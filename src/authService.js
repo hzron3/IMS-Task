@@ -10,7 +10,8 @@ class AuthService {
       const session = {
         user,
         token: this.generateToken(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        authenticatedForDashboard: user.role 
       };
       
       // Store in localStorage
@@ -72,6 +73,25 @@ class AuthService {
     }
     
     return user.role === requiredRoles;
+  }
+
+  isAuthenticatedForDashboard(requiredRole) {
+    const session = this.getSession();
+    if (!session) return false;
+    
+    // Check if session is expired
+    if (new Date() > new Date(session.expiresAt)) {
+      this.logout();
+      return false;
+    }
+    
+    return session.authenticatedForDashboard === requiredRole;
+  }
+
+  //Get the dashboard the user is currently authenticated for
+  getAuthenticatedDashboard() {
+    const session = this.getSession();
+    return session ? session.authenticatedForDashboard : null;
   }
 }
 

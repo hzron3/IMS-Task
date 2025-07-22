@@ -25,45 +25,45 @@ function App() {
             
             {/* Protected Dashboard Routes */}
             <Route path="/admin-dashboard" element={
-              <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute requiredRole="admin">
                 <Navigate to="/admin-dashboard/overview" replace />
               </ProtectedRoute>
             } />
             <Route path="/admin-dashboard/:section" element={
-              <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
               </ProtectedRoute>
             } />
             
             <Route path="/manager-dashboard" element={
-              <ProtectedRoute allowedRoles={['admin', 'manager']}>
+              <ProtectedRoute requiredRole="manager">
                 <Navigate to="/manager-dashboard/category-overview" replace />
               </ProtectedRoute>
             } />
             <Route path="/manager-dashboard/:section" element={
-              <ProtectedRoute allowedRoles={['admin', 'manager']}>
+              <ProtectedRoute requiredRole="manager">
                 <ManagerDashboard />
               </ProtectedRoute>
             } />
             
             <Route path="/staff-dashboard" element={
-              <ProtectedRoute allowedRoles={['admin', 'manager', 'staff']}>
+              <ProtectedRoute requiredRole="staff">
                 <Navigate to="/staff-dashboard/assigned-inventory" replace />
               </ProtectedRoute>
             } />
             <Route path="/staff-dashboard/:section" element={
-              <ProtectedRoute allowedRoles={['admin', 'manager', 'staff']}>
+              <ProtectedRoute requiredRole="staff">
                 <StaffDashboard />
               </ProtectedRoute>
             } />
             
             <Route path="/guest-dashboard" element={
-              <ProtectedRoute allowedRoles={['guest']}>
+              <ProtectedRoute requiredRole="guest">
                 <Navigate to="/guest-dashboard/overview" replace />
               </ProtectedRoute>
             } />
             <Route path="/guest-dashboard/:section" element={
-              <ProtectedRoute allowedRoles={['guest']}>
+              <ProtectedRoute requiredRole="guest">
                 <GuestDashboard />
               </ProtectedRoute>
             } />

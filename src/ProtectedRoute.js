@@ -2,8 +2,8 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
-const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { isAuthenticated, loading, hasRole } = useAuth();
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { isAuthenticated, loading, isAuthenticatedForDashboard } = useAuth();
 
   if (loading) {
     return (
@@ -24,7 +24,8 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles.length > 0 && !hasRole(allowedRoles)) {
+  // Check if user is authenticated for this specific dashboard
+  if (requiredRole && !isAuthenticatedForDashboard(requiredRole)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
