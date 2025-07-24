@@ -72,7 +72,7 @@ const Signup = () => {
           <form className="signup-form" onSubmit={handleSubmit}>
             <h2>Sign Up for InventoryPro</h2>
             <div className="form-group">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name" className="signup-label">Name</label>
               <input
                 className="signup-input"
                 type="text"
@@ -86,7 +86,7 @@ const Signup = () => {
               {errors.name && <span className="error">{errors.name}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="signup-label">Email</label>
               <input
                 className="signup-input"
                 type="email"
@@ -100,7 +100,7 @@ const Signup = () => {
               {errors.email && <span className="error">{errors.email}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="signup-label">Password</label>
               <div className="password-input-wrapper">
                 <input
                   className="signup-input"
@@ -129,7 +129,7 @@ const Signup = () => {
               {errors.password && <span className="error">{errors.password}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="signup-label">Confirm Password</label>
               <div className="password-input-wrapper">
                 <input
                   className="signup-input"
@@ -158,7 +158,7 @@ const Signup = () => {
               {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="role">Role</label>
+              <label htmlFor="role" className="signup-label">Role</label>
               <select
                 className="signup-input"
                 id="role"

@@ -174,6 +174,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
+
         sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
       >
         <Toolbar />

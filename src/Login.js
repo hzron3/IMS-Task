@@ -87,7 +87,7 @@ const Login = () => {
           <form className="login-form" onSubmit={handleSubmit}>
             <h2>Login to InventoryPro</h2>
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="login-label">Email</label>
               <input
                 className="login-input"
                 type="email"
@@ -100,7 +100,7 @@ const Login = () => {
               {errors.email && <span className="error">{errors.email}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="login-label">Password</label>
               <div className="password-input-wrapper">
                 <input
                   className="login-input"
