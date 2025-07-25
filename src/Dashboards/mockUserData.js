@@ -47,11 +47,13 @@ export const mockData = {
 
     // Categories
     categories: [
-      { id: 1, name: 'Electronics', description: 'Electronic devices and accessories', itemCount: 8, totalValue: 2500000, assignedManager: 'John Smith' },
-      { id: 2, name: 'Furniture', description: 'Office furniture and fixtures', itemCount: 4, totalValue: 1800000, assignedManager: 'Lisa Davis' },
-      { id: 3, name: 'Office Supplies', description: 'Basic office supplies', itemCount: 4, totalValue: 1200000, assignedManager: 'John Smith' },
-      { id: 4, name: 'Clothing', description: 'Work uniforms and apparel', itemCount: 3, totalValue: 800000, assignedManager: 'Lisa Davis' },
-      { id: 5, name: 'Books', description: 'Reference books and manuals', itemCount: 2, totalValue: 484500, assignedManager: 'John Smith' }
+      { id: 1, name: 'Electronics', description: 'Electronic devices and accessories', itemCount: 8, totalValue: 2500000, assignedManager: 'John Smith', isDeleted: false, deletedAt: null, deletedBy: null },
+      { id: 2, name: 'Furniture', description: 'Office furniture and fixtures', itemCount: 4, totalValue: 1800000, assignedManager: 'Lisa Davis', isDeleted: false, deletedAt: null, deletedBy: null },
+      { id: 3, name: 'Office Supplies', description: 'Basic office supplies', itemCount: 4, totalValue: 1200000, assignedManager: 'John Smith', isDeleted: false, deletedAt: null, deletedBy: null },
+      { id: 4, name: 'Clothing', description: 'Work uniforms and apparel', itemCount: 3, totalValue: 800000, assignedManager: 'Lisa Davis', isDeleted: false, deletedAt: null, deletedBy: null },
+      { id: 5, name: 'Books', description: 'Reference books and manuals', itemCount: 2, totalValue: 484500, assignedManager: 'John Smith', isDeleted: false, deletedAt: null, deletedBy: null },
+      { id: 6, name: 'Old Equipment', description: 'Deprecated and obsolete equipment', itemCount: 0, totalValue: 0, assignedManager: null, isDeleted: true, deletedAt: '2024-01-10T14:30:00', deletedBy: 'Jane Doe' },
+      { id: 7, name: 'Test Category', description: 'Testing category for development', itemCount: 0, totalValue: 0, assignedManager: null, isDeleted: true, deletedAt: '2024-01-15T09:15:00', deletedBy: 'John Smith' }
     ],
 
     // Items
@@ -67,7 +69,10 @@ export const mockData = {
         supplier: 'Dell Inc.',
         lastUpdated: '2024-01-15T09:30:00',
         status: 'In Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 2,
@@ -80,7 +85,10 @@ export const mockData = {
         supplier: 'Office Depot',
         lastUpdated: '2024-01-14T14:15:00',
         status: 'In Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 3,
@@ -93,7 +101,10 @@ export const mockData = {
         supplier: 'HP Inc.',
         lastUpdated: '2024-01-13T11:45:00',
         status: 'Low Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 4,
@@ -106,7 +117,10 @@ export const mockData = {
         supplier: 'IKEA',
         lastUpdated: '2024-01-12T16:20:00',
         status: 'In Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 5,
@@ -119,7 +133,10 @@ export const mockData = {
         supplier: 'Logitech',
         lastUpdated: '2024-01-14T14:15:00',
         status: 'Low Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 6,
@@ -132,7 +149,10 @@ export const mockData = {
         supplier: 'Amazon',
         lastUpdated: '2024-01-12T16:20:00',
         status: 'Out of Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 7,
@@ -145,7 +165,10 @@ export const mockData = {
         supplier: 'Staples',
         lastUpdated: '2024-01-05T10:30:00',
         status: 'In Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 8,
@@ -158,7 +181,10 @@ export const mockData = {
         supplier: 'Office Depot',
         lastUpdated: '2024-01-03T14:20:00',
         status: 'In Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 9,
@@ -171,7 +197,10 @@ export const mockData = {
         supplier: 'Samsung',
         lastUpdated: '2023-11-20T09:15:00',
         status: 'Low Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 10,
@@ -184,7 +213,10 @@ export const mockData = {
         supplier: 'LG Electronics',
         lastUpdated: '2023-10-15T11:45:00',
         status: 'Low Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 11,
@@ -197,7 +229,10 @@ export const mockData = {
         supplier: 'Herman Miller',
         lastUpdated: '2024-01-16T17:45:00',
         status: 'Low Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 12,
@@ -210,7 +245,10 @@ export const mockData = {
         supplier: 'Staples',
         lastUpdated: '2024-01-17T08:30:00',
         status: 'In Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 13,
@@ -223,7 +261,10 @@ export const mockData = {
         supplier: 'Staples',
         lastUpdated: '2024-01-10T09:30:00',
         status: 'Out of Stock',
-        assignedStaff: 'Alex Brown'
+        assignedStaff: 'Alex Brown',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 14,
@@ -236,7 +277,10 @@ export const mockData = {
         supplier: 'Dell Inc.',
         lastUpdated: '2024-01-15T10:30:00',
         status: 'In Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
       },
       {
         id: 15,
@@ -249,7 +293,58 @@ export const mockData = {
         supplier: 'Sony',
         lastUpdated: '2024-01-16T14:20:00',
         status: 'In Stock',
-        assignedStaff: 'Mike Johnson'
+        assignedStaff: 'Mike Johnson',
+        isDeleted: false,
+        deletedAt: null,
+        deletedBy: null
+      },
+      {
+        id: 16,
+        sku: 'SKU-DELETED-001',
+        name: 'Old Printer Model',
+        category: 'Electronics',
+        quantity: 0,
+        minStock: 5,
+        price: 25000,
+        supplier: 'HP Inc.',
+        lastUpdated: '2024-01-10T11:45:00',
+        status: 'Out of Stock',
+        assignedStaff: 'Mike Johnson',
+        isDeleted: true,
+        deletedAt: '2024-01-15T14:30:00',
+        deletedBy: 'Jane Doe'
+      },
+      {
+        id: 17,
+        sku: 'SKU-DELETED-002',
+        name: 'Broken Desk Chair',
+        category: 'Furniture',
+        quantity: 2,
+        minStock: 10,
+        price: 15000,
+        supplier: 'Office Depot',
+        lastUpdated: '2024-01-08T16:20:00',
+        status: 'Low Stock',
+        assignedStaff: 'Alex Brown',
+        isDeleted: true,
+        deletedAt: '2024-01-12T10:15:00',
+        deletedBy: 'John Smith'
+      },
+      {
+        id: 18,
+        sku: 'SKU-DELETED-003',
+        name: 'Expired Notebooks',
+        category: 'Office Supplies',
+        quantity: 50,
+        minStock: 20,
+        price: 300,
+        supplier: 'Staples',
+        lastUpdated: '2024-01-05T09:30:00',
+        status: 'In Stock',
+        assignedStaff: 'Alex Brown',
+        isDeleted: true,
+        deletedAt: '2024-01-14T13:45:00',
+        deletedBy: 'Lisa Davis'
       }
     ],
 

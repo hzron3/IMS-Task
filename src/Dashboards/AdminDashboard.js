@@ -5,6 +5,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,6 +22,7 @@ import UserManagement from './UserManagement';
 import InventoryManagement from './InventoryManagement';
 import Analytics from './Analytics';
 import Settings from './Settings';
+import RecycleBin from './RecycleBin';
 
 
 
@@ -29,6 +31,7 @@ const sections = [
   { label: 'Inventory Management', icon: <InventoryIcon />, path: 'inventory-management' },
   { label: 'User & Role Management', icon: <PeopleIcon />, path: 'user-management' },
   { label: 'Analytics & Reports', icon: <BarChartIcon />, path: 'analytics' },
+  { label: 'Recycle Bin', icon: <DeleteIcon />, path: 'recycle-bin' },
   { label: 'System Settings', icon: <SettingsIcon />, path: 'settings' },
 ];
 
@@ -37,6 +40,7 @@ const sectionContent = [
   'Inventory Management Section (CRUD Items, Bulk Import/Export, Category Management)',
   'User & Role Management Section (User List, Add/Edit/Remove Users, Role Assignment, Access Logs)',
   'Analytics & Reports Section (Top Moving Items, Dead Stock, Category Distribution)',
+  'Recycle Bin Section (Restore or permanently delete soft-deleted items and categories)',
   'System Settings Section (History, Notification Settings)',
 ];
 
@@ -188,6 +192,8 @@ const AdminDashboard = () => {
           ) : selectedIndex === 3 ? (
             <Analytics />
           ) : selectedIndex === 4 ? (
+            <RecycleBin />
+          ) : selectedIndex === 5 ? (
             <Settings />
           ) : (
             <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

@@ -215,7 +215,7 @@ const InventoryManagement = () => {
   // Calculate number of items in each category
   const calculateCategoryStats = (inventoryItems, categoriesList) => {
     return categoriesList.map(category => {
-      const categoryItems = inventoryItems.filter(item => item.category === category.name);
+      const categoryItems = inventoryItems.filter(item => item.category === category.name && !item.isDeleted);
       const itemCount = categoryItems.length;
       const totalValue = categoryItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       
@@ -352,7 +352,17 @@ const InventoryManagement = () => {
   };
 
   const handleConfirmDeleteItem = () => {
-    setInventory(inventory.filter(item => item.id !== itemToDelete));
+    // Soft delete 
+    setInventory(inventory.map(item => 
+      item.id === itemToDelete 
+        ? { 
+            ...item, 
+            isDeleted: true, 
+            deletedAt: new Date().toISOString(), 
+            deletedBy: 'Current User' 
+          }
+        : item
+    ));
     setOpenDeleteItemConfirm(false);
     setItemToDelete(null);
   };
@@ -433,17 +443,27 @@ const InventoryManagement = () => {
     const categoryToDeleteObj = categories.find(cat => cat.id === categoryToDelete);
     
     // Check if there are items in this category
-    const itemsInCategory = inventory.filter(item => item.category === categoryToDeleteObj?.name);
+    const itemsInCategory = inventory.filter(item => item.category === categoryToDeleteObj?.name && !item.isDeleted);
     
     if (itemsInCategory.length > 0) {
-      // If there are items, show an alert and prevent deletion
-      alert(`Cannot delete category "${categoryToDeleteObj?.name}" because it contains ${itemsInCategory.length} item(s). Please reassign or delete these items first.`);
+      // If there are active items, show an alert and prevent deletion
+      alert(`Cannot delete category "${categoryToDeleteObj?.name}" because it contains ${itemsInCategory.length} active item(s). Please reassign or delete these items first.`);
       setOpenDeleteCategoryConfirm(false);
       setCategoryToDelete(null);
       return;
     }
     
-    setCategories(categories.filter(cat => cat.id !== categoryToDelete));
+    // Soft delete
+    setCategories(categories.map(cat => 
+      cat.id === categoryToDelete 
+        ? { 
+            ...cat, 
+            isDeleted: true, 
+            deletedAt: new Date().toISOString(), 
+            deletedBy: 'Current User' 
+          }
+        : cat
+    ));
     setOpenDeleteCategoryConfirm(false);
     setCategoryToDelete(null);
   };
@@ -665,6 +685,9 @@ const InventoryManagement = () => {
   };
 
   const filteredInventory = inventory.filter(item => {
+    // Exclude deleted items by default
+    if (item.isDeleted) return false;
+    
     // Text search filter
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -678,10 +701,13 @@ const InventoryManagement = () => {
     return matchesSearch && matchesStockStatus;
   }).sort(sortByDate);
 
-  const filteredCategories = categories.filter(cat =>
-    cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cat.description.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort(sortByDate);
+  const filteredCategories = categories.filter(cat => {
+    // Exclude deleted categories by default
+    if (cat.isDeleted) return false;
+    
+    return cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           cat.description.toLowerCase().includes(searchTerm.toLowerCase());
+  }).sort(sortByDate);
 
   return (
     <div className="inventory-container">
@@ -932,25 +958,25 @@ const InventoryManagement = () => {
           <div className="row">
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted).length}</h3>
                 <p>Total Categories</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted).reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
                 <p>Total Items</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.filter(cat => cat.itemCount === 0).length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted && cat.itemCount === 0).length}</h3>
                 <p>Empty Categories</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.filter(cat => cat.assignedManager).length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted && cat.assignedManager).length}</h3>
                 <p>Assigned Categories</p>
               </div>
             </div>
@@ -964,31 +990,31 @@ const InventoryManagement = () => {
           <div className="row">
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted).length}</h3>
                 <p>Total Items</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity === 0).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity === 0).length}</h3>
                 <p>Out of Stock</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock && item.quantity > item.minStock / 2).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity > 0 && item.quantity <= item.minStock && item.quantity > item.minStock / 2).length}</h3>
                 <p>Low Stock</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock / 2).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity > 0 && item.quantity <= item.minStock / 2).length}</h3>
                 <p>Critical</p>
               </div>
             </div>
             <div className="col-md-4">
               <div className="stat-card">
-                <h3>Ksh {inventory.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</h3>
+                <h3>Ksh {inventory.filter(item => !item.isDeleted).reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</h3>
                 <p>Total Inventory Value</p>
               </div>
             </div>
@@ -1047,7 +1073,7 @@ const InventoryManagement = () => {
                     required
                   >
                     <option value="">Select a category</option>
-                    {categories.map((category) => (
+                    {categories.filter(cat => !cat.isDeleted).map((category) => (
                       <option key={category.id} value={category.name}>
                         {category.name}
                       </option>
@@ -1190,7 +1216,7 @@ const InventoryManagement = () => {
               <button type="button" className="btn-close" onClick={() => setOpenDeleteItemConfirm(false)}></button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+              <p>Are you sure you want to delete this item? It will be moved to the Recycle Bin where you can restore it later or delete it permanently.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteItemConfirm(false)}>
@@ -1216,7 +1242,7 @@ const InventoryManagement = () => {
               <button type="button" className="btn-close" onClick={() => setOpenDeleteCategoryConfirm(false)}></button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this category? This action cannot be undone.</p>
+              <p>Are you sure you want to delete this category? It will be moved to the Recycle Bin where you can restore it later or delete it permanently.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteCategoryConfirm(false)}>
