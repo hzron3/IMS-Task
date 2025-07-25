@@ -96,7 +96,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 fontFamily: 'Poppins, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
               }}
             >
-              InventoryPro
+              InventoryAce
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />

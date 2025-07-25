@@ -171,10 +171,10 @@ const InventoryManagement = () => {
 
   // Mock managers data
   const [managers, setManagers] = useState([
-    { id: 1, name: "John Smith", email: "john@inventorypro.com", assignedCategories: ["Furniture"] },
-    { id: 2, name: "Lisa Davis", email: "lisa@inventorypro.com", assignedCategories: ["Office Supplies"] },
-    { id: 3, name: "Mike Johnson", email: "mike@inventorypro.com", assignedCategories: [] },
-    { id: 4, name: "Sarah Wilson", email: "sarah@inventorypro.com", assignedCategories: [] }
+    { id: 1, name: "John Smith", email: "john@InventoryAce.com", assignedCategories: ["Furniture"] },
+    { id: 2, name: "Lisa Davis", email: "lisa@InventoryAce.com", assignedCategories: ["Office Supplies"] },
+    { id: 3, name: "Mike Johnson", email: "mike@InventoryAce.com", assignedCategories: [] },
+    { id: 4, name: "Sarah Wilson", email: "sarah@InventoryAce.com", assignedCategories: [] }
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);

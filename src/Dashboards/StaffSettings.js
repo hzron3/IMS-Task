@@ -6,7 +6,7 @@ import { Person, Notifications, Work, Security, Help, Save, Restore, Visibility,
 const mockUser = {
   firstName: "Sarah",
   lastName: "Johnson",
-  email: "sarah.johnson@inventorypro.com",
+  email: "sarah.johnson@InventoryAce.com",
   phone: "+254 700 987 654",
   department: "Warehouse Operations",
   position: "Warehouse Staff",
@@ -641,7 +641,7 @@ export default function StaffSettings() {
                       User Manual
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Complete guide to using InventoryPro
+                      Complete guide to using InventoryAce
                     </Typography>
                   </CardContent>
                 </Card>

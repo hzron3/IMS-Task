@@ -544,7 +544,7 @@ export default function GuestInventoryData() {
         <div className="col-12">
           <Alert severity="info" className="data-source-info">
             <Typography variant="body2">
-              <strong>Data Source:</strong> InventoryPro System | 
+              <strong>Data Source:</strong> InventoryAce System | 
               <strong>Last Updated:</strong> {new Date().toLocaleString()} | 
               <strong>Total Records:</strong> {mockData.inventory.items.length} items
             </Typography>

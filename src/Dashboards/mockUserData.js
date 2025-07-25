@@ -7,12 +7,12 @@ export const mockData = {
     newUsers: 3
   },
   users: [
-    { id: 1, name: 'Jane Doe', email: 'jane@inventorypro.com', role: 'Admin', lastActive: '2 hours ago', status: 'online', avatar: 'JD' },
-    { id: 2, name: 'John Smith', email: 'john@inventorypro.com', role: 'Manager', lastActive: '1 hour ago', status: 'online', avatar: 'JS' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@inventorypro.com', role: 'Staff', lastActive: '30 min ago', status: 'online', avatar: 'MJ' },
-    { id: 4, name: 'Sarah Wilson', email: 'sarah@inventorypro.com', role: 'Admin', lastActive: '1 day ago', status: 'offline', avatar: 'SW' },
-    { id: 5, name: 'Alex Brown', email: 'alex@inventorypro.com', role: 'Staff', lastActive: '2 days ago', status: 'offline', avatar: 'AB' },
-    { id: 6, name: 'Lisa Davis', email: 'lisa@inventorypro.com', role: 'Manager', lastActive: '3 hours ago', status: 'online', avatar: 'LD' }
+    { id: 1, name: 'Jane Doe', email: 'jane@InventoryAce.com', role: 'Admin', lastActive: '2 hours ago', status: 'online', avatar: 'JD' },
+    { id: 2, name: 'John Smith', email: 'john@InventoryAce.com', role: 'Manager', lastActive: '1 hour ago', status: 'online', avatar: 'JS' },
+    { id: 3, name: 'Mike Johnson', email: 'mike@InventoryAce.com', role: 'Staff', lastActive: '30 min ago', status: 'online', avatar: 'MJ' },
+    { id: 4, name: 'Sarah Wilson', email: 'sarah@InventoryAce.com', role: 'Admin', lastActive: '1 day ago', status: 'offline', avatar: 'SW' },
+    { id: 5, name: 'Alex Brown', email: 'alex@InventoryAce.com', role: 'Staff', lastActive: '2 days ago', status: 'offline', avatar: 'AB' },
+    { id: 6, name: 'Lisa Davis', email: 'lisa@InventoryAce.com', role: 'Manager', lastActive: '3 hours ago', status: 'online', avatar: 'LD' }
   ],
   roles: [
     { name: 'Admin', count: 2, permissions: ['Full Access', 'User Management', 'System Settings'] },
@@ -383,7 +383,7 @@ export const mockData = {
     staffAssignments: {
       'Mike Johnson': {
         name: 'Mike Johnson',
-        email: 'mike.johnson@inventorypro.com',
+        email: 'mike.johnson@InventoryAce.com',
         role: 'Warehouse Staff',
         avatar: 'MJ',
         status: 'online',
@@ -398,7 +398,7 @@ export const mockData = {
       },
       'Alex Brown': {
         name: 'Alex Brown',
-        email: 'alex@inventorypro.com',
+        email: 'alex@InventoryAce.com',
         role: 'Warehouse Staff',
         avatar: 'AB',
         status: 'offline',

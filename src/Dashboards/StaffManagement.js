@@ -58,7 +58,7 @@ const StaffManagement = () => {
     {
       id: 1,
       name: 'John Doe',
-      email: 'john.doe@inventorypro.com',
+      email: 'john.doe@InventoryAce.com',
       phone: '+254 700 123 456',
       role: 'Warehouse Staff',
       assignedItems: 12,
@@ -77,7 +77,7 @@ const StaffManagement = () => {
     {
       id: 2,
       name: 'Jane Smith',
-      email: 'jane.smith@inventorypro.com',
+      email: 'jane.smith@InventoryAce.com',
       phone: '+254 700 123 457',
       role: 'Warehouse Staff',
       assignedItems: 8,
@@ -96,7 +96,7 @@ const StaffManagement = () => {
     {
       id: 3,
       name: 'Mike Johnson',
-      email: 'mike.johnson@inventorypro.com',
+      email: 'mike.johnson@InventoryAce.com',
       phone: '+254 700 123 458',
       role: 'Warehouse Staff',
       assignedItems: 15,
@@ -115,7 +115,7 @@ const StaffManagement = () => {
     {
       id: 4,
       name: 'Sarah Wilson',
-      email: 'sarah.wilson@inventorypro.com',
+      email: 'sarah.wilson@InventoryAce.com',
       phone: '+254 700 123 459',
       role: 'Warehouse Staff',
       assignedItems: 10,

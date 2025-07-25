@@ -28,11 +28,11 @@ const LandingPage = () => {
       <section id="about" className="about-section">
         <div className="section-content-inner">
           <div className="about-img-col">
-            <img src="https://picsum.photos/400/300?random=1" alt="About InventoryPro" className="about-img" />
+            <img src="https://picsum.photos/400/300?random=1" alt="About InventoryAce" className="about-img" />
           </div>
           <div className="about-text-col">
             <div className="section-heading">About</div>
-            <p className="section-paragraph">InventoryPro is a modern warehouse inventory management system that empowers your team to track, manage, and optimize stock with ease. Role-based dashboards, real-time data, and intuitive controls make inventory management effortless for admins, managers, and staff alike.</p>
+            <p className="section-paragraph">InventoryAce is a modern warehouse inventory management system that empowers your team to track, manage, and optimize stock with ease. Role-based dashboards, real-time data, and intuitive controls make inventory management effortless for admins, managers, and staff alike.</p>
           </div>
         </div>
       </section>
@@ -41,7 +41,7 @@ const LandingPage = () => {
           <div className="problem-text-col">
             <div className="section-heading">Problem & Solution</div>
             <p className="section-paragraph"><strong>Common Challenges:</strong> Manual tracking, stockouts, overstock, and lack of real-time visibility can cripple warehouse operations.</p>
-            <p className="section-paragraph"><strong>How InventoryPro Helps:</strong> Our platform automates tracking, provides instant updates, and delivers actionable insights—eliminating guesswork and boosting efficiency.</p>
+            <p className="section-paragraph"><strong>How InventoryAce Helps:</strong> Our platform automates tracking, provides instant updates, and delivers actionable insights—eliminating guesswork and boosting efficiency.</p>
           </div>
           <div className="problem-img-col">
             <img src="https://picsum.photos/400/300?random=2" alt="Warehouse Problem Solution" className="problem-img" />
@@ -63,7 +63,7 @@ const LandingPage = () => {
       <footer id="contact" className="footer">
         <div className="section-heading" style={{color: '#eafff3'}}>Contact & Socials</div>
         <div style={{fontSize: '2rem', margin: '1rem 0'}}>
-          <a href="mailto:info@inventorypro.com" target="_blank" rel="noopener noreferrer" aria-label="Email" style={{margin: '0 1rem'}}>
+          <a href="mailto:info@InventoryAce.com" target="_blank" rel="noopener noreferrer" aria-label="Email" style={{margin: '0 1rem'}}>
             <img src="https://img.icons8.com/doodle/48/new-post.png" alt="Email" className="social-icon" />
           </a>
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{margin: '0 1rem'}}>
@@ -76,7 +76,7 @@ const LandingPage = () => {
             <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="social-icon" />
           </a>
         </div>
-        <div style={{fontSize: '1rem', color: '#eafff3'}}>© {new Date().getFullYear()} InventoryPro. All rights reserved.</div>
+        <div style={{fontSize: '1rem', color: '#eafff3'}}>© {new Date().getFullYear()} InventoryAce. All rights reserved.</div>
       </footer>
     </div>
   );

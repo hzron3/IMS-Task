@@ -16,8 +16,8 @@ const CategoryOverview = () => {
 
   // Mock staff data for the category
   const [assignedStaff] = useState([
-    { id: 1, name: "Mike Johnson", email: "mike@inventorypro.com", tasksCompleted: 15, totalTasks: 20 },
-    { id: 2, name: "Alex Brown", email: "alex@inventorypro.com", tasksCompleted: 8, totalTasks: 12 }
+    { id: 1, name: "Mike Johnson", email: "mike@InventoryAce.com", tasksCompleted: 15, totalTasks: 20 },
+    { id: 2, name: "Alex Brown", email: "alex@InventoryAce.com", tasksCompleted: 8, totalTasks: 12 }
   ]);
 
   // Mock activity data

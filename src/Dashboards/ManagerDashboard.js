@@ -11,7 +11,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-// Removed unused import
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import './Dashboard.css';
@@ -22,7 +21,6 @@ import StaffManagement from './StaffManagement';
 import Settings from './Settings';
 import ManagerReportsAnalytics from './ManagerReportsAnalytics';
 
-// Removed unused constants
 
 const sections = [
   { label: 'Category Overview', icon: <DashboardIcon />, path: 'category-overview' },
@@ -92,7 +90,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 fontFamily: 'Poppins, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
               }}
             >
-              InventoryPro
+              InventoryAce
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />

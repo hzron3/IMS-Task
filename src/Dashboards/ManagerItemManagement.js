@@ -160,7 +160,7 @@ const ManagerItemManagement = () => {
     {
       id: 1,
       name: 'John Doe',
-      email: 'john.doe@inventorypro.com',
+      email: 'john.doe@InventoryAce.com',
       assignedItems: 12,
       completedTasks: 8,
       pendingTasks: 2,
@@ -174,7 +174,7 @@ const ManagerItemManagement = () => {
     {
       id: 2,
       name: 'Jane Smith',
-      email: 'jane.smith@inventorypro.com',
+      email: 'jane.smith@InventoryAce.com',
       assignedItems: 8,
       completedTasks: 6,
       pendingTasks: 1,
@@ -188,7 +188,7 @@ const ManagerItemManagement = () => {
     {
       id: 3,
       name: 'Mike Johnson',
-      email: 'mike.johnson@inventorypro.com',
+      email: 'mike.johnson@InventoryAce.com',
       assignedItems: 15,
       completedTasks: 12,
       pendingTasks: 3,
@@ -202,7 +202,7 @@ const ManagerItemManagement = () => {
     {
       id: 4,
       name: 'Sarah Wilson',
-      email: 'sarah.wilson@inventorypro.com',
+      email: 'sarah.wilson@InventoryAce.com',
       assignedItems: 10,
       completedTasks: 9,
       pendingTasks: 1,

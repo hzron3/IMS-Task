@@ -70,7 +70,7 @@ const Signup = () => {
       <div className="signup-container">
         <div className="signup-form-container">
           <form className="signup-form" onSubmit={handleSubmit}>
-            <h2>Sign Up for InventoryPro</h2>
+            <h2>Sign Up for InventoryAce</h2>
             <div className="form-group">
               <label htmlFor="name" className="signup-label">Name</label>
               <input
@@ -180,7 +180,7 @@ const Signup = () => {
           </form>
         </div>
         <div className="signup-image">
-          <img src="https://picsum.photos/seed/inventorypro-signup/500/600" alt="Signup visual" />
+          <img src="https://picsum.photos/seed/InventoryAce-signup/500/600" alt="Signup visual" />
         </div>
       </div>
     </div>

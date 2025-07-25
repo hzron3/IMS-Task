@@ -81,11 +81,11 @@ const Login = () => {
     <div className="login-page">
       <div className="login-container">
         <div className="login-image">
-          <img src="https://picsum.photos/seed/inventorypro/500/600" alt="Login visual" />
+          <img src="https://picsum.photos/seed/InventoryAce/500/600" alt="Login visual" />
         </div>
         <div className="login-form-container">
           <form className="login-form" onSubmit={handleSubmit}>
-            <h2>Login to InventoryPro</h2>
+            <h2>Login to InventoryAce</h2>
             <div className="form-group">
               <label htmlFor="email" className="login-label">Email</label>
               <input
