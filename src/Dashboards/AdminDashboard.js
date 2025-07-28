@@ -178,8 +178,16 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
-
-        sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
+        sx={{ 
+          flexGrow: 1, 
+          p: 2, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '100%', 
+          alignItems: 'center',
+          // Add bottom padding for mobile and tablet to account for bottom navigation
+          pb: { xs: '80px', lg: 2 }
+        }}
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

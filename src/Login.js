@@ -85,7 +85,7 @@ const Login = () => {
         </div>
         <div className="login-form-container">
           <form className="login-form" onSubmit={handleSubmit}>
-            <h2>Login to <a href="/">InventoryAce</a></h2>
+            <h2>Login to <a style={{ color: '#2C3E50', textDecoration: 'none' }} href="/">InventoryAce</a></h2>
             <div className="form-group">
               <label htmlFor="email" className="login-label">Email</label>
               <input
