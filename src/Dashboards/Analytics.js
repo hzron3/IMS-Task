@@ -16,8 +16,25 @@ import { mockData } from './mockUserData';
 
 const Analytics = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [tabsScrollable, setTabsScrollable] = useState(false);
   const [dateRange, setDateRange] = useState('30');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  
+  // Check if tabs need horizontal scrolling
+  useEffect(() => {
+    const checkTabsScrollable = () => {
+      const tabsContainer = document.querySelector('.analytics-tabs');
+      if (tabsContainer) {
+        const isScrollable = tabsContainer.scrollWidth > tabsContainer.clientWidth;
+        setTabsScrollable(isScrollable);
+      }
+    };
+
+    checkTabsScrollable();
+    window.addEventListener('resize', checkTabsScrollable);
+    
+    return () => window.removeEventListener('resize', checkTabsScrollable);
+  }, []);
 
   const [performancePeriod, setPerformancePeriod] = useState('weekly');
 
@@ -771,7 +788,7 @@ const Analytics = () => {
         </Typography>
       </div>
 
-      <div className="analytics-tabs">
+      <div className={`analytics-tabs ${tabsScrollable ? 'scrollable' : ''}`}>
         <button 
           className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}

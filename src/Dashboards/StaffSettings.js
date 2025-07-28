@@ -778,19 +778,30 @@ export default function StaffSettings() {
       {/* Tab Navigation */}
       <Card sx={{ borderRadius: 3, mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
-          <Box sx={{ display: 'flex', borderBottom: '1px solid rgba(26, 188, 156, 0.1)' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            borderBottom: '1px solid rgba(26, 188, 156, 0.1)',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none'
+            }
+          }}>
             {tabs.map((tab) => (
               <Button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 sx={{
-                  flex: 1,
+                  flex: '0 0 auto',
+                  minWidth: { xs: '140px', md: 'auto' },
                   py: 2,
                   px: 3,
                   borderRadius: 0,
                   color: activeTab === tab.id ? '#1ABC9C' : '#7f8c8d',
                   borderBottom: activeTab === tab.id ? '2px solid #1ABC9C' : 'none',
                   fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+                  minHeight: { xs: '48px', md: 'auto' },
                   '&:hover': {
                     background: 'rgba(26, 188, 156, 0.05)',
                     color: '#1ABC9C'

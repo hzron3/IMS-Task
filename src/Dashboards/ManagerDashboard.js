@@ -27,15 +27,15 @@ const sections = [
   { label: 'Item Management', icon: <InventoryIcon />, path: 'item-management' },
   { label: 'Staff Management', icon: <PeopleIcon />, path: 'staff-management' },
   { label: 'Reports & Analytics', icon: <BarChartIcon />, path: 'reports-analytics' },
-  { label: 'Settings & Notifications', icon: <SettingsIcon />, path: 'settings' },
+  { label: 'Settings', icon: <SettingsIcon />, path: 'settings' },
 ];
 
 const sectionContent = [
   'Category Overview Section (Inventory Summary, Current Stock Levels, Low Stock Alerts)',
   'Item Management Section (Update Stock Levels, Create/Edit Items, Assign Items to Staff)',
   'Staff Management Section (View Assigned Staff, Assign Tasks, Monitor Activity)',
-  'Reports & Analytics Section (Category-wise Reports, Usage Trends, Exportable Reports)',
-  'Settings & Notifications Section (Pending Restocks, Task Reminders, Alert Settings, System Preferences)',
+  'Reports & Analytics (Category-wise Reports, Usage Trends, Exportable Reports)',
+  'Settings (Pending Restocks, Task Reminders, Alert Settings, System Preferences)',
 ];
 
 // Dashboard Navbar
@@ -335,7 +335,16 @@ const ManagerDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
+        sx={{ 
+          flexGrow: 1, 
+          p: 2, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '100%', 
+          alignItems: 'center',
+          // Add bottom padding for mobile and tablet to account for bottom navigation
+          pb: { xs: '80px', lg: 2 }
+        }}
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>

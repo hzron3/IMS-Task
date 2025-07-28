@@ -3,6 +3,23 @@ import "./InventoryManagement.css";
 
 const InventoryManagement = () => {
   const [activeTab, setActiveTab] = useState('items');
+  const [tabsScrollable, setTabsScrollable] = useState(false);
+  
+  // Check if tabs need horizontal scrolling
+  useEffect(() => {
+    const checkTabsScrollable = () => {
+      const tabsContainer = document.querySelector('.inventory-tabs');
+      if (tabsContainer) {
+        const isScrollable = tabsContainer.scrollWidth > tabsContainer.clientWidth;
+        setTabsScrollable(isScrollable);
+      }
+    };
+
+    checkTabsScrollable();
+    window.addEventListener('resize', checkTabsScrollable);
+    
+    return () => window.removeEventListener('resize', checkTabsScrollable);
+  }, []);
   
   const [inventory, setInventory] = useState([
     {
@@ -718,7 +735,7 @@ const InventoryManagement = () => {
             <i className="fas fa-boxes me-2"></i>
             Inventory Management
           </h2>
-          <div className="inventory-tabs">
+          <div className={`inventory-tabs ${tabsScrollable ? 'scrollable' : ''}`}>
             <button
               className={`tab-button ${activeTab === 'items' ? 'active' : ''}`}
               onClick={() => handleTabChange('items')}
@@ -759,6 +776,44 @@ const InventoryManagement = () => {
           Add {activeTab === 'items' ? 'Item' : 'Category'}
         </button>
       </div>
+
+      {/* Quick Filters - Mobile Only */}
+      {activeTab === 'items' && (
+        <div className="quick-filters-container">
+          <div className="quick-filters-scroll">
+            <button
+              className={`filter-chip ${stockStatusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('all')}
+            >
+              All Items
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'In Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('In Stock')}
+            >
+              In Stock
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Low Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Low Stock')}
+            >
+              Low Stock
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Critical' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Critical')}
+            >
+              Critical
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Out of Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Out of Stock')}
+            >
+              Out of Stock
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Items Table */}
       {activeTab === 'items' && (
@@ -1022,8 +1077,19 @@ const InventoryManagement = () => {
         </div>
       )}
 
-      {/* Add/Edit Item Modal */}
-      {openDialog && (
+      {/* Floating Action Button - Mobile Only */}
+      <div className="fab-container">
+        <button
+          className="fab-button"
+          onClick={() => activeTab === 'items' ? handleOpenDialog() : handleOpenCategoryDialog()}
+          aria-label={`Add ${activeTab === 'items' ? 'Item' : 'Category'}`}
+        >
+          <i className="fas fa-plus"></i>
+        </button>
+      </div>
+
+      {/* Add/Edit Item Modal - Desktop */}
+      {openDialog && window.innerWidth >= 1024 && (
         <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
@@ -1147,6 +1213,142 @@ const InventoryManagement = () => {
                 disabled={!validateItemForm()}
               >
                 {editingItem ? "Update" : "Add"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Item  - Mobile */}
+      {openDialog && window.innerWidth < 1024 && (
+        <div className="bottom-sheet-overlay" onClick={handleCloseDialog}>
+          <div className="bottom-sheet-content" onClick={(e) => e.stopPropagation()}>
+            <div className="bottom-sheet-header">
+              <div className="bottom-sheet-handle"></div>
+              <h5 className="bottom-sheet-title">
+                {editingItem ? "Edit Inventory Item" : "Add New Inventory Item"}
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCloseDialog}></button>
+            </div>
+            <div className="bottom-sheet-body">
+              <div className="row">
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">SKU</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.sku}
+                      onChange={handleInputChange}
+                      name="sku"
+                      placeholder="Enter SKU"
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Item Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      name="name"
+                      placeholder="Enter item name"
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Category</label>
+                    <select
+                      className="form-control"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      name="category"
+                    >
+                      <option value="">Select Category</option>
+                      {categories.filter(cat => !cat.isDeleted).map((category) => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Quantity</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      name="quantity"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Min Stock</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.minStock}
+                      onChange={handleInputChange}
+                      name="minStock"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Price (Ksh)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      name="price"
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Supplier</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.supplier}
+                      onChange={handleInputChange}
+                      name="supplier"
+                      placeholder="Enter supplier name"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bottom-sheet-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseDialog}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                disabled={!validateItemForm()}
+              >
+                {editingItem ? "Update Item" : "Add Item"}
               </button>
             </div>
           </div>

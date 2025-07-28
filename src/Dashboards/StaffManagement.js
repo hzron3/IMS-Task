@@ -1142,7 +1142,25 @@ const StaffManagement = () => {
 
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} sx={{ '& .MuiTab-root': { fontWeight: 'bold' } }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{ 
+            '& .MuiTab-root': { 
+              fontWeight: 'bold',
+              minHeight: { xs: '48px', md: 'auto' }
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
+            }
+          }}
+        >
           <Tab label="Staff Overview" icon={<Group />} iconPosition="start" />
           <Tab label="Task Management" icon={<Task />} iconPosition="start" />
           <Tab label="Performance Analytics" icon={<Analytics />} iconPosition="start" />

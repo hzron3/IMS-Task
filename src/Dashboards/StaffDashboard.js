@@ -25,7 +25,7 @@ const sections = [
   { label: 'Assigned Inventory', icon: <DashboardIcon />, path: 'assigned-inventory' },
   { label: 'Stock Updates', icon: <InventoryIcon />, path: 'stock-updates' },
   { label: 'Tasks & Activity', icon: <AssignmentIcon />, path: 'tasks-activity' },
-  { label: 'Settings & Notifications', icon: <SettingsIcon />, path: 'settings' },
+  { label: 'Settings', icon: <SettingsIcon />, path: 'settings' },
 ];
 
 const sectionContent = [
@@ -332,7 +332,16 @@ const StaffDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
+        sx={{ 
+          flexGrow: 1, 
+          p: 2, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '100%', 
+          alignItems: 'center',
+          // Add bottom padding for mobile and tablet to account for bottom navigation
+          pb: { xs: '80px', lg: 2 }
+        }}
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

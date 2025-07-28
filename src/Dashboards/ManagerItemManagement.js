@@ -467,7 +467,8 @@ const ManagerItemManagement = () => {
                   sx={{ 
                     bgcolor: '#1ABC9C',
                     '&:hover': { bgcolor: '#27ae60' },
-                    borderRadius: 2
+                    borderRadius: 2,
+                    display: { xs: 'none', lg: 'inline-flex' } // Hide on mobile, show on desktop
                   }}
                 >
                   Add Item
@@ -965,7 +966,25 @@ const ManagerItemManagement = () => {
 
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} sx={{ '& .MuiTab-root': { fontWeight: 'bold' } }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{ 
+            '& .MuiTab-root': { 
+              fontWeight: 'bold',
+              minHeight: { xs: '48px', md: 'auto' }
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
+            }
+          }}
+        >
           <Tab label="Inventory" icon={<Inventory />} iconPosition="start" />
           <Tab label="Stock Alerts" icon={<Warning />} iconPosition="start" />
           <Tab label="Item Analytics" icon={<Analytics />} iconPosition="start" />
@@ -1828,6 +1847,48 @@ const ManagerItemManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Floating Action Button - Mobile Only */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: '100px', // Above bottom navigation
+          right: '20px',
+          zIndex: 1000,
+          display: { xs: 'block', lg: 'none' } // Show only on mobile/tablet
+        }}
+      >
+        <Button
+          variant="contained"
+          sx={{
+            width: 56,
+            height: 56,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+            color: 'white',
+            fontSize: '24px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(26, 188, 156, 0.4)',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '56px',
+            '&:hover': {
+              transform: 'scale(1.1)',
+              boxShadow: '0 6px 16px rgba(26, 188, 156, 0.6)',
+              background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)'
+            },
+            '&:active': {
+              transform: 'scale(0.95)'
+            }
+          }}
+          onClick={handleAddItem}
+          aria-label="Add New Item"
+        >
+          <Add />
+        </Button>
+      </Box>
 
       {/* notifications for stock updates */}
       <Snackbar

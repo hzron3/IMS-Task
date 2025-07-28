@@ -91,12 +91,22 @@ const RecycleBin = () => {
         <Tabs 
           value={activeTab} 
           onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
             '& .MuiTab-root': {
               fontWeight: 'bold',
               color: '#7f8c8d',
+              minHeight: { xs: '48px', md: 'auto' },
               '&.Mui-selected': {
                 color: '#2C3E50'
+              }
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
               }
             }
           }}

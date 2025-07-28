@@ -275,8 +275,15 @@ const UserManagement = () => {
       </Typography>
 
       {/* Stats Cards */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4, width: '100%', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-        <Box sx={{ flex: 1, minWidth: 0, mb: { xs: 2, md: 0 } }}>
+      <Box sx={{ 
+        display: 'flex', 
+        gap: 3, 
+        mb: 4, 
+        width: '100%', 
+        flexWrap: { xs: 'wrap', lg: 'nowrap' },
+        flexDirection: { xs: 'column', md: 'row' }
+      }}>
+        <Box sx={{ flex: 1, minWidth: 0, mb: { xs: 2, lg: 0 } }}>
           <StatCard
             title="Total Users"
             value={mockData.stats.totalUsers}
@@ -285,7 +292,7 @@ const UserManagement = () => {
             bgGradient="linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)"
           />
         </Box>
-        <Box sx={{ flex: 1, minWidth: 0, mb: { xs: 2, md: 0 } }}>
+        <Box sx={{ flex: 1, minWidth: 0, mb: { xs: 2, lg: 0 } }}>
           <StatCard
             title="Active Users"
             value={mockData.stats.activeUsers}
@@ -315,17 +322,27 @@ const UserManagement = () => {
         <Tabs 
           value={activeTab} 
           onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{ 
             borderBottom: '1px solid #e9ecef',
             '& .MuiTab-root': {
               color: '#7f8c8d',
               fontWeight: 600,
+              minHeight: { xs: '48px', md: 'auto' },
               '&.Mui-selected': {
                 color: '#1ABC9C'
               }
             },
             '& .MuiTabs-indicator': {
               bgcolor: '#1ABC9C'
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
             }
           }}
         >
@@ -338,7 +355,14 @@ const UserManagement = () => {
           {/* Users Tab */}
           {activeTab === 0 && (
             <Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                mb: 3,
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: { xs: 2, md: 0 }
+              }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2C3E50' }}>
                   User Management
                 </Typography>
@@ -348,6 +372,9 @@ const UserManagement = () => {
                   sx={{ 
                     bgcolor: '#1ABC9C',
                     borderRadius: 2,
+                    minHeight: { xs: '48px', md: 'auto' },
+                    width: { xs: '100%', md: 'auto' },
+                    display: { xs: 'none', lg: 'inline-flex' }, // Hide on mobile, show on desktop
                     '&:hover': { bgcolor: '#27ae60' }
                   }}
                   onClick={() => setAddUserOpen(true)}
@@ -357,7 +384,7 @@ const UserManagement = () => {
               </Box>
               <Grid container spacing={3} justifyContent="center">
                 {users.map((user) => (
-                  <Grid item xs={12} sm={6} md={3} key={user.id}>
+                  <Grid item xs={12} sm={6} lg={3} key={user.id}>
                     <UserCard user={user} onDelete={handleDeleteUser} onEdit={handleEditUser} />
                   </Grid>
                 ))}
@@ -477,6 +504,48 @@ const UserManagement = () => {
           )}
         </Box>
       </Paper>
+
+      {/* Floating Action Button - Mobile Only */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: '100px', 
+          right: '20px',
+          zIndex: 1000,
+          display: { xs: 'block', lg: 'none' } // Show only on mobile/tablet
+        }}
+      >
+        <Button
+          variant="contained"
+          sx={{
+            width: 56,
+            height: 56,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)',
+            color: 'white',
+            fontSize: '24px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(26, 188, 156, 0.4)',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '56px',
+            '&:hover': {
+              transform: 'scale(1.1)',
+              boxShadow: '0 6px 16px rgba(26, 188, 156, 0.6)',
+              background: 'linear-gradient(135deg, #27ae60 0%, #1ABC9C 100%)'
+            },
+            '&:active': {
+              transform: 'scale(0.95)'
+            }
+          }}
+          onClick={() => setAddUserOpen(true)}
+          aria-label="Add New User"
+        >
+          <Add />
+        </Button>
+      </Box>
 
       {/* Add User Dialog */}
       <Dialog open={addUserOpen} onClose={() => setAddUserOpen(false)}>

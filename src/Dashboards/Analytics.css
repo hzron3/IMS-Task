@@ -34,6 +34,34 @@
   gap: 10px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  padding-bottom: 4px;
+  position: relative;
+}
+
+.analytics-tabs::-webkit-scrollbar {
+  display: none; 
+}
+
+/* Scroll indicators for mobile/tablet */
+.analytics-tabs::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.analytics-tabs.scrollable::after {
+  opacity: 1;
 }
 
 .tab-btn {
