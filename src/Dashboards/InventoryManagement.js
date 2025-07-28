@@ -1,4 +1,22 @@
 import React, { useState, useEffect } from "react";
+import {
+  Box, Typography, Card, CardContent, Grid, Button, Avatar, Chip,
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField,
+  FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
+  Badge, LinearProgress, Divider, List, ListItem, ListItemText,
+  ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
+  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails
+} from '@mui/material';
+import {
+  Add, Edit, Delete, Assignment, Person, TrendingUp, Warning,
+  CheckCircle, Schedule, Notifications, Download, FilterList,
+  Refresh, Visibility, AddCircle, RemoveCircle, AssignmentInd,
+  Group, Task, Analytics, Inventory, LocalShipping, Assessment,
+  ExpandMore, Search, Sort, FilterAlt, AddBox, Edit as EditIcon,
+  Delete as DeleteIcon, Assignment as AssignmentIcon, Visibility as VisibilityIcon,
+  Message
+} from '@mui/icons-material';
 import "./InventoryManagement.css";
 
 const InventoryManagement = () => {
@@ -20,6 +38,7 @@ const InventoryManagement = () => {
     
     return () => window.removeEventListener('resize', checkTabsScrollable);
   }, []);
+
   
   const [inventory, setInventory] = useState([
     {
@@ -817,26 +836,36 @@ const InventoryManagement = () => {
 
       {/* Items Table */}
       {activeTab === 'items' && (
-        <div className="table-container">
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead className="table-header">
-                <tr>
-                  <th>SKU</th>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th className="text-end">Quantity</th>
-                  <th className="text-end">Min Stock</th>
-                  <th className="text-end">Price (Ksh)</th>
-                  <th>Supplier</th>
-                  <th>
-                    <div className="status-filter-header">
-                      <span>Status</span>
+        <Box sx={{ borderRadius: 3, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>SKU</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item Name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Category</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Quantity</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Min Stock</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Price (Ksh)</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Supplier</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Status</Typography>
                       <select
-                        className="status-filter-dropdown"
                         value={stockStatusFilter}
                         onChange={(e) => setStockStatusFilter(e.target.value)}
                         onClick={(e) => e.stopPropagation()}
+                        style={{
+                          border: '1.5px solid #b5bcbc',
+                          borderRadius: '12px',
+                          padding: '6px 12px',
+                          fontSize: '0.75rem',
+                          color: '#138d75',
+                          background: 'linear-gradient(135deg, #fff 0%, #f8f9fa 100%)',
+                          minWidth: '90px',
+                          cursor: 'pointer',
+                          fontWeight: '500'
+                        }}
                       >
                         <option value="all">All</option>
                         <option value="In Stock">In Stock</option>
@@ -844,167 +873,229 @@ const InventoryManagement = () => {
                         <option value="Critical">Critical</option>
                         <option value="Out of Stock">Out of Stock</option>
                       </select>
-                    </div>
-                  </th>
-                  <th 
-                    className="sortable-header"
+                    </Box>
+                  </TableCell>
+                  <TableCell 
+                    sx={{ fontWeight: 'bold', cursor: 'pointer' }}
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
                   >
                     Last Updated
-                    <span className="sort-indicator">
+                    <Box component="span" sx={{ ml: 1 }}>
                       {sortOrder === 'newest' ? (
                         <i className="fas fa-sort-up"></i>
                       ) : (
                         <i className="fas fa-sort-down"></i>
                       )}
-                    </span>
-                  </th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {filteredInventory.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.sku}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <span className={`category-badge ${item.category.toLowerCase()}`}>
-                        {item.category}
-                      </span>
-                    </td>
-                    <td className="text-end">
-                      <span className={`quantity-badge ${getQuantityStatus(item.quantity, item.minStock)}`}>
-                        {item.quantity}
-                      </span>
-                    </td>
-                    <td className="text-end">{item.minStock}</td>
-                    <td className="text-end">Ksh {item.price.toFixed(2)}</td>
-                    <td>{item.supplier}</td>
-                    <td>
-                      <span className={`stock-status-badge ${getStockStatus(item.quantity, item.minStock).replace(/\s/g, '').toLowerCase()}`}>
-                        {getStockStatus(item.quantity, item.minStock)}
-                      </span>
-                    </td>
-                    <td>{formatDateTime(item.lastUpdated)}</td>
-                    <td className="text-center">
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
+                  <TableRow key={item.id} hover>
+                    <TableCell>{item.sku}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.category}
+                        size="small"
+                        sx={{
+                          bgcolor: '#e3f2fd',
+                          color: '#1976d2',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.quantity}
+                        size="small"
+                        sx={{
+                          bgcolor: getQuantityStatus(item.quantity, item.minStock) === 'instock' ? '#e8f5e8' : 
+                                  getQuantityStatus(item.quantity, item.minStock) === 'lowstock' ? '#fff3e0' :
+                                  getQuantityStatus(item.quantity, item.minStock) === 'critical' ? '#ffebee' : '#ececec',
+                          color: getQuantityStatus(item.quantity, item.minStock) === 'instock' ? '#1abc9c' :
+                                 getQuantityStatus(item.quantity, item.minStock) === 'lowstock' ? '#ef6c00' :
+                                 getQuantityStatus(item.quantity, item.minStock) === 'critical' ? '#c62828' : '#888',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.minStock}</TableCell>
+                    <TableCell>Ksh {item.price.toFixed(2)}</TableCell>
+                    <TableCell>{item.supplier}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={getStockStatus(item.quantity, item.minStock)}
+                        size="small"
+                        sx={{
+                          bgcolor: getStockStatus(item.quantity, item.minStock) === 'In Stock' ? '#e8f5e8' :
+                                  getStockStatus(item.quantity, item.minStock) === 'Low Stock' ? '#fff3e0' :
+                                  getStockStatus(item.quantity, item.minStock) === 'Critical' ? '#ffebee' : '#ececec',
+                          color: getStockStatus(item.quantity, item.minStock) === 'In Stock' ? '#1abc9c' :
+                                 getStockStatus(item.quantity, item.minStock) === 'Low Stock' ? '#ef6c00' :
+                                 getStockStatus(item.quantity, item.minStock) === 'Critical' ? '#c62828' : '#888',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{formatDateTime(item.lastUpdated)}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenDialog(item)}
+                          sx={{ 
+                            color: '#1ABC9C',
+                            '&:hover': { bgcolor: 'rgba(26, 188, 156, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
                           onClick={() => handleDelete(item.id)}
+                          sx={{ 
+                            color: '#e74c3c',
+                            '&:hover': { bgcolor: 'rgba(231, 76, 60, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
 
       {/* Categories Table */}
       {activeTab === 'categories' && (
-        <div className="table-container">
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead className="table-header">
-                <tr>
-                  <th>Category Name</th>
-                  <th>Description</th>
-                  <th className="text-end">Item Count</th>
-                  <th className="text-end">Total Value (Ksh)</th>
-                  <th>Assigned Manager</th>
-                  <th 
-                    className="sortable-header"
+        <Box sx={{ borderRadius: 3, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Category Name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item Count</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Total Value (Ksh)</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Assigned Manager</TableCell>
+                  <TableCell 
+                    sx={{ fontWeight: 'bold', cursor: 'pointer' }}
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
                   >
                     Last Updated
-                    <span className="sort-indicator">
+                    <Box component="span" sx={{ ml: 1 }}>
                       {sortOrder === 'newest' ? (
                         <i className="fas fa-sort-up"></i>
                       ) : (
                         <i className="fas fa-sort-down"></i>
                       )}
-                    </span>
-                  </th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {filteredCategories.map((category) => (
-                  <tr key={category.id}>
-                    <td>
-                      <span className="category-name">{category.name}</span>
-                    </td>
-                    <td>{category.description}</td>
-                    <td className="text-end">
-                      <span className="item-count">{category.itemCount}</span>
-                    </td>
-                    <td className="text-end">Ksh {category.totalValue.toFixed(2)}</td>
-                    <td>
+                  <TableRow key={category.id} hover>
+                    <TableCell>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                        {category.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{category.description}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={category.itemCount}
+                        size="small"
+                        sx={{
+                          bgcolor: '#e3f2fd',
+                          color: '#1976d2',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>Ksh {category.totalValue.toFixed(2)}</TableCell>
+                    <TableCell>
                       {category.assignedManager ? (
-                        <div className="assigned-manager">
-                          <span className="manager-badge">
-                            <i className="fas fa-user-tie me-1"></i>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', bgcolor: '#1ABC9C' }}>
+                            {category.assignedManager.split(' ').map(n => n[0]).join('')}
+                          </Avatar>
+                          <Typography variant="body2">
                             {category.assignedManager}
-                          </span>
-                        </div>
+                          </Typography>
+                        </Box>
                       ) : (
-                        <span className="no-manager text-muted">
+                        <Typography variant="body2" color="text.secondary">
                           <i className="fas fa-user-slash me-1"></i>
                           Not Assigned
-                        </span>
+                        </Typography>
                       )}
-                    </td>
-                    <td>{formatDateTime(category.lastUpdated)}</td>
-                    <td className="text-center">
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
+                    </TableCell>
+                    <TableCell>{formatDateTime(category.lastUpdated)}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenCategoryDialog(category)}
                           title="Edit Category"
+                          sx={{ 
+                            color: '#1ABC9C',
+                            '&:hover': { bgcolor: 'rgba(26, 188, 156, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-info"
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenAssignmentDialog(category)}
                           title="Assign Manager"
+                          sx={{ 
+                            color: '#17a2b8',
+                            '&:hover': { bgcolor: 'rgba(23, 162, 184, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-user-plus"></i>
-                        </button>
+                          <AssignmentIcon />
+                        </IconButton>
                         {category.assignedManager && (
-                          <button
-                            className="btn btn-sm btn-outline-warning"
+                          <IconButton
+                            size="small"
                             onClick={() => handleRemoveAssignment(category.id)}
                             title="Remove Assignment"
+                            sx={{ 
+                              color: '#ffc107',
+                              '&:hover': { bgcolor: 'rgba(255, 193, 7, 0.1)' }
+                            }}
                           >
-                            <i className="fas fa-user-minus"></i>
-                          </button>
+                            <RemoveCircle />
+                          </IconButton>
                         )}
-                        <button
-                          className="btn btn-sm btn-outline-danger"
+                        <IconButton
+                          size="small"
                           onClick={() => handleDeleteCategory(category.id)}
                           title="Delete Category"
+                          sx={{ 
+                            color: '#e74c3c',
+                            '&:hover': { bgcolor: 'rgba(231, 76, 60, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
 
       {/* Summary Cards for Categories */}

@@ -29,7 +29,7 @@ import RecycleBin from './RecycleBin';
 const sections = [
   { label: 'Overview', icon: <DashboardIcon />, path: 'overview' },
   { label: 'Inventory Management', icon: <InventoryIcon />, path: 'inventory-management' },
-  { label: 'User & Role Management', icon: <PeopleIcon />, path: 'user-management' },
+  { label: 'Users & Role Management', icon: <PeopleIcon />, path: 'user-management' },
   { label: 'Analytics & Reports', icon: <BarChartIcon />, path: 'analytics' },
   { label: 'Recycle Bin', icon: <DeleteIcon />, path: 'recycle-bin' },
   { label: 'System Settings', icon: <SettingsIcon />, path: 'settings' },

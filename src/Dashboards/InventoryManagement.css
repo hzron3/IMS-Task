@@ -181,7 +181,7 @@
 .table-container {
   background: white;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible; 
   border: 2px solid #1ABC9C;
   box-shadow: 0 4px 18px rgba(44,62,80,0.10), 0 0 0 2px #1ABC9C22;
   margin-bottom: 24px;
@@ -747,20 +747,135 @@
   .table-responsive {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #1ABC9C #f0f0f0;
+    scroll-behavior: smooth;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    display: block;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .table-responsive::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+  }
+  
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: #1ABC9C;
+    border-radius: 3px;
+  }
+  
+  .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #27ae60;
   }
   
   .table {
     font-size: 0.9rem;
+    min-width: 800px; 
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: left;
+    transform: translateX(0);
+  }
+  
+  .table-responsive > .table {
+    transform: translateX(0) !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  
+  .MuiTableContainer-root {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .MuiTable-root {
+    min-width: 800px;
+  }
+  
+  .MuiTableContainer-root {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .table-header th {
     padding: 12px 8px;
     font-size: 0.85rem;
+    white-space: nowrap;
+    min-width: 80px; 
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    z-index: 1;
   }
   
   .table td {
     padding: 12px 8px;
     vertical-align: middle;
+    white-space: nowrap;
+    min-width: 80px; /* Minimum column width */
+  }
+  
+  .table th:nth-child(1), .table td:nth-child(1) { /* SKU */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(2), .table td:nth-child(2) { /* Item Name */
+    min-width: 150px;
+    max-width: 200px;
+  }
+  
+  .table th:nth-child(3), .table td:nth-child(3) { /* Category */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(4), .table td:nth-child(4) { /* Quantity */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(5), .table td:nth-child(5) { /* Min Stock */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(6), .table td:nth-child(6) { /* Price */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(7), .table td:nth-child(7) { /* Supplier */
+    min-width: 120px;
+    max-width: 150px;
+  }
+  
+  .table th:nth-child(8), .table td:nth-child(8) { /* Status */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(9), .table td:nth-child(9) { /* Last Updated */
+    min-width: 120px;
+    max-width: 140px;
+  }
+  
+  .table th:nth-child(10), .table td:nth-child(10) { /* Actions */
+    min-width: 100px;
+    max-width: 120px;
   }
   
   /* Touch-friendly improvements */
@@ -850,7 +965,7 @@
 
 @media (max-width: 480px) {
   .inventory-header h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   
   .tab-button {
@@ -859,20 +974,122 @@
   }
   
   .table-responsive {
-    font-size: 0.9rem;
-    max-height: 400px;
+    margin: 0 -10px; 
+    border-radius: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 0;
   }
   
   .table-container {
-    max-height: 500px;
+    padding: 0 10px;
+    overflow: visible;
+    max-width: 100%;
+    width: 100%;
   }
   
   .modal-header {
-    padding: 20px;
+    padding: 15px 20px;
   }
   
   .modal-body {
-    padding: 15px;
+    padding: 15px 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  
+  /* table mobile responsiveness */
+  .table {
+    font-size: 0.8rem;
+    min-width: 900px; 
+  }
+  
+  .table-header th {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+  
+  .table td {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+  
+  /* Adjust column widths for mobile */
+  .table th:nth-child(1), .table td:nth-child(1) { /* SKU */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(2), .table td:nth-child(2) { /* Item Name */
+    min-width: 120px;
+    max-width: 160px;
+  }
+  
+  .table th:nth-child(3), .table td:nth-child(3) { /* Category */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(4), .table td:nth-child(4) { /* Quantity */
+    min-width: 60px;
+    max-width: 80px;
+  }
+  
+  .table th:nth-child(5), .table td:nth-child(5) { /* Min Stock */
+    min-width: 60px;
+    max-width: 80px;
+  }
+  
+  .table th:nth-child(6), .table td:nth-child(6) { /* Price */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(7), .table td:nth-child(7) { /* Supplier */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(8), .table td:nth-child(8) { /* Status */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .table th:nth-child(9), .table td:nth-child(9) { /* Last Updated */
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .table th:nth-child(10), .table td:nth-child(10) { /* Actions */
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  /* Improve badge readability on mobile */
+  .category-badge,
+  .quantity-badge,
+  .stock-status-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+  
+  .action-buttons .btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  .table-responsive::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: #1ABC9C;
+    border-radius: 4px;
   }
 }
 
