@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, CardContent, Typography, Grid, Paper, Chip, List, ListItem, ListItemText, ListItemIcon, Divider } from '@mui/material';
+import { Box, Card, CardContent, Typography, Paper, Chip, List, ListItem, ListItemText, ListItemIcon, Divider } from '@mui/material';
 import { TrendingUp, Inventory, Warning, Cancel, Timeline } from '@mui/icons-material';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { mockData } from './mockUserData';

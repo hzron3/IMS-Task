@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { mockData } from './mockUserData';
 import { 
   Box, Card, CardContent, Typography, Chip, Paper,
-  Button, Avatar, Table, TableBody, TableCell, TableContainer, 
-  TableHead, TableRow, IconButton, Badge, Select, MenuItem, FormControl, InputLabel,
-  Grid, Tabs, Tab, Stack
+  Button, Avatar, IconButton, Select, MenuItem, FormControl, InputLabel,
+  Tabs, Tab, Stack
 } from '@mui/material';
 import {
-  People, PersonAdd, Edit, Delete, Security, AccessTime, 
-  Warning, CheckCircle, Cancel, Visibility, TrendingUp,
-  FilterList, Group, AdminPanelSettings, SupervisorAccount, Person,
-  Add, Search, FilterAlt
+  People, PersonAdd, Edit, Delete, 
+  CheckCircle, TrendingUp,
+  Group, AdminPanelSettings, SupervisorAccount, Person,
+  Add
 } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';

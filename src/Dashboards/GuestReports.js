@@ -24,7 +24,6 @@ export default function GuestReports() {
   const inventoryData = mockData.inventory;
   const categoryData = inventoryData.categoryData;
   const stockStatusData = inventoryData.stockStatusData;
-  const turnoverData = inventoryData.turnoverByCategory;
   const topMovingItems = inventoryData.topMovingItems;
   const kpis = inventoryData.kpis;
 

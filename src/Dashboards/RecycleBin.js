@@ -24,8 +24,6 @@ import {
 import { 
   Restore, 
   DeleteForever, 
-  Visibility,
-  Refresh,
   Delete as DeleteIcon
 } from '@mui/icons-material';
 import { mockData } from './mockUserData';

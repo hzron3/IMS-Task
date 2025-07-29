@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Typography, Card, CardContent, Grid, Button, Avatar, Chip,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
-  TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
-  Badge, LinearProgress, Divider, List, ListItem, ListItemText,
-  ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
-  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails
+  Box, Typography, Avatar, Chip,
+  Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow, IconButton
 } from '@mui/material';
 import {
-  Add, Edit, Delete, Assignment, Person, TrendingUp, Warning,
-  CheckCircle, Schedule, Notifications, Download, FilterList,
-  Refresh, Visibility, AddCircle, RemoveCircle, AssignmentInd,
-  Group, Task, Analytics, Inventory, LocalShipping, Assessment,
-  ExpandMore, Search, Sort, FilterAlt, AddBox, Edit as EditIcon,
-  Delete as DeleteIcon, Assignment as AssignmentIcon, Visibility as VisibilityIcon,
-  Message
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Assignment as AssignmentIcon,
+  RemoveCircle
 } from '@mui/icons-material';
 import "./InventoryManagement.css";
 

@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Button, Avatar, Chip,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
+  FormControl, InputLabel, Select, MenuItem, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
-  Badge, LinearProgress, Divider, List, ListItem, ListItemText,
-  ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
-  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails
+  Tabs, Tab, LinearProgress, Snackbar, Alert
 } from '@mui/material';
 import {
-  Add, Edit, Delete, Assignment, Person, TrendingUp, Warning,
+  Add, Edit, Delete, Assignment, Warning,
   CheckCircle, Schedule, Notifications, Download, FilterList,
   Refresh, Visibility, AddCircle, RemoveCircle, AssignmentInd,
   Group, Task, Analytics, Inventory, LocalShipping, Assessment,

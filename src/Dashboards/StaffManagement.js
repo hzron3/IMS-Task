@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Button, Avatar, Chip,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
+  FormControl, InputLabel, Select, MenuItem, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
-  Badge, LinearProgress, Divider, List, ListItem, ListItemText,
-  ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
-  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, Grid
+  Tabs, Tab, Grid, LinearProgress, Alert, Snackbar
 } from '@mui/material';
 import './StaffManagement.css';
 import {
-  Add, Edit, Delete, Assignment, Person, TrendingUp, Warning,
+  Add, Edit, Delete, Assignment, Person, TrendingUp,
   CheckCircle, Schedule, Notifications, Download, FilterList,
   Refresh, Visibility, AddCircle, RemoveCircle, AssignmentInd,
   Group, Task, Analytics, Inventory, LocalShipping, Assessment,
@@ -148,15 +146,6 @@ const StaffManagement = () => {
       case 'normal': return '#27ae60';
       case 'busy': return '#f39c12';
       case 'overloaded': return '#e74c3c';
-      default: return '#95a5a6';
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'online': return '#27ae60';
-      case 'away': return '#f39c12';
-      case 'offline': return '#95a5a6';
       default: return '#95a5a6';
     }
   };
