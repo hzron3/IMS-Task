@@ -10,14 +10,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import GuestOverview from './GuestOverview';
 import GuestInventoryData from './GuestInventoryData';
 import GuestReports from './GuestReports';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+
 
 const sections = [
   { label: 'Inventory Overview', icon: <DashboardIcon />, path: 'overview' },
@@ -37,6 +37,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -45,11 +46,8 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleProfileClose = () => setProfileOpen(false);
-  const handleSettings = () => {
-    if (onSettings) onSettings();
-    handleClose();
-  };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -81,7 +79,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 fontFamily: 'Poppins, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
               }}
             >
-              InventoryPro
+              InventoryAce
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
@@ -288,10 +286,10 @@ const GuestDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info for guest
-  const user = { name: 'Guest Account', email: 'N/A' };
-  const role = 'Guest';
+  // Use authenticated user info
+  const role = user?.role || 'Guest';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {
@@ -321,7 +319,16 @@ const GuestDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
+        sx={{ 
+          flexGrow: 1, 
+          p: 2, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '100%', 
+          alignItems: 'center',
+          // bottom padding for mobile and tablet to account for bottom navigation
+          pb: { xs: '80px', lg: 2 }
+        }}
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, Area, AreaChart
+  AreaChart, Area
 } from 'recharts';
 import { mockData } from './mockUserData';
 import './CategoryOverview.css';
@@ -10,14 +10,14 @@ import './CategoryOverview.css';
 const CategoryOverview = () => {
   const [assignedCategory] = useState(mockData.inventory.categories.find(cat => cat.name === "Office Supplies"));
   
-  const [categoryItems, setCategoryItems] = useState(
+  const [categoryItems] = useState(
     mockData.inventory.items.filter(item => item.category === "Office Supplies")
   );
 
   // Mock staff data for the category
   const [assignedStaff] = useState([
-    { id: 1, name: "Mike Johnson", email: "mike@inventorypro.com", tasksCompleted: 15, totalTasks: 20 },
-    { id: 2, name: "Alex Brown", email: "alex@inventorypro.com", tasksCompleted: 8, totalTasks: 12 }
+    { id: 1, name: "Mike Johnson", email: "mike@InventoryAce.com", tasksCompleted: 15, totalTasks: 20 },
+    { id: 2, name: "Alex Brown", email: "alex@InventoryAce.com", tasksCompleted: 8, totalTasks: 12 }
   ]);
 
   // Mock activity data
@@ -59,11 +59,7 @@ const CategoryOverview = () => {
     { type: 'warning', message: 'Expensive Desk is low on stock', item: 'SKU-011' }
   ]);
 
-  const getStockStatus = (quantity, minStock) => {
-    if (quantity === 0) return 'Out of Stock';
-    if (quantity <= minStock) return 'Low Stock';
-    return 'In Stock';
-  };
+
 
   const getStatusColor = (status) => {
     switch (status) {

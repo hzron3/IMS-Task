@@ -331,6 +331,9 @@ const ManagerReportsAnalytics = () => {
         <Tabs 
           value={activeTab} 
           onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
             '& .MuiTab-root': {
               color: 'rgba(255,255,255,0.7)',
@@ -347,6 +350,12 @@ const ManagerReportsAnalytics = () => {
               backgroundColor: '#fff',
               height: 3,
               borderRadius: 2
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#fff',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
             }
           }}
         >

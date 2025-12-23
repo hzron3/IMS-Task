@@ -10,7 +10,7 @@ const Settings = () => {
     // Profile Settings
     firstName: "John",
     lastName: "Smith",
-    email: "john.smith@inventorypro.com",
+    email: "john.smith@InventoryAce.com",
     phone: "+254 700 123 456",
     department: "Warehouse Management",
     profilePicture: null,
@@ -30,8 +30,7 @@ const Settings = () => {
     timezone: "EAT",
     dateFormat: "DD/MM/YYYY",
     currency: "Ksh",
-    exportFormat: "PDF",
-    weeklyReports: true
+    exportFormat: "PDF"
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);

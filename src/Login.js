@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 import './Login.css';
 
 const Login = () => {
@@ -7,7 +8,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validate = () => {
     const newErrors = {};
@@ -25,40 +28,66 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      // Mock authentication - in a real app, this would check against stored credentials
-      // For demo purposes, we'll use a simple email-based role detection
-      if (email.includes('admin')) {
-        navigate('/admin-dashboard');
-      } else if (email.includes('manager')) {
-        navigate('/manager-dashboard');
-      } else if (email.includes('staff') || email.includes('warehouse')) {
-        navigate('/staff-dashboard');
-      } else {
-        // Default to staff dashboard for demo
-        navigate('/staff-dashboard');
+      setIsLoading(true);
+      setErrors({});
+      
+      try {
+        const result = await login(email, password);
+        
+        if (result.success) {
+          // Redirect based on user role
+          const role = result.user.role;
+          switch (role) {
+            case 'admin':
+              navigate('/admin-dashboard');
+              break;
+            case 'manager':
+              navigate('/manager-dashboard');
+              break;
+            case 'staff':
+              navigate('/staff-dashboard');
+              break;
+            case 'guest':
+              navigate('/guest-dashboard');
+              break;
+            default:
+              navigate('/staff-dashboard');
+          }
+        } else {
+          setErrors({ general: result.message });
+        }
+      } catch (error) {
+        setErrors({ general: 'An error occurred during login. Please try again.' });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
-  const handleGuestLogin = () => {
-    // Direct navigation to guest dashboard without authentication
-    navigate('/guest-dashboard');
+  const handleGuestLogin = async () => {
+    const result = await login('guest@gmail.com', 'guest123.');
+    
+    if (result.success) {
+      navigate('/guest-dashboard');
+    } else {
+      setErrors({ general: result.message });
+    }
   };
 
   return (
     <div className="login-page">
       <div className="login-container">
         <div className="login-image">
-          <img src="https://picsum.photos/seed/inventorypro/500/600" alt="Login visual" />
+          <img src="https://picsum.photos/seed/InventoryAce/500/600" alt="Login visual" />
         </div>
         <div className="login-form-container">
           <form className="login-form" onSubmit={handleSubmit}>
-            <h2>Login to InventoryPro</h2>
+            <h2>Login to <a style={{ color: '#2C3E50', textDecoration: 'none' }} href="/">InventoryAce</a></h2>
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="login-label">Email</label>
               <input
                 className="login-input"
                 type="email"
@@ -71,7 +100,7 @@ const Login = () => {
               {errors.email && <span className="error">{errors.email}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="login-label">Password</label>
               <div className="password-input-wrapper">
                 <input
                   className="login-input"
@@ -98,7 +127,13 @@ const Login = () => {
               </div>
               {errors.password && <span className="error">{errors.password}</span>}
             </div>
-            <button type="submit" className="login-btn">Login</button>
+            <button 
+              type="submit" 
+              className="login-btn" 
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Login'}
+            </button>
             
             {/* Divider */}
             <div className="login-divider">
@@ -110,9 +145,24 @@ const Login = () => {
               type="button" 
               className="guest-login-btn"
               onClick={handleGuestLogin}
+              disabled={isLoading}
             >
               Login as Guest
             </button>
+            
+            {errors.general && (
+              <div className="error-message" style={{ 
+                color: '#e74c3c', 
+                textAlign: 'center', 
+                marginTop: '10px',
+                padding: '10px',
+                backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                borderRadius: '5px',
+                border: '1px solid rgba(231, 76, 60, 0.2)'
+              }}>
+                {errors.general}
+              </div>
+            )}
             
             <div className="login-link-signup">
               <span>Don't have an account? </span>

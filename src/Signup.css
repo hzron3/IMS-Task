@@ -68,6 +68,11 @@
   width: 100%;
 }
 
+.signup-label {
+  margin-left: 1rem;
+  text-align: left;
+}
+
 .signup-input:focus {
   border: 1.5px solid #1ABC9C;
 }

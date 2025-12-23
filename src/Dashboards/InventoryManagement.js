@@ -1,8 +1,37 @@
 import React, { useState, useEffect } from "react";
+import {
+  Box, Typography, Avatar, Chip,
+  Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow, IconButton
+} from '@mui/material';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Assignment as AssignmentIcon,
+  RemoveCircle
+} from '@mui/icons-material';
 import "./InventoryManagement.css";
 
 const InventoryManagement = () => {
   const [activeTab, setActiveTab] = useState('items');
+  const [tabsScrollable, setTabsScrollable] = useState(false);
+  
+  // Check if tabs need horizontal scrolling
+  useEffect(() => {
+    const checkTabsScrollable = () => {
+      const tabsContainer = document.querySelector('.inventory-tabs');
+      if (tabsContainer) {
+        const isScrollable = tabsContainer.scrollWidth > tabsContainer.clientWidth;
+        setTabsScrollable(isScrollable);
+      }
+    };
+
+    checkTabsScrollable();
+    window.addEventListener('resize', checkTabsScrollable);
+    
+    return () => window.removeEventListener('resize', checkTabsScrollable);
+  }, []);
+
   
   const [inventory, setInventory] = useState([
     {
@@ -171,10 +200,10 @@ const InventoryManagement = () => {
 
   // Mock managers data
   const [managers, setManagers] = useState([
-    { id: 1, name: "John Smith", email: "john@inventorypro.com", assignedCategories: ["Furniture"] },
-    { id: 2, name: "Lisa Davis", email: "lisa@inventorypro.com", assignedCategories: ["Office Supplies"] },
-    { id: 3, name: "Mike Johnson", email: "mike@inventorypro.com", assignedCategories: [] },
-    { id: 4, name: "Sarah Wilson", email: "sarah@inventorypro.com", assignedCategories: [] }
+    { id: 1, name: "John Smith", email: "john@InventoryAce.com", assignedCategories: ["Furniture"] },
+    { id: 2, name: "Lisa Davis", email: "lisa@InventoryAce.com", assignedCategories: ["Office Supplies"] },
+    { id: 3, name: "Mike Johnson", email: "mike@InventoryAce.com", assignedCategories: [] },
+    { id: 4, name: "Sarah Wilson", email: "sarah@InventoryAce.com", assignedCategories: [] }
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -215,7 +244,7 @@ const InventoryManagement = () => {
   // Calculate number of items in each category
   const calculateCategoryStats = (inventoryItems, categoriesList) => {
     return categoriesList.map(category => {
-      const categoryItems = inventoryItems.filter(item => item.category === category.name);
+      const categoryItems = inventoryItems.filter(item => item.category === category.name && !item.isDeleted);
       const itemCount = categoryItems.length;
       const totalValue = categoryItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       
@@ -352,7 +381,17 @@ const InventoryManagement = () => {
   };
 
   const handleConfirmDeleteItem = () => {
-    setInventory(inventory.filter(item => item.id !== itemToDelete));
+    // Soft delete 
+    setInventory(inventory.map(item => 
+      item.id === itemToDelete 
+        ? { 
+            ...item, 
+            isDeleted: true, 
+            deletedAt: new Date().toISOString(), 
+            deletedBy: 'Current User' 
+          }
+        : item
+    ));
     setOpenDeleteItemConfirm(false);
     setItemToDelete(null);
   };
@@ -433,17 +472,27 @@ const InventoryManagement = () => {
     const categoryToDeleteObj = categories.find(cat => cat.id === categoryToDelete);
     
     // Check if there are items in this category
-    const itemsInCategory = inventory.filter(item => item.category === categoryToDeleteObj?.name);
+    const itemsInCategory = inventory.filter(item => item.category === categoryToDeleteObj?.name && !item.isDeleted);
     
     if (itemsInCategory.length > 0) {
-      // If there are items, show an alert and prevent deletion
-      alert(`Cannot delete category "${categoryToDeleteObj?.name}" because it contains ${itemsInCategory.length} item(s). Please reassign or delete these items first.`);
+      // If there are active items, show an alert and prevent deletion
+      alert(`Cannot delete category "${categoryToDeleteObj?.name}" because it contains ${itemsInCategory.length} active item(s). Please reassign or delete these items first.`);
       setOpenDeleteCategoryConfirm(false);
       setCategoryToDelete(null);
       return;
     }
     
-    setCategories(categories.filter(cat => cat.id !== categoryToDelete));
+    // Soft delete
+    setCategories(categories.map(cat => 
+      cat.id === categoryToDelete 
+        ? { 
+            ...cat, 
+            isDeleted: true, 
+            deletedAt: new Date().toISOString(), 
+            deletedBy: 'Current User' 
+          }
+        : cat
+    ));
     setOpenDeleteCategoryConfirm(false);
     setCategoryToDelete(null);
   };
@@ -665,6 +714,9 @@ const InventoryManagement = () => {
   };
 
   const filteredInventory = inventory.filter(item => {
+    // Exclude deleted items by default
+    if (item.isDeleted) return false;
+    
     // Text search filter
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -678,10 +730,13 @@ const InventoryManagement = () => {
     return matchesSearch && matchesStockStatus;
   }).sort(sortByDate);
 
-  const filteredCategories = categories.filter(cat =>
-    cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cat.description.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort(sortByDate);
+  const filteredCategories = categories.filter(cat => {
+    // Exclude deleted categories by default
+    if (cat.isDeleted) return false;
+    
+    return cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           cat.description.toLowerCase().includes(searchTerm.toLowerCase());
+  }).sort(sortByDate);
 
   return (
     <div className="inventory-container">
@@ -692,7 +747,7 @@ const InventoryManagement = () => {
             <i className="fas fa-boxes me-2"></i>
             Inventory Management
           </h2>
-          <div className="inventory-tabs">
+          <div className={`inventory-tabs ${tabsScrollable ? 'scrollable' : ''}`}>
             <button
               className={`tab-button ${activeTab === 'items' ? 'active' : ''}`}
               onClick={() => handleTabChange('items')}
@@ -734,28 +789,76 @@ const InventoryManagement = () => {
         </button>
       </div>
 
+      {/* Quick Filters - Mobile Only */}
+      {activeTab === 'items' && (
+        <div className="quick-filters-container">
+          <div className="quick-filters-scroll">
+            <button
+              className={`filter-chip ${stockStatusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('all')}
+            >
+              All Items
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'In Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('In Stock')}
+            >
+              In Stock
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Low Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Low Stock')}
+            >
+              Low Stock
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Critical' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Critical')}
+            >
+              Critical
+            </button>
+            <button
+              className={`filter-chip ${stockStatusFilter === 'Out of Stock' ? 'active' : ''}`}
+              onClick={() => setStockStatusFilter('Out of Stock')}
+            >
+              Out of Stock
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Items Table */}
       {activeTab === 'items' && (
-        <div className="table-container">
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead className="table-header">
-                <tr>
-                  <th>SKU</th>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th className="text-end">Quantity</th>
-                  <th className="text-end">Min Stock</th>
-                  <th className="text-end">Price (Ksh)</th>
-                  <th>Supplier</th>
-                  <th>
-                    <div className="status-filter-header">
-                      <span>Status</span>
+        <Box sx={{ borderRadius: 3, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>SKU</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item Name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Category</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Quantity</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Min Stock</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Price (Ksh)</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Supplier</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Status</Typography>
                       <select
-                        className="status-filter-dropdown"
                         value={stockStatusFilter}
                         onChange={(e) => setStockStatusFilter(e.target.value)}
                         onClick={(e) => e.stopPropagation()}
+                        style={{
+                          border: '1.5px solid #b5bcbc',
+                          borderRadius: '12px',
+                          padding: '6px 12px',
+                          fontSize: '0.75rem',
+                          color: '#138d75',
+                          background: 'linear-gradient(135deg, #fff 0%, #f8f9fa 100%)',
+                          minWidth: '90px',
+                          cursor: 'pointer',
+                          fontWeight: '500'
+                        }}
                       >
                         <option value="all">All</option>
                         <option value="In Stock">In Stock</option>
@@ -763,167 +866,229 @@ const InventoryManagement = () => {
                         <option value="Critical">Critical</option>
                         <option value="Out of Stock">Out of Stock</option>
                       </select>
-                    </div>
-                  </th>
-                  <th 
-                    className="sortable-header"
+                    </Box>
+                  </TableCell>
+                  <TableCell 
+                    sx={{ fontWeight: 'bold', cursor: 'pointer' }}
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
                   >
                     Last Updated
-                    <span className="sort-indicator">
+                    <Box component="span" sx={{ ml: 1 }}>
                       {sortOrder === 'newest' ? (
                         <i className="fas fa-sort-up"></i>
                       ) : (
                         <i className="fas fa-sort-down"></i>
                       )}
-                    </span>
-                  </th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {filteredInventory.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.sku}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <span className={`category-badge ${item.category.toLowerCase()}`}>
-                        {item.category}
-                      </span>
-                    </td>
-                    <td className="text-end">
-                      <span className={`quantity-badge ${getQuantityStatus(item.quantity, item.minStock)}`}>
-                        {item.quantity}
-                      </span>
-                    </td>
-                    <td className="text-end">{item.minStock}</td>
-                    <td className="text-end">Ksh {item.price.toFixed(2)}</td>
-                    <td>{item.supplier}</td>
-                    <td>
-                      <span className={`stock-status-badge ${getStockStatus(item.quantity, item.minStock).replace(/\s/g, '').toLowerCase()}`}>
-                        {getStockStatus(item.quantity, item.minStock)}
-                      </span>
-                    </td>
-                    <td>{formatDateTime(item.lastUpdated)}</td>
-                    <td className="text-center">
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
+                  <TableRow key={item.id} hover>
+                    <TableCell>{item.sku}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.category}
+                        size="small"
+                        sx={{
+                          bgcolor: '#e3f2fd',
+                          color: '#1976d2',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.quantity}
+                        size="small"
+                        sx={{
+                          bgcolor: getQuantityStatus(item.quantity, item.minStock) === 'instock' ? '#e8f5e8' : 
+                                  getQuantityStatus(item.quantity, item.minStock) === 'lowstock' ? '#fff3e0' :
+                                  getQuantityStatus(item.quantity, item.minStock) === 'critical' ? '#ffebee' : '#ececec',
+                          color: getQuantityStatus(item.quantity, item.minStock) === 'instock' ? '#1abc9c' :
+                                 getQuantityStatus(item.quantity, item.minStock) === 'lowstock' ? '#ef6c00' :
+                                 getQuantityStatus(item.quantity, item.minStock) === 'critical' ? '#c62828' : '#888',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.minStock}</TableCell>
+                    <TableCell>Ksh {item.price.toFixed(2)}</TableCell>
+                    <TableCell>{item.supplier}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={getStockStatus(item.quantity, item.minStock)}
+                        size="small"
+                        sx={{
+                          bgcolor: getStockStatus(item.quantity, item.minStock) === 'In Stock' ? '#e8f5e8' :
+                                  getStockStatus(item.quantity, item.minStock) === 'Low Stock' ? '#fff3e0' :
+                                  getStockStatus(item.quantity, item.minStock) === 'Critical' ? '#ffebee' : '#ececec',
+                          color: getStockStatus(item.quantity, item.minStock) === 'In Stock' ? '#1abc9c' :
+                                 getStockStatus(item.quantity, item.minStock) === 'Low Stock' ? '#ef6c00' :
+                                 getStockStatus(item.quantity, item.minStock) === 'Critical' ? '#c62828' : '#888',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{formatDateTime(item.lastUpdated)}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenDialog(item)}
+                          sx={{ 
+                            color: '#1ABC9C',
+                            '&:hover': { bgcolor: 'rgba(26, 188, 156, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
                           onClick={() => handleDelete(item.id)}
+                          sx={{ 
+                            color: '#e74c3c',
+                            '&:hover': { bgcolor: 'rgba(231, 76, 60, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
 
       {/* Categories Table */}
       {activeTab === 'categories' && (
-        <div className="table-container">
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead className="table-header">
-                <tr>
-                  <th>Category Name</th>
-                  <th>Description</th>
-                  <th className="text-end">Item Count</th>
-                  <th className="text-end">Total Value (Ksh)</th>
-                  <th>Assigned Manager</th>
-                  <th 
-                    className="sortable-header"
+        <Box sx={{ borderRadius: 3, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Category Name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Item Count</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Total Value (Ksh)</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Assigned Manager</TableCell>
+                  <TableCell 
+                    sx={{ fontWeight: 'bold', cursor: 'pointer' }}
                     onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
                   >
                     Last Updated
-                    <span className="sort-indicator">
+                    <Box component="span" sx={{ ml: 1 }}>
                       {sortOrder === 'newest' ? (
                         <i className="fas fa-sort-up"></i>
                       ) : (
                         <i className="fas fa-sort-down"></i>
                       )}
-                    </span>
-                  </th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {filteredCategories.map((category) => (
-                  <tr key={category.id}>
-                    <td>
-                      <span className="category-name">{category.name}</span>
-                    </td>
-                    <td>{category.description}</td>
-                    <td className="text-end">
-                      <span className="item-count">{category.itemCount}</span>
-                    </td>
-                    <td className="text-end">Ksh {category.totalValue.toFixed(2)}</td>
-                    <td>
+                  <TableRow key={category.id} hover>
+                    <TableCell>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                        {category.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{category.description}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={category.itemCount}
+                        size="small"
+                        sx={{
+                          bgcolor: '#e3f2fd',
+                          color: '#1976d2',
+                          fontWeight: 'bold'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>Ksh {category.totalValue.toFixed(2)}</TableCell>
+                    <TableCell>
                       {category.assignedManager ? (
-                        <div className="assigned-manager">
-                          <span className="manager-badge">
-                            <i className="fas fa-user-tie me-1"></i>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', bgcolor: '#1ABC9C' }}>
+                            {category.assignedManager.split(' ').map(n => n[0]).join('')}
+                          </Avatar>
+                          <Typography variant="body2">
                             {category.assignedManager}
-                          </span>
-                        </div>
+                          </Typography>
+                        </Box>
                       ) : (
-                        <span className="no-manager text-muted">
+                        <Typography variant="body2" color="text.secondary">
                           <i className="fas fa-user-slash me-1"></i>
                           Not Assigned
-                        </span>
+                        </Typography>
                       )}
-                    </td>
-                    <td>{formatDateTime(category.lastUpdated)}</td>
-                    <td className="text-center">
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
+                    </TableCell>
+                    <TableCell>{formatDateTime(category.lastUpdated)}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenCategoryDialog(category)}
                           title="Edit Category"
+                          sx={{ 
+                            color: '#1ABC9C',
+                            '&:hover': { bgcolor: 'rgba(26, 188, 156, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-info"
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenAssignmentDialog(category)}
                           title="Assign Manager"
+                          sx={{ 
+                            color: '#17a2b8',
+                            '&:hover': { bgcolor: 'rgba(23, 162, 184, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-user-plus"></i>
-                        </button>
+                          <AssignmentIcon />
+                        </IconButton>
                         {category.assignedManager && (
-                          <button
-                            className="btn btn-sm btn-outline-warning"
+                          <IconButton
+                            size="small"
                             onClick={() => handleRemoveAssignment(category.id)}
                             title="Remove Assignment"
+                            sx={{ 
+                              color: '#ffc107',
+                              '&:hover': { bgcolor: 'rgba(255, 193, 7, 0.1)' }
+                            }}
                           >
-                            <i className="fas fa-user-minus"></i>
-                          </button>
+                            <RemoveCircle />
+                          </IconButton>
                         )}
-                        <button
-                          className="btn btn-sm btn-outline-danger"
+                        <IconButton
+                          size="small"
                           onClick={() => handleDeleteCategory(category.id)}
                           title="Delete Category"
+                          sx={{ 
+                            color: '#e74c3c',
+                            '&:hover': { bgcolor: 'rgba(231, 76, 60, 0.1)' }
+                          }}
                         >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
 
       {/* Summary Cards for Categories */}
@@ -932,25 +1097,25 @@ const InventoryManagement = () => {
           <div className="row">
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted).length}</h3>
                 <p>Total Categories</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted).reduce((sum, cat) => sum + cat.itemCount, 0)}</h3>
                 <p>Total Items</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.filter(cat => cat.itemCount === 0).length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted && cat.itemCount === 0).length}</h3>
                 <p>Empty Categories</p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="stat-card">
-                <h3>{categories.filter(cat => cat.assignedManager).length}</h3>
+                <h3>{categories.filter(cat => !cat.isDeleted && cat.assignedManager).length}</h3>
                 <p>Assigned Categories</p>
               </div>
             </div>
@@ -964,31 +1129,31 @@ const InventoryManagement = () => {
           <div className="row">
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted).length}</h3>
                 <p>Total Items</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity === 0).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity === 0).length}</h3>
                 <p>Out of Stock</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock && item.quantity > item.minStock / 2).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity > 0 && item.quantity <= item.minStock && item.quantity > item.minStock / 2).length}</h3>
                 <p>Low Stock</p>
               </div>
             </div>
             <div className="col-md-2">
               <div className="stat-card">
-                <h3>{inventory.filter(item => item.quantity > 0 && item.quantity <= item.minStock / 2).length}</h3>
+                <h3>{inventory.filter(item => !item.isDeleted && item.quantity > 0 && item.quantity <= item.minStock / 2).length}</h3>
                 <p>Critical</p>
               </div>
             </div>
             <div className="col-md-4">
               <div className="stat-card">
-                <h3>Ksh {inventory.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</h3>
+                <h3>Ksh {inventory.filter(item => !item.isDeleted).reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</h3>
                 <p>Total Inventory Value</p>
               </div>
             </div>
@@ -996,8 +1161,19 @@ const InventoryManagement = () => {
         </div>
       )}
 
-      {/* Add/Edit Item Modal */}
-      {openDialog && (
+      {/* Floating Action Button - Mobile Only */}
+      <div className="fab-container">
+        <button
+          className="fab-button"
+          onClick={() => activeTab === 'items' ? handleOpenDialog() : handleOpenCategoryDialog()}
+          aria-label={`Add ${activeTab === 'items' ? 'Item' : 'Category'}`}
+        >
+          <i className="fas fa-plus"></i>
+        </button>
+      </div>
+
+      {/* Add/Edit Item Modal - Desktop */}
+      {openDialog && window.innerWidth >= 1024 && (
         <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
@@ -1047,7 +1223,7 @@ const InventoryManagement = () => {
                     required
                   >
                     <option value="">Select a category</option>
-                    {categories.map((category) => (
+                    {categories.filter(cat => !cat.isDeleted).map((category) => (
                       <option key={category.id} value={category.name}>
                         {category.name}
                       </option>
@@ -1127,6 +1303,142 @@ const InventoryManagement = () => {
         </div>
       )}
 
+      {/* Add/Edit Item  - Mobile */}
+      {openDialog && window.innerWidth < 1024 && (
+        <div className="bottom-sheet-overlay" onClick={handleCloseDialog}>
+          <div className="bottom-sheet-content" onClick={(e) => e.stopPropagation()}>
+            <div className="bottom-sheet-header">
+              <div className="bottom-sheet-handle"></div>
+              <h5 className="bottom-sheet-title">
+                {editingItem ? "Edit Inventory Item" : "Add New Inventory Item"}
+              </h5>
+              <button type="button" className="btn-close" onClick={handleCloseDialog}></button>
+            </div>
+            <div className="bottom-sheet-body">
+              <div className="row">
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">SKU</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.sku}
+                      onChange={handleInputChange}
+                      name="sku"
+                      placeholder="Enter SKU"
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Item Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      name="name"
+                      placeholder="Enter item name"
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Category</label>
+                    <select
+                      className="form-control"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      name="category"
+                    >
+                      <option value="">Select Category</option>
+                      {categories.filter(cat => !cat.isDeleted).map((category) => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Quantity</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      name="quantity"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Min Stock</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.minStock}
+                      onChange={handleInputChange}
+                      name="minStock"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Price (Ksh)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      name="price"
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label className="form-label">Supplier</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData.supplier}
+                      onChange={handleInputChange}
+                      name="supplier"
+                      placeholder="Enter supplier name"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bottom-sheet-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseDialog}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                disabled={!validateItemForm()}
+              >
+                {editingItem ? "Update Item" : "Add Item"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add/Edit Category Modal */}
       {openCategoryDialog && (
         <div className="modal-overlay">
@@ -1190,7 +1502,7 @@ const InventoryManagement = () => {
               <button type="button" className="btn-close" onClick={() => setOpenDeleteItemConfirm(false)}></button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+              <p>Are you sure you want to delete this item? It will be moved to the Recycle Bin where you can restore it later or delete it permanently.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteItemConfirm(false)}>
@@ -1216,7 +1528,7 @@ const InventoryManagement = () => {
               <button type="button" className="btn-close" onClick={() => setOpenDeleteCategoryConfirm(false)}></button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this category? This action cannot be undone.</p>
+              <p>Are you sure you want to delete this category? It will be moved to the Recycle Bin where you can restore it later or delete it permanently.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={() => setOpenDeleteCategoryConfirm(false)}>

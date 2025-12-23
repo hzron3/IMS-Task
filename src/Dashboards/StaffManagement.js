@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Button, Avatar, Chip,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody,
+  FormControl, InputLabel, Select, MenuItem, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip,
-  Badge, LinearProgress, Divider, List, ListItem, ListItemText,
-  ListItemAvatar, ListItemIcon, Switch, FormControlLabel, Alert, Snackbar,
-  Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, Grid
+  Tabs, Tab, Grid, LinearProgress, Alert, Snackbar
 } from '@mui/material';
 import './StaffManagement.css';
 import {
-  Add, Edit, Delete, Assignment, Person, TrendingUp, Warning,
+  Add, Edit, Delete, Assignment, Person, TrendingUp,
   CheckCircle, Schedule, Notifications, Download, FilterList,
   Refresh, Visibility, AddCircle, RemoveCircle, AssignmentInd,
   Group, Task, Analytics, Inventory, LocalShipping, Assessment,
@@ -58,7 +56,7 @@ const StaffManagement = () => {
     {
       id: 1,
       name: 'John Doe',
-      email: 'john.doe@inventorypro.com',
+      email: 'john.doe@InventoryAce.com',
       phone: '+254 700 123 456',
       role: 'Warehouse Staff',
       assignedItems: 12,
@@ -77,7 +75,7 @@ const StaffManagement = () => {
     {
       id: 2,
       name: 'Jane Smith',
-      email: 'jane.smith@inventorypro.com',
+      email: 'jane.smith@InventoryAce.com',
       phone: '+254 700 123 457',
       role: 'Warehouse Staff',
       assignedItems: 8,
@@ -96,7 +94,7 @@ const StaffManagement = () => {
     {
       id: 3,
       name: 'Mike Johnson',
-      email: 'mike.johnson@inventorypro.com',
+      email: 'mike.johnson@InventoryAce.com',
       phone: '+254 700 123 458',
       role: 'Warehouse Staff',
       assignedItems: 15,
@@ -115,7 +113,7 @@ const StaffManagement = () => {
     {
       id: 4,
       name: 'Sarah Wilson',
-      email: 'sarah.wilson@inventorypro.com',
+      email: 'sarah.wilson@InventoryAce.com',
       phone: '+254 700 123 459',
       role: 'Warehouse Staff',
       assignedItems: 10,
@@ -148,15 +146,6 @@ const StaffManagement = () => {
       case 'normal': return '#27ae60';
       case 'busy': return '#f39c12';
       case 'overloaded': return '#e74c3c';
-      default: return '#95a5a6';
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'online': return '#27ae60';
-      case 'away': return '#f39c12';
-      case 'offline': return '#95a5a6';
       default: return '#95a5a6';
     }
   };
@@ -1142,7 +1131,25 @@ const StaffManagement = () => {
 
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} sx={{ '& .MuiTab-root': { fontWeight: 'bold' } }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{ 
+            '& .MuiTab-root': { 
+              fontWeight: 'bold',
+              minHeight: { xs: '48px', md: 'auto' }
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
+            }
+          }}
+        >
           <Tab label="Staff Overview" icon={<Group />} iconPosition="start" />
           <Tab label="Task Management" icon={<Task />} iconPosition="start" />
           <Tab label="Performance Analytics" icon={<Analytics />} iconPosition="start" />

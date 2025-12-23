@@ -15,7 +15,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">InventoryPro</div>
+      <div className="navbar-logo">InventoryAce</div>
       
       {/* Desktop Menu */}
       <ul className="navbar-links">
@@ -33,7 +33,7 @@ const Navbar = () => {
       <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-content">
           <div className="mobile-menu-header">
-            <div className="navbar-logo">InventoryPro</div>
+            <div className="navbar-logo">InventoryAce</div>
             <button className="mobile-menu-close" onClick={closeMobileMenu}>
               ×
             </button>

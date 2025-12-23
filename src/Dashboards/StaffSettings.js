@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, Switch, FormControlLabel, TextField, Avatar, Chip, Divider, Alert, Snackbar } from '@mui/material';
-import { Person, Notifications, Work, Security, Help, Save, Restore, Visibility, VisibilityOff, Email, Phone, LocationOn } from '@mui/icons-material';
+import { Card, CardContent, Typography, Box, Button, Switch, FormControlLabel, TextField, Avatar, Chip, Alert, Snackbar } from '@mui/material';
+import { Person, Notifications, Work, Help, Save, Email, Phone } from '@mui/icons-material';
 
 // Mock user data
 const mockUser = {
   firstName: "Sarah",
   lastName: "Johnson",
-  email: "sarah.johnson@inventorypro.com",
+  email: "sarah.johnson@InventoryAce.com",
   phone: "+254 700 987 654",
   department: "Warehouse Operations",
   position: "Warehouse Staff",
@@ -641,7 +641,7 @@ export default function StaffSettings() {
                       User Manual
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Complete guide to using InventoryPro
+                      Complete guide to using InventoryAce
                     </Typography>
                   </CardContent>
                 </Card>
@@ -778,19 +778,30 @@ export default function StaffSettings() {
       {/* Tab Navigation */}
       <Card sx={{ borderRadius: 3, mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
-          <Box sx={{ display: 'flex', borderBottom: '1px solid rgba(26, 188, 156, 0.1)' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            borderBottom: '1px solid rgba(26, 188, 156, 0.1)',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none'
+            }
+          }}>
             {tabs.map((tab) => (
               <Button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 sx={{
-                  flex: 1,
+                  flex: '0 0 auto',
+                  minWidth: { xs: '140px', md: 'auto' },
                   py: 2,
                   px: 3,
                   borderRadius: 0,
                   color: activeTab === tab.id ? '#1ABC9C' : '#7f8c8d',
                   borderBottom: activeTab === tab.id ? '2px solid #1ABC9C' : 'none',
                   fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+                  minHeight: { xs: '48px', md: 'auto' },
                   '&:hover': {
                     background: 'rgba(26, 188, 156, 0.05)',
                     color: '#1ABC9C'

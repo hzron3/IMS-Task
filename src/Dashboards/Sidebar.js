@@ -1,10 +1,24 @@
 import React from 'react';
 import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
+import useMobileDetection from '../hooks/useMobileDetection';
+import BottomNavigation from './BottomNavigation';
 
 const MIN_DRAWER_WIDTH = 60;
 const MAX_DRAWER_WIDTH = 260;
 
 const Sidebar = ({ sections, selectedIndex, onSectionSelect, sidebarOpen, setSidebarOpen }) => {
+  const isMobile = useMobileDetection();
+
+  // render bottom navigation on mobile
+  if (isMobile) {
+    return <BottomNavigation 
+      sections={sections} 
+      selectedIndex={selectedIndex} 
+      onSectionSelect={onSectionSelect} 
+    />;
+  }
+
+  // Desktop sidebar
   return (
     <Drawer
       variant="permanent"

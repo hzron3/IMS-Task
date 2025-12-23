@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  Box, Card, CardContent, Typography, Grid, Paper, Chip, 
+  Box, Card, CardContent, Typography, Chip, 
   Select, MenuItem, FormControl, InputLabel, Button,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Grid, Paper, Tabs, Tab
 } from '@mui/material';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import {
-  TrendingUp, Inventory, Warning, Assessment, 
   FileDownload, FilterList, Refresh
 } from '@mui/icons-material';
-import './Analytics.css';
 import { mockData } from './mockUserData';
 
 const Analytics = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [dateRange, setDateRange] = useState('30');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedUser, setSelectedUser] = useState('all');
   const [performancePeriod, setPerformancePeriod] = useState('weekly');
 
   // Use centralized inventory data
@@ -82,592 +80,639 @@ const Analytics = () => {
     systemHealth: {
       activeUsers: 24,
       systemUptime: 99.2,
-      avgResponseTime: 1.2,
-      errorRate: 0.8
-    },
-    salesData: {
-      dailySales: [
-        { date: '2024-01-01', sales: 45, revenue: 1850000 },
-        { date: '2024-01-02', sales: 52, revenue: 2100000 },
-        { date: '2024-01-03', sales: 38, revenue: 1450000 },
-        { date: '2024-01-04', sales: 61, revenue: 2500000 },
-        { date: '2024-01-05', sales: 49, revenue: 1950000 },
-        { date: '2024-01-06', sales: 55, revenue: 2250000 },
-        { date: '2024-01-07', sales: 42, revenue: 1750000 },
-        { date: '2024-01-08', sales: 78, revenue: 3500000 },
-        { date: '2024-01-09', sales: 34, revenue: 1300000 },
-        { date: '2024-01-10', sales: 89, revenue: 4000000 },
-        { date: '2024-01-11', sales: 23, revenue: 1000000 },
-        { date: '2024-01-12', sales: 67, revenue: 2800000 },
-        { date: '2024-01-13', sales: 91, revenue: 4500000 },
-        { date: '2024-01-14', sales: 28, revenue: 1200000 }
-      ],
-              categorySales: [
-          { category: 'Electronics', sales: 234, revenue: 23000000, percentage: 45 },
-          { category: 'Furniture', sales: 89, revenue: 6800000, percentage: 15 },
-          { category: 'Office Supplies', sales: 289, revenue: 20000000, percentage: 40 }
-        ],
-              salesByItem: [
-          { name: 'Laptop Dell XPS 13', category: 'Electronics', sales: 156, revenue: 28860000, margin: 15.2 },
-          { name: 'Wireless Mouse', category: 'Electronics', sales: 142, revenue: 497000, margin: 22.5 },
-          { name: 'Office Chair', category: 'Furniture', sales: 89, revenue: 4005000, margin: 18.7 },
-          { name: 'USB Cable', category: 'Electronics', sales: 234, revenue: 280800, margin: 35.8 },
-          { name: 'Desk Lamp', category: 'Furniture', sales: 67, revenue: 569500, margin: 25.3 },
-          { name: 'Printer HP LaserJet', category: 'Electronics', sales: 23, revenue: 1495000, margin: 12.8 },
-          { name: 'Notebook', category: 'Office Supplies', sales: 289, revenue: 130050, margin: 45.2 },
-          { name: 'Pen Set', category: 'Office Supplies', sales: 156, revenue: 132600, margin: 38.9 },
-          { name: 'Expensive Desk', category: 'Furniture', sales: 2, revenue: 270000, margin: 8.5 },
-          { name: 'Paper Clips', category: 'Office Supplies', sales: 500, revenue: 125000, margin: 65.3 },
-          { name: 'Old Model Phone', category: 'Electronics', sales: 0, revenue: 0, margin: 0 },
-          { name: 'Monitor LG 24', category: 'Electronics', sales: 0, revenue: 0, margin: 0 }
-        ]
+      responseTime: 0.8,
+      errorRate: 0.1
     }
   });
 
-  // Calculate analytics data
   const calculateAnalytics = () => {
-    const totalValue = inventoryData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const totalItems = inventoryData.reduce((sum, item) => sum + item.quantity, 0);
+    const totalItems = inventoryData.length;
     const lowStockItems = inventoryData.filter(item => item.quantity <= item.minStock).length;
     const outOfStockItems = inventoryData.filter(item => item.quantity === 0).length;
-
-    // Category distribution
-    const categoryData = inventoryData.reduce((acc, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = { value: 0, count: 0, items: [] };
-      }
-      acc[item.category].value += item.price * item.quantity;
-      acc[item.category].count += item.quantity;
-      acc[item.category].items.push(item);
-      return acc;
-    }, {});
-
-    const categoryChartData = Object.keys(categoryData).map(category => ({
-      name: category,
-      value: categoryData[category].value,
-      count: categoryData[category].count,
-      fill: category === 'Electronics' ? '#1ABC9C' : category === 'Furniture' ? '#3498db' : '#e74c3c'
-    }));
-
-    // Stock level analysis
-    const stockLevelData = inventoryData.map(item => ({
-      name: item.name,
-      current: item.quantity,
-      minimum: item.minStock,
-      status: item.quantity <= item.minStock ? 'Low' : item.quantity === 0 ? 'Out' : 'Good'
-    }));
-
-    // Top moving items (based on quantity)
-    const topMovingItems = [...inventoryData]
-      .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5)
-      .map(item => ({
-        name: item.name,
-        category: item.category,
-        quantity: item.quantity,
-        value: item.price * item.quantity
-      }));
-
-    // Dead stock analysis (items not updated recently)
-    const deadStockThreshold = 30; // days
-    const deadStockItems = inventoryData.filter(item => {
-      const lastUpdate = new Date(item.lastUpdated);
-      const daysSinceUpdate = (new Date() - lastUpdate) / (1000 * 60 * 60 * 24);
-      return daysSinceUpdate > deadStockThreshold;
-    });
-
-    // Supplier analysis
-    const supplierData = inventoryData.reduce((acc, item) => {
-      if (!acc[item.supplier]) {
-        acc[item.supplier] = { count: 0, value: 0, items: [] };
-      }
-      acc[item.supplier].count += 1;
-      acc[item.supplier].value += item.price * item.quantity;
-      acc[item.supplier].items.push(item);
-      return acc;
-    }, {});
-
-    const supplierChartData = Object.keys(supplierData).map(supplier => ({
-      name: supplier,
-      count: supplierData[supplier].count,
-      value: supplierData[supplier].value
-    }));
+    const totalValue = inventoryData.reduce((sum, item) => sum + (item.quantity * item.price), 0);
 
     return {
-      totalValue,
       totalItems,
       lowStockItems,
       outOfStockItems,
-      categoryChartData,
-      stockLevelData,
-      categoryData,
-      topMovingItems,
-      deadStockItems,
-      supplierChartData
+      totalValue
     };
   };
 
   const analytics = calculateAnalytics();
 
-  const COLORS = ['#1ABC9C', '#3498db', '#e74c3c', '#f39c12', '#9b59b6'];
-
   const KPICard = ({ title, value, icon, subtitle, bgGradient }) => (
-    <Card className="analytics-kpi-card" sx={{ background: bgGradient }}>
-      <CardContent>
-        <div className="kpi-content">
-          <div className="kpi-text">
-            <Typography variant="h4" component="div" className="kpi-value">
-                          {title === "Total Inventory Value" && typeof value === 'number' && value >= 1000 
-              ? `Ksh ${(value / 1000).toFixed(1)}K` 
+    <Card sx={{ 
+      height: '100%', 
+      background: bgGradient,
+      borderRadius: { xs: 2, md: 3 }
+    }}>
+      <CardContent sx={{ 
+        p: { xs: 2, md: 3 },
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+      }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: { xs: 'flex-start', md: 'center' }, 
+          justifyContent: 'space-between',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: { xs: 2, md: 0 }
+        }}>
+          <Box>
+            <Typography 
+              variant="h4" 
+              component="div" 
+              sx={{ 
+                color: 'white', 
+                fontWeight: 'bold',
+                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                lineHeight: { xs: 1.2, md: 1.4 }
+              }}
+            >
+              {title === "Total Value" && typeof value === 'number' 
+                ? new Intl.NumberFormat('en-KE', {
+                    style: 'currency',
+                    currency: 'KES',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                  }).format(value)
               : value}
             </Typography>
-            <Typography variant="body2" className="kpi-title">
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: 'rgba(255,255,255,0.8)', 
+                mt: { xs: 0.5, md: 1 },
+                fontSize: { xs: '0.75rem', md: '0.875rem' }
+              }}
+            >
               {title}
             </Typography>
             {subtitle && (
-              <Typography variant="caption" className="kpi-subtitle">
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  color: 'rgba(255,255,255,0.6)',
+                  fontSize: { xs: '0.65rem', md: '0.75rem' }
+                }}
+              >
                 {subtitle}
               </Typography>
             )}
-          </div>
-          <div className="kpi-icon">
+          </Box>
+          <Box sx={{ 
+            color: 'white', 
+            backgroundColor: 'rgba(255,255,255,0.2)', 
+            borderRadius: '50%', 
+            p: { xs: 1, md: 1.5 },
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: { xs: 'flex-end', md: 'center' }
+          }}>
             {icon}
-          </div>
-        </div>
+          </Box>
+        </Box>
       </CardContent>
     </Card>
   );
 
   const renderOverview = () => (
-    <div className="analytics-overview">
+    <Box>
+      {/* KPI Cards */}
+      <Box sx={{ 
+        display: 'flex', 
+        gap: { xs: 1, sm: 2, md: 2 }, 
+        mb: { xs: 2, md: 4 }, 
+        flexWrap: 'wrap' 
+      }}>
+        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 250px', md: '1 1 250px' }, minWidth: { xs: 'auto', md: 250 } }}>
+          <KPICard
+            title="Total Items"
+            value={analytics.totalItems}
+            icon={<FileDownload />}
+            subtitle="In inventory"
+            bgGradient="linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%)"
+          />
+        </Box>
+        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 250px', md: '1 1 250px' }, minWidth: { xs: 'auto', md: 250 } }}>
+          <KPICard
+            title="Total Value"
+            value={analytics.totalValue}
+            icon={<Refresh />}
+            subtitle="Current market value"
+            bgGradient="linear-gradient(135deg, #1ABC9C 0%, #27ae60 100%)"
+          />
+        </Box>
+        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 250px', md: '1 1 250px' }, minWidth: { xs: 'auto', md: 250 } }}>
+          <KPICard
+            title="Low Stock"
+            value={analytics.lowStockItems}
+            icon={<FilterList />}
+            subtitle="Below threshold"
+            bgGradient="linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)"
+          />
+        </Box>
+        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 250px', md: '1 1 250px' }, minWidth: { xs: 'auto', md: 250 } }}>
+          <KPICard
+            title="Out of Stock"
+            value={analytics.outOfStockItems}
+            icon={<FileDownload />}
+            subtitle="Zero quantity"
+            bgGradient="linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)"
+          />
+        </Box>
+      </Box>
 
+      {/* Charts Row */}
+      <Box sx={{ 
+        display: 'flex', 
+        gap: { xs: 1, sm: 2, md: 2 }, 
+        mb: { xs: 2, md: 4 }, 
+        flexWrap: 'wrap' 
+      }}>
+        <Box sx={{ flex: { xs: '1 1 100%', md: '2 1 600px' }, minWidth: { xs: 'auto', md: 400 } }}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 }, 
+            height: { xs: 300, sm: 350, md: 350 }, 
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'linear-gradient(135deg, #F7FAFA 0%, #ECF0F1 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: { xs: 1, md: 2 }, 
+                color: '#2C3E50',
+                fontSize: { xs: '1rem', md: '1.25rem' }
+              }}
+            >
+              Monthly Inventory Trends
+            </Typography>
+            <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={analyticsData.monthlyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
+                  <XAxis 
+                    dataKey="month" 
+                    stroke="#2C3E50"
+                    fontSize={{ xs: 10, sm: 12 }}
+                  />
+                  <YAxis 
+                    stroke="#2C3E50"
+                    fontSize={{ xs: 10, sm: 12 }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#fff', 
+                      border: '1px solid #BDC3C7',
+                      fontSize: { xs: 11, sm: 12 }
+                    }} 
+                  />
+                  <Legend 
+                    wrapperStyle={{ fontSize: { xs: 10, sm: 12 } }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#1ABC9C" 
+                    strokeWidth={3}
+                    name="Inventory Value"
+                    dot={{ r: { xs: 2, md: 4 } }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </Box>
+        <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 300px' }, minWidth: { xs: 'auto', md: 300 } }}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 }, 
+            height: { xs: 300, sm: 350, md: 350 }, 
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'linear-gradient(135deg, #F7FAFA 0%, #ECF0F1 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: { xs: 1, md: 2 }, 
+                color: '#2C3E50',
+                fontSize: { xs: '1rem', md: '1.25rem' }
+              }}
+            >
+              Category Distribution
+            </Typography>
+            <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={mockData.inventory.stockStatusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value}`}
+                    outerRadius={{ xs: 60, sm: 70, md: 80 }}
+                    innerRadius={{ xs: 30, sm: 35, md: 50 }}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {mockData.inventory.stockStatusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#fff', 
+                      border: '1px solid #BDC3C7', 
+                      color: '#2C3E50',
+                      fontSize: { xs: 11, sm: 12 }
+                    }} 
+                    formatter={(value) => [value, 'Items']} 
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </Box>
+      </Box>
 
-      {/* Turnover Rate Analysis */}
-      <div className="turnover-section">
-        <Typography variant="h6" className="section-title">
-          Turnover Rate Analysis
-        </Typography>
-        <div className="turnover-cards">
-          {analyticsData.turnoverRates.map((item, index) => (
-            <div key={index} className="turnover-card">
-              <div className="turnover-header">
-                <Typography variant="h6" className="turnover-category">
-                  {item.category}
-                </Typography>
-                <div className={`trend-indicator ${item.trend}`}>
-                  {item.trend === 'up' ? '↗' : '↘'}
-                </div>
-              </div>
-              <div className="turnover-value">{item.rate}x</div>
-              <div className="turnover-change">{item.change}</div>
-              <div className="turnover-description">
-                {item.trend === 'up' ? 'Improving' : 'Declining'} performance
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Monthly Trends Chart */}
-      <div className="trends-section">
-        <Typography variant="h6" className="section-title">
-          Monthly Inventory Value & Turnover Trends
-        </Typography>
-        <div className="trends-chart">
-          <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={analyticsData.monthlyTrends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
-              <XAxis dataKey="month" stroke="#2C3E50" />
-              <YAxis yAxisId="left" stroke="#1ABC9C" />
-              <YAxis yAxisId="right" orientation="right" stroke="#e74c3c" />
-              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #BDC3C7' }} />
-              <Legend />
-              <Line 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="value" 
-                stroke="#1ABC9C" 
-                strokeWidth={3}
-                name="Inventory Value ($)" 
-                dot={{ fill: '#1ABC9C', strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="turnover" 
-                stroke="#e74c3c" 
-                strokeWidth={3}
-                name="Turnover Rate" 
-                dot={{ fill: '#e74c3c', strokeWidth: 2, r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-             {/* Sales Analytics Section */}
-       <div className="sales-analytics-section">
-         <Typography variant="h6" className="section-title">
-           Sales Analytics
-         </Typography>
-         
-         {/* Sales Charts Row */}
-         <div className="sales-charts">
-           <div className="sales-chart-card">
-             <Typography variant="h6" className="chart-title">
-               Daily Sales Trend (Last 7 Days)
-             </Typography>
-             <ResponsiveContainer width="100%" height={300}>
-               <LineChart data={analyticsData.salesData.dailySales}>
-                 <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
-                 <XAxis dataKey="date" stroke="#2C3E50" />
-                 <YAxis yAxisId="left" stroke="#1ABC9C" />
-                 <YAxis yAxisId="right" orientation="right" stroke="#e74c3c" />
-                 <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #BDC3C7' }} />
-                 <Legend />
-                 <Line 
-                   yAxisId="left"
-                   type="monotone" 
-                   dataKey="sales" 
-                   stroke="#1ABC9C" 
-                   strokeWidth={3}
-                   name="Sales Count" 
-                   dot={{ fill: '#1ABC9C', strokeWidth: 2, r: 4 }}
-                 />
-                 <Line 
-                   yAxisId="right"
-                   type="monotone" 
-                   dataKey="revenue" 
-                   stroke="#e74c3c" 
-                   strokeWidth={3}
-                   name="Revenue ($)" 
-                   dot={{ fill: '#e74c3c', strokeWidth: 2, r: 4 }}
-                 />
-               </LineChart>
-             </ResponsiveContainer>
-           </div>
-
-           <div className="sales-chart-card">
-             <Typography variant="h6" className="chart-title">
-               Sales by Category
-             </Typography>
-             <ResponsiveContainer width="100%" height={300}>
-               <PieChart>
-                 <Pie
-                   data={analyticsData.salesData.categorySales}
-                   cx="50%"
-                   cy="50%"
-                   labelLine={false}
-                   label={({ category, percentage }) => `${category} ${percentage}%`}
-                   outerRadius={80}
-                   fill="#8884d8"
-                   dataKey="revenue"
-                 >
-                   {analyticsData.salesData.categorySales.map((entry, index) => (
-                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                   ))}
-                 </Pie>
-                 <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']} />
-               </PieChart>
-             </ResponsiveContainer>
-           </div>
-         </div>
-
-         {/* Detailed Sales Table */}
-         <div className="sales-table-section">
-           <Typography variant="h6" className="section-subtitle">
-             Detailed Sales by Item
-           </Typography>
-           <div className="sales-table">
-             <TableContainer>
-               <Table>
-                 <TableHead>
-                   <TableRow>
-                     <TableCell>Item Name</TableCell>
-                     <TableCell>Category</TableCell>
-                     <TableCell align="right">Sales Count</TableCell>
-                     <TableCell align="right">Revenue</TableCell>
-                     <TableCell align="right">Profit Margin</TableCell>
-                     <TableCell align="center">Performance</TableCell>
-                   </TableRow>
-                 </TableHead>
-                 <TableBody>
-                   {analyticsData.salesData.salesByItem.map((item, index) => (
-                     <TableRow key={index}>
-                       <TableCell>
-                         <div className="item-name">
-                           <span className="category-badge">{item.category}</span>
-                           {item.name}
-                         </div>
-                       </TableCell>
-                       <TableCell>{item.category}</TableCell>
-                       <TableCell align="right">{item.sales}</TableCell>
-                       <TableCell align="right">Ksh {item.revenue.toLocaleString()}</TableCell>
-                       <TableCell align="right">
-                         <span className={`margin-badge ${item.margin > 20 ? 'high' : item.margin > 15 ? 'medium' : 'low'}`}>
-                           {item.margin}%
-                         </span>
-                       </TableCell>
-                       <TableCell align="center">
-                         <div className="sales-performance-bar">
-                           <div 
-                             className="sales-performance-fill" 
-                             style={{ width: `${(item.revenue / Math.max(...analyticsData.salesData.salesByItem.map(i => i.revenue))) * 100}%` }}
-                           ></div>
-                         </div>
-                       </TableCell>
-                     </TableRow>
-                   ))}
-                 </TableBody>
-               </Table>
-             </TableContainer>
-           </div>
-         </div>
-       </div>
-
-       {/* Top Performers Table */}
-       <div className="top-performers-section">
-         <div className="performers-header">
-           <Typography variant="h6" className="section-title">
-             Top Performing Items
-           </Typography>
-           <div className="period-controls">
-             <FormControl size="small" className="period-select">
-               <InputLabel>Time Period</InputLabel>
-               <Select
-                 value={performancePeriod}
-                 label="Time Period"
-                 onChange={(e) => setPerformancePeriod(e.target.value)}
-               >
-                 <MenuItem value="weekly">Weekly</MenuItem>
-                 <MenuItem value="monthly">Monthly</MenuItem>
-                 <MenuItem value="quarterly">Quarterly</MenuItem>
-                 <MenuItem value="yearly">Yearly</MenuItem>
-               </Select>
-             </FormControl>
-           </div>
-         </div>
-         <div className="performers-table">
-           <TableContainer>
-             <Table>
-               <TableHead>
-                 <TableRow>
-                   <TableCell>Item Name</TableCell>
-                   <TableCell align="right">Sales Count</TableCell>
-                   <TableCell align="right">Revenue</TableCell>
-                   <TableCell align="right">Growth</TableCell>
-                   <TableCell align="center">Performance</TableCell>
-                 </TableRow>
-               </TableHead>
-               <TableBody>
-                 {analyticsData.topPerformers[performancePeriod].map((item, index) => (
-                   <TableRow key={index}>
-                     <TableCell>
-                       <div className="item-name">
-                         <span className="rank-badge">{index + 1}</span>
-                         <div className="item-details">
-                           <div className="item-title">{item.name}</div>
-                           <div className="period-indicator">{item.period}</div>
-                         </div>
-                       </div>
-                     </TableCell>
-                     <TableCell align="right">{item.sales}</TableCell>
-                     <TableCell align="right">Ksh {item.revenue.toLocaleString()}</TableCell>
-                     <TableCell align="right">
-                       <span className={`growth-badge ${item.growth.includes('+') ? 'positive' : 'negative'}`}>
-                         {item.growth}
-                       </span>
-                     </TableCell>
-                     <TableCell align="center">
-                       <div className="performance-bar">
-                         <div 
-                           className="performance-fill" 
-                           style={{ width: `${Math.min(100, (index + 1) * 20)}%` }}
-                         ></div>
-                       </div>
-                     </TableCell>
-                   </TableRow>
-                 ))}
-               </TableBody>
-             </Table>
-           </TableContainer>
-         </div>
-       </div>
-     </div>
-   );
+      {/* Performance Metrics */}
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ 
+          p: { xs: 2, sm: 2.5, md: 3 },
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+          boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+          border: '1px solid #BDC3C7',
+          borderRadius: { xs: 2, md: 3 }
+        }}>
+          <Typography 
+            variant="h6" 
+            gutterBottom 
+            sx={{ 
+              fontWeight: 'bold', 
+              mb: { xs: 1.5, md: 2 }, 
+              color: '#2C3E50',
+              fontSize: { xs: '1rem', md: '1.25rem' }
+            }}
+          >
+            System Performance Metrics
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            gap: { xs: 1, sm: 2, md: 2 }, 
+            flexWrap: 'wrap'
+          }}>
+            <Box sx={{ 
+              flex: { xs: '1 1 100%', sm: '1 1 200px', md: '1 1 200px' },
+              textAlign: 'center', 
+              p: { xs: 1.5, md: 2 },
+              border: '1px solid #e9ecef',
+              borderRadius: { xs: 1, md: 2 },
+              bgcolor: 'white'
+            }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: '#1ABC9C', 
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1.5rem', md: '2rem' }
+                }}
+              >
+                {analyticsData.systemHealth.activeUsers}
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: '#7f8c8d',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}
+              >
+                Active Users
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              flex: { xs: '1 1 100%', sm: '1 1 200px', md: '1 1 200px' },
+              textAlign: 'center', 
+              p: { xs: 1.5, md: 2 },
+              border: '1px solid #e9ecef',
+              borderRadius: { xs: 1, md: 2 },
+              bgcolor: 'white'
+            }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: '#27ae60', 
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1.5rem', md: '2rem' }
+                }}
+              >
+                {analyticsData.systemHealth.systemUptime}%
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: '#7f8c8d',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}
+              >
+                System Uptime
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              flex: { xs: '1 1 100%', sm: '1 1 200px', md: '1 1 200px' },
+              textAlign: 'center', 
+              p: { xs: 1.5, md: 2 },
+              border: '1px solid #e9ecef',
+              borderRadius: { xs: 1, md: 2 },
+              bgcolor: 'white'
+            }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: '#3498db', 
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1.5rem', md: '2rem' }
+                }}
+              >
+                {analyticsData.systemHealth.responseTime}s
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: '#7f8c8d',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}
+              >
+                Response Time
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              flex: { xs: '1 1 100%', sm: '1 1 200px', md: '1 1 200px' },
+              textAlign: 'center', 
+              p: { xs: 1.5, md: 2 },
+              border: '1px solid #e9ecef',
+              borderRadius: { xs: 1, md: 2 },
+              bgcolor: 'white'
+            }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: '#e74c3c', 
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1.5rem', md: '2rem' }
+                }}
+              >
+                {analyticsData.systemHealth.errorRate}%
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: '#7f8c8d',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}
+              >
+                Error Rate
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
+  );
 
   const renderInventoryAnalytics = () => (
-    <div className="inventory-analytics">
-      <div className="filters-section">
-        <div className="filter-group">
-          <FormControl size="small" className="filter-control">
-            <InputLabel>Date Range</InputLabel>
-            <Select
-              value={dateRange}
-              label="Date Range"
-              onChange={(e) => setDateRange(e.target.value)}
+    <Box>
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          fontWeight: 'bold', 
+          mb: { xs: 2, md: 3 }, 
+          color: '#2C3E50',
+          fontSize: { xs: '1.125rem', md: '1.25rem' }
+        }}
+      >
+        Inventory Analytics
+      </Typography>
+      
+      <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 }, 
+            height: { xs: 300, sm: 350, md: 400 },
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'linear-gradient(135deg, #F7FAFA 0%, #ECF0F1 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: { xs: 1, md: 2 }, 
+                color: '#2C3E50',
+                fontSize: { xs: '1rem', md: '1.25rem' }
+              }}
             >
-              <MenuItem value="7">Last 7 days</MenuItem>
-              <MenuItem value="30">Last 30 days</MenuItem>
-              <MenuItem value="90">Last 90 days</MenuItem>
-              <MenuItem value="365">One year</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl size="small" className="filter-control">
-            <InputLabel>Category</InputLabel>
-            <Select
-              value={selectedCategory}
-              label="Category"
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              Turnover Rates by Category
+          </Typography>
+            <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={analyticsData.turnoverRates}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
+                  <XAxis 
+                    dataKey="category" 
+                    stroke="#2C3E50"
+                    fontSize={{ xs: 10, sm: 12 }}
+                  />
+                  <YAxis 
+                    stroke="#2C3E50"
+                    fontSize={{ xs: 10, sm: 12 }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#fff', 
+                      border: '1px solid #BDC3C7',
+                      fontSize: { xs: 11, sm: 12 }
+                    }} 
+                  />
+                  <Legend 
+                    wrapperStyle={{ fontSize: { xs: 10, sm: 12 } }}
+                  />
+                  <Bar dataKey="rate" fill="#1ABC9C" name="Turnover Rate" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 }, 
+            height: { xs: 300, sm: 350, md: 400 },
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'linear-gradient(135deg, #F7FAFA 0%, #ECF0F1 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: { xs: 1, md: 2 }, 
+                color: '#2C3E50',
+                fontSize: { xs: '1rem', md: '1.25rem' }
+              }}
             >
-              <MenuItem value="all">All Categories</MenuItem>
-              <MenuItem value="Electronics">Electronics</MenuItem>
-              <MenuItem value="Furniture">Furniture</MenuItem>
-              <MenuItem value="Office Supplies">Office Supplies</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Button
-            variant="outlined"
-            startIcon={<Refresh />}
-            className="refresh-btn"
-          >
-            Refresh
-          </Button>
-        </div>
-      </div>
-
-      <div className="analytics-tables">
-        <div className="table-card">
-          <Typography variant="h6" className="table-title">
-            Low Stock Items
+              Stock Level Distribution
           </Typography>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Item Name</TableCell>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Current Stock</TableCell>
-                  <TableCell>Minimum Stock</TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {inventoryData
-                  .filter(item => item.quantity <= item.minStock)
-                  .map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.category}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.minStock}</TableCell>
-                      <TableCell>
-                        <Chip 
-                          label={item.quantity === 0 ? 'Out of Stock' : 'Low Stock'}
-                          color={item.quantity === 0 ? 'error' : 'warning'}
-                          size="small"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-
-        <div className="table-card">
-          <Typography variant="h6" className="table-title">
-            Dead Stock Items (Not Updated in 30+ Days)
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Item Name</TableCell>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Last Updated</TableCell>
-                  <TableCell>Current Stock</TableCell>
-                  <TableCell>Value</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {analytics.deadStockItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.category}</TableCell>
-                    <TableCell>{item.lastUpdated}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>Ksh{(item.price * item.quantity).toFixed(2)}</TableCell>
-                  </TableRow>
-                ))}
-                {analytics.deadStockItems.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No dead stock items found
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      </div>
-    </div>
+            <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={mockData.inventory.stockStatusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value}`}
+                    outerRadius={{ xs: 60, sm: 70, md: 80 }}
+                    innerRadius={{ xs: 30, sm: 35, md: 50 }}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {mockData.inventory.stockStatusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#fff', 
+                      border: '1px solid #BDC3C7', 
+                      color: '#2C3E50',
+                      fontSize: { xs: 11, sm: 12 }
+                    }} 
+                    formatter={(value) => [value, 'Items']} 
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   const renderUserAnalytics = () => (
-    <div className="user-analytics">
-      <div className="user-activity-chart">
-        <Typography variant="h6" className="chart-title">
-          User Activity Overview
+    <Box>
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          fontWeight: 'bold', 
+          mb: { xs: 2, md: 3 }, 
+          color: '#2C3E50',
+          fontSize: { xs: '1.125rem', md: '1.25rem' }
+        }}
+      >
+        User Activity Analytics
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={userActivityData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#BDC3C7" opacity={0.5} />
-            <XAxis dataKey="user" stroke="#2C3E50" />
-            <YAxis stroke="#2C3E50" />
-            <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #BDC3C7' }} />
-            <Legend />
-            <Bar dataKey="actions" fill="#1ABC9C" name="Actions Performed" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className="user-table">
-        <Typography variant="h6" className="table-title">
-          User Activity Details
-        </Typography>
-        <TableContainer>
-          <Table>
+      
+      <Paper sx={{ 
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+        border: '1px solid #BDC3C7',
+        borderRadius: { xs: 2, md: 3 }
+      }}>
+        <TableContainer sx={{ maxHeight: { xs: 400, md: 500 } }}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Actions</TableCell>
-                <TableCell>Last Login</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  bgcolor: '#f8f9fa',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}>
+                  User
+                </TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  bgcolor: '#f8f9fa',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}>
+                  Role
+                </TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  bgcolor: '#f8f9fa',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}>
+                  Actions
+                </TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  bgcolor: '#f8f9fa',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}>
+                  Last Login
+                </TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  bgcolor: '#f8f9fa',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' }
+                }}>
+                  Status
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {userActivityData.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell>{user.user}</TableCell>
-                  <TableCell>
+                <TableRow key={index} hover>
+                  <TableCell sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
+                    {user.user}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                     <Chip 
                       label={user.role}
-                      color={user.role === 'Admin' ? 'error' : user.role === 'Manager' ? 'warning' : 'primary'}
                       size="small"
+                      sx={{ 
+                        bgcolor: user.role === 'Admin' ? '#e74c3c' : user.role === 'Manager' ? '#f39c12' : '#3498db',
+                        color: 'white',
+                        fontSize: { xs: '0.6rem', md: '0.7rem' }
+                      }} 
                     />
                   </TableCell>
-                  <TableCell>{user.actions}</TableCell>
-                  <TableCell>{user.loginTime}</TableCell>
+                  <TableCell sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
+                    {user.actions}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
+                    {user.loginTime}
+                  </TableCell>
                   <TableCell>
                     <Chip 
                       label={user.status}
-                      color={user.status === 'online' ? 'success' : 'default'}
                       size="small"
+                      sx={{ 
+                        bgcolor: user.status === 'online' ? '#27ae60' : '#95a5a6',
+                        color: 'white',
+                        fontSize: { xs: '0.6rem', md: '0.7rem' }
+                      }} 
                     />
                   </TableCell>
                 </TableRow>
@@ -675,75 +720,214 @@ const Analytics = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 
   const renderReports = () => (
-    <div className="reports-section">
-      <div className="reports-header">
-        <Typography variant="h6" className="section-title">
-          Custom Reports
+    <Box>
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          fontWeight: 'bold', 
+          mb: { xs: 2, md: 3 }, 
+          color: '#2C3E50',
+          fontSize: { xs: '1.125rem', md: '1.25rem' }
+        }}
+      >
+        Performance Reports
         </Typography>
-        <div className="report-actions">
+      
+      <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 },
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: { xs: 1.5, md: 2 }, 
+                color: '#2C3E50',
+                fontSize: { xs: '1rem', md: '1.25rem' }
+              }}
+            >
+              Top Performers ({performancePeriod})
+            </Typography>
+            <Box sx={{ maxHeight: { xs: 300, md: 400 }, overflow: 'auto' }}>
+              {analyticsData.topPerformers[performancePeriod].map((item, index) => (
+                <Box key={index} sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  p: { xs: 1, md: 1.5 }, 
+                  mb: { xs: 0.5, md: 1 },
+                  border: '1px solid #e9ecef',
+                  borderRadius: { xs: 1, md: 1.5 },
+                  bgcolor: 'white'
+                }}>
+                  <Box>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        fontWeight: 'bold', 
+                        color: '#2C3E50',
+                        fontSize: { xs: '0.75rem', md: '0.875rem' }
+                      }}
+                    >
+                      {item.name}
+                    </Typography>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: '#7f8c8d',
+                        fontSize: { xs: '0.65rem', md: '0.75rem' }
+                      }}
+                    >
+                      {item.sales} units sold
+                    </Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        fontWeight: 'bold', 
+                        color: '#1ABC9C',
+                        fontSize: { xs: '0.75rem', md: '0.875rem' }
+                      }}
+                    >
+                      {new Intl.NumberFormat('en-KE', {
+                        style: 'currency',
+                        currency: 'KES',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      }).format(item.revenue)}
+                    </Typography>
+                    <Chip 
+                      label={item.growth} 
+                      size="small" 
+                      sx={{ 
+                        bgcolor: '#27ae60', 
+                        color: 'white',
+                        fontSize: { xs: '0.6rem', md: '0.7rem' }
+                      }} 
+                    />
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ 
+            p: { xs: 2, sm: 2.5, md: 3 },
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+            boxShadow: '0 4px 24px rgba(44, 62, 80, 0.10)',
+            border: '1px solid #BDC3C7',
+            borderRadius: { xs: 2, md: 3 }
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              mb: { xs: 1.5, md: 2 }
+            }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 'bold', 
+                  color: '#2C3E50',
+                  fontSize: { xs: '1rem', md: '1.25rem' }
+                }}
+              >
+                Performance Period
+              </Typography>
+              <FormControl size="small" sx={{ minWidth: { xs: 120, md: 150 } }}>
+                <Select
+                  value={performancePeriod}
+                  onChange={(e) => setPerformancePeriod(e.target.value)}
+                  sx={{ 
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#e9ecef' },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1ABC9C' },
+                    borderRadius: { xs: 1, md: 2 }
+                  }}
+                >
+                  <MenuItem value="weekly">Weekly</MenuItem>
+                  <MenuItem value="monthly">Monthly</MenuItem>
+                  <MenuItem value="quarterly">Quarterly</MenuItem>
+                  <MenuItem value="yearly">Yearly</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: { xs: 1, md: 1.5 }
+            }}>
           <Button
-            variant="contained"
+                variant="outlined" 
+                fullWidth 
             startIcon={<FileDownload />}
-            className="export-btn"
-          >
-            Export Report
+                sx={{ 
+                  borderColor: '#1ABC9C', 
+                  color: '#1ABC9C',
+                  borderRadius: { xs: 1, md: 2 },
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { 
+                    borderColor: '#27ae60', 
+                    color: '#27ae60',
+                    bgcolor: 'rgba(26, 188, 156, 0.05)'
+                  }
+                }}
+              >
+                Export Performance Report
           </Button>
-        </div>
-      </div>
-
-      <div className="report-filters">
-        <div className="filter-group">
-          <FormControl size="small" className="filter-control">
-            <InputLabel>Report Type</InputLabel>
-            <Select defaultValue="inventory">
-              <MenuItem value="inventory">Inventory Report</MenuItem>
-              <MenuItem value="user-activity">User Activity Report</MenuItem>
-              <MenuItem value="category-analysis">Category Analysis</MenuItem>
-              <MenuItem value="dead-stock">Dead Stock Report</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl size="small" className="filter-control">
-            <InputLabel>Date Range</InputLabel>
-            <Select value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
-              <MenuItem value="7">Last 7 days</MenuItem>
-              <MenuItem value="30">Last 30 days</MenuItem>
-              <MenuItem value="90">Last 90 days</MenuItem>
-              <MenuItem value="365">Last year</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl size="small" className="filter-control">
-            <InputLabel>Category</InputLabel>
-            <Select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-              <MenuItem value="all">All Categories</MenuItem>
-              <MenuItem value="Electronics">Electronics</MenuItem>
-              <MenuItem value="Furniture">Furniture</MenuItem>
-              <MenuItem value="Office Supplies">Office Supplies</MenuItem>
-            </Select>
-          </FormControl>
-
           <Button
             variant="outlined"
-            startIcon={<FilterList />}
-            className="generate-btn"
-          >
-            Generate Report
+                fullWidth 
+                startIcon={<FileDownload />}
+                sx={{ 
+                  borderColor: '#3498db', 
+                  color: '#3498db',
+                  borderRadius: { xs: 1, md: 2 },
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { 
+                    borderColor: '#2980b9', 
+                    color: '#2980b9',
+                    bgcolor: 'rgba(52, 152, 219, 0.05)'
+                  }
+                }}
+              >
+                Export User Activity
           </Button>
-        </div>
-      </div>
-
-      <div className="report-preview">
-        <Typography variant="body2" className="preview-text">
-          Report preview will appear here after generation...
-        </Typography>
-      </div>
-    </div>
+              <Button 
+                variant="outlined" 
+                fullWidth 
+                startIcon={<FileDownload />}
+                sx={{ 
+                  borderColor: '#f39c12', 
+                  color: '#f39c12',
+                  borderRadius: { xs: 1, md: 2 },
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { 
+                    borderColor: '#e67e22', 
+                    color: '#e67e22',
+                    bgcolor: 'rgba(243, 156, 18, 0.05)'
+                  }
+                }}
+              >
+                Export Inventory Report
+              </Button>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   const renderContent = () => {
@@ -762,47 +946,115 @@ const Analytics = () => {
   };
 
   return (
-    <div className="analytics-container">
-      <div className="analytics-header">
-        <Typography variant="h4" className="analytics-title">
-          Analytics & Reports
-        </Typography>
-        <Typography variant="body1" className="analytics-subtitle">
-          Comprehensive insights into your inventory and user activity
-        </Typography>
-      </div>
+    <Box sx={{ 
+      width: '100%', 
+      height: '100%', 
+      flexGrow: 1, 
+      p: { xs: 1, sm: 2, md: 2 }
+    }}>
+      <Typography 
+        variant="h4" 
+        gutterBottom 
+        sx={{ 
+          fontWeight: 'bold', 
+          mb: { xs: 2, md: 4 },
+          fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' }
+        }}
+      >
+        Analytics & Reports
+      </Typography>
 
-      <div className="analytics-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overall Analytics
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
-          onClick={() => setActiveTab('inventory')}
-        >
-          Inventory Analytics
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          User Analytics
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'reports' ? 'active' : ''}`}
-          onClick={() => setActiveTab('reports')}
-        >
-          Custom Reports
-        </button>
-      </div>
+      {/* Filters */}
+      <Box sx={{ 
+        display: 'flex', 
+        gap: { xs: 1, sm: 2 }, 
+        mb: { xs: 2, md: 3 },
+        flexDirection: { xs: 'column', sm: 'row' }
+      }}>
+        <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 150 } }}>
+          <InputLabel>Date Range</InputLabel>
+          <Select
+            value={dateRange}
+            label="Date Range"
+            onChange={(e) => setDateRange(e.target.value)}
+            sx={{ 
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#e9ecef' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1ABC9C' },
+              borderRadius: { xs: 1, md: 2 }
+            }}
+          >
+            <MenuItem value="7">Last 7 days</MenuItem>
+            <MenuItem value="30">Last 30 days</MenuItem>
+            <MenuItem value="90">Last 90 days</MenuItem>
+            <MenuItem value="365">Last year</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 150 } }}>
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={selectedCategory}
+            label="Category"
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            sx={{ 
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#e9ecef' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1ABC9C' },
+              borderRadius: { xs: 1, md: 2 }
+            }}
+          >
+            <MenuItem value="all">All Categories</MenuItem>
+            <MenuItem value="electronics">Electronics</MenuItem>
+            <MenuItem value="furniture">Furniture</MenuItem>
+            <MenuItem value="office-supplies">Office Supplies</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
-      <div className="analytics-content">
-        {renderContent()}
-      </div>
-    </div>
+      {/* Main Content with Tabs */}
+      <Paper sx={{ 
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        borderRadius: { xs: 2, md: 3 },
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        border: '1px solid #e9ecef'
+      }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{
+            borderBottom: '1px solid #e9ecef',
+            '& .MuiTab-root': {
+              color: '#7f8c8d',
+              fontWeight: 600,
+              minHeight: { xs: '48px', md: 'auto' },
+              fontSize: { xs: '0.875rem', md: '1rem' },
+              '&.Mui-selected': {
+                color: '#1ABC9C'
+              }
+            },
+            '& .MuiTabs-indicator': {
+              bgcolor: '#1ABC9C'
+            },
+            '& .MuiTabs-scrollButtons': {
+              color: '#1ABC9C',
+              '&.Mui-disabled': {
+                opacity: 0.3
+              }
+            }
+          }}
+        >
+          <Tab label="Overview" value="overview" />
+          <Tab label="Inventory Analytics" value="inventory" />
+          <Tab label="User Analytics" value="users" />
+          <Tab label="Reports" value="reports" />
+        </Tabs>
+
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+          {renderContent()}
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

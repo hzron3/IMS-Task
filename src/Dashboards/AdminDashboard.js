@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Toolbar, AppBar, IconButton } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,6 +14,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import './Dashboard.css';
 import Sidebar from './Sidebar';
 import Overview from './Overview';
@@ -20,15 +22,16 @@ import UserManagement from './UserManagement';
 import InventoryManagement from './InventoryManagement';
 import Analytics from './Analytics';
 import Settings from './Settings';
+import RecycleBin from './RecycleBin';
 
-const MIN_DRAWER_WIDTH = 60;
-const MAX_DRAWER_WIDTH = 260;
+
 
 const sections = [
   { label: 'Overview', icon: <DashboardIcon />, path: 'overview' },
   { label: 'Inventory Management', icon: <InventoryIcon />, path: 'inventory-management' },
-  { label: 'User & Role Management', icon: <PeopleIcon />, path: 'user-management' },
+  { label: 'Users & Role Management', icon: <PeopleIcon />, path: 'user-management' },
   { label: 'Analytics & Reports', icon: <BarChartIcon />, path: 'analytics' },
+  { label: 'Recycle Bin', icon: <DeleteIcon />, path: 'recycle-bin' },
   { label: 'System Settings', icon: <SettingsIcon />, path: 'settings' },
 ];
 
@@ -37,6 +40,7 @@ const sectionContent = [
   'Inventory Management Section (CRUD Items, Bulk Import/Export, Category Management)',
   'User & Role Management Section (User List, Add/Edit/Remove Users, Role Assignment, Access Logs)',
   'Analytics & Reports Section (Top Moving Items, Dead Stock, Category Distribution)',
+  'Recycle Bin Section (Restore or permanently delete soft-deleted items and categories)',
   'System Settings Section (History, Notification Settings)',
 ];
 
@@ -46,6 +50,7 @@ function DashboardNavbar({ user, role, onSettings }) {
   const open = Boolean(anchorEl);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -59,6 +64,7 @@ function DashboardNavbar({ user, role, onSettings }) {
     handleClose();
   };
   const handleLogout = () => {
+    logout();
     handleClose();
     navigate('/login');
   };
@@ -90,7 +96,7 @@ function DashboardNavbar({ user, role, onSettings }) {
                 fontFamily: 'Poppins, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
               }}
             >
-              InventoryPro
+              InventoryAce
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
@@ -137,10 +143,10 @@ const AdminDashboard = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   
-  // Mock user info for now
-  const user = { name: 'Jane Doe', email: 'admin@inventorypro.com' };
-  const role = 'Admin';
+  // Use authenticated user info
+  const role = user?.role || 'Admin';
 
   // Find the selected index based on the URL section
   const getSelectedIndex = () => {
@@ -172,7 +178,16 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
+        sx={{ 
+          flexGrow: 1, 
+          p: 2, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '100%', 
+          alignItems: 'center',
+          // Add bottom padding for mobile and tablet to account for bottom navigation
+          pb: { xs: '80px', lg: 2 }
+        }}
       >
         <Toolbar />
         <Box sx={{ width: '100%', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -185,6 +200,8 @@ const AdminDashboard = () => {
           ) : selectedIndex === 3 ? (
             <Analytics />
           ) : selectedIndex === 4 ? (
+            <RecycleBin />
+          ) : selectedIndex === 5 ? (
             <Settings />
           ) : (
             <Box sx={{ width: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
